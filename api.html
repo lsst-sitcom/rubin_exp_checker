@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>DES exposure checker | API</title>
+  <title>Exposure checker | API</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon">
-  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -18,7 +18,7 @@
   <div class='container'>
     <div class="navbar">
       <div class="navbar-inner">
-	<a class="brand" href="index.html">DES exposure checker</a>
+	<a class="brand" href="index.html">Exposure checker</a>
 	<ul class="nav">
           <li><a href="viewer.html">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
@@ -31,9 +31,9 @@
         <ul class="nav pull-right hide">
           <!--#include file="release_selector.shtml"-->
         </ul>
-      </div> 
+      </div>
     </div>
-    
+
     <!-- content area -->
     <div class="span12">
       <h1>API</h1>
@@ -41,11 +41,11 @@
       categorized problems. You'll get them anonymized and without a timestamp,
       the format is <a href="http://www.json.org/">JSON</a>, which should be digestible in almost
       any programming language. If you need at different format,
-      open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
+      open a <a href="https://github.com/LSSTDESC/desc-exp-checker/issues">github issue</a>.
       </p>
       <p>Select the problem class below for an example:</p>
       <!--#include file="problem_selector.shtml"-->
-    
+
       <h3>Query parameters</h3>
       <p>
         The basic URL for GET requests is <a href="api.php">api.php</a>. We support/require the following parameters:
@@ -57,7 +57,7 @@
       <h3>Any other queries?</h3>
       The set of queries we currently allow is restricted to global queries based on the problem class.
       If you want to be able to quiery our database differently, tell us by
-      opening a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
+      opening a <a href="https://github.com/LSSTDESC/desc-exp-checker/issues">github issue</a>.
     </div>
   </div>
   <div id="push"></div>
@@ -77,7 +77,7 @@
   $(document).ready(function(){
     // set up release
     setRelease($.cookie('default-release'));
-    
+
     // connect problem selector to anchor in page
     $('a[class*="problem"]').on('click', function(evt) {
       var problem = evt.target.innerHTML;

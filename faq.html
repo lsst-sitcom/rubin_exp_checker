@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>DES exposure checker | API</title>
+  <title>Exposure checker | API</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/desc-logo-small.png" type="image/png">
+  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -18,7 +18,7 @@
   <div class='container'>
     <div class="navbar">
       <div class="navbar-inner">
-	<a class="brand" href="index.html">DES exposure checker</a>
+	<a class="brand" href="index.html">Exposure checker</a>
 	<ul class="nav">
           <li><a href="viewer.html">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
@@ -28,25 +28,23 @@
           <li><a href="gallery.html">Gallery</a></li>
 	  <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
-      </div> 
+      </div>
     </div>
-    
+
     <!-- content area -->
     <div class="span12">
       <h1>FAQ</h1>
       <p>Things can get confusing sometimes, problems do no appear to fit into any given category, etc.
         We try to answer a couple of re-ocurring questions here and additional questions can be found on
-	the redmine forum <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Feedback_from_DES_Exposure_Checker">here</a>.
-        If you have a question that may be of broader interest to the community, post it on the redmine
-	forum or email it directly to the <a href="#" id="email-anchor">DES exposure checker folks</a>. 
+	the Slack channel "desc-dc2-eyeballs".
         For technical requests (bugs or improvements to the website), open a
-	<a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
-      </p>       
+	<a href="https://github.com/LSSTDESC/desc-exp-checker/issues">github issue</a>.
+      </p>
     </div>
 
     <div class="span12">
-      <a id="des-password-anchor"></a>
-      <h3>Why doesn't the DES password work?</h3>
+      <a id="password-anchor"></a>
+      <h3>Why doesn't the password work?</h3>
       <p>It does, otherwise you wouldn't be able to see this page. You can browse all pages
       and load any image in our database into the viewer. But if you want to
       submit problems you see in these images, you need your own account for this website.
@@ -55,7 +53,7 @@
       we'll bring you back to that image after you've logged in or signed up.
       </p>
     </div>
-    
+
     <div class="span12">
       <a id="submissions-anchor"></a>
       <h3>What happens with my submissions?</h3>
@@ -73,8 +71,8 @@
       <p>We would like to know about any kind of flaw in the data. Therefore, please
       mark both false negative and false positive instances of artifacts
       (e.g., use "Edge-Bleed" to mark both an edge-bleed without an edge-bleed
-      mask and a edge-bleed mask without an edge-bleed). With the release of Y1A1 data,
-      we provide a <button class="btn btn-primary btn-small" data-toggle="button">False</button> button,
+      mask and a edge-bleed mask without an edge-bleed).
+      We provide a <button class="btn btn-primary btn-small" data-toggle="button">False</button> button,
       that allows you to report a false-positive treatment of such a problem.
       </p>
     </div>
@@ -97,13 +95,12 @@
       <a id="dotted-columns-anchor"></a>
       <h3>What are those dots in the column masks?</h3>
       <p> Very hot pixels will overflow into downstream pixels during readout creatig a "bad column".
-        Additionally, cross talk creates hot pixels spaced every 60 pixels upstream (towards the readout side) of the hot pixels. 
+        Additionally, cross talk creates hot pixels spaced every 60 pixels upstream (towards the readout side) of the hot pixels.
         This appears as a dotted mask upstream of a truncated bad column mask.
         These dots are not actually a problem class.
-        For some more details see <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=6989">here</a>.
       </p>
     </div>
-      
+
     <div class="span12">
       <a id="no-image-anchor"></a>
       <h3>I can't see the images. What's wrong?</h3>
@@ -124,59 +121,6 @@
       but the effectiveness of this remains to be seen.
       </p>
     </div>
-
-    <div class="span7">
-      <a id="y-band-anchor"></a>
-      <h3>What's up with Y-band?</h3>
-      <p> The Y-band DES exposures are only 45 seconds long and show a number of unique features.
-      In this band, bright stars can often be seen to have vertical spikes extending above and below
-      the saturated pixels of the star. We believe that these spikes are consistent with the 
-      diffraction of light from the gate structure of the CCD. This effect would be worse in Y-band
-      since more photons make it to the gate. More information can be found <a href="https://cdcvs.fnal.gov/redmine/projects/des-sci-verification/wiki/Mapping_of_the_PSF_to_large_radii">here</a> and 
-      these vertical star spikes do not need to be flagged.
-      To help checkers identify issues that may be arising from the differences in the Y-band exposures,
-      <span class='badge badge-important'>Y-band</span> images have the band name highlighted in red.
-      </p>
-    </div>
-    <div class="span5">
-      <p class="img-polaroid">
-        <a href="viewer.html?release=Y1A1&expname=DECam_00232226&ccd=40" title="Click to view the original image"><img src="material/y_band_spikes.gif" /></a>
-        <small>Vertical star spikes on Y-band image</small>
-      </p>
-    </div>
-
-    <div class="span12">
-      <a id="cosmics-y1a1-anchor"></a>
-      <h3>Why can't I see cosmic rays in Y1A1?</h3>
-      <p> In Y1A1 we switched to a new cosmic ray masking algorithm and allow it to try to "fix" the pixels impacted by cosmic rays.
-        This means that when the cosmic ray masker is working properly, you won't be able to see the cosmic rays that were masked.
-        When the cosmic ray masker masks only part of a cosmic ray, you may see the bright tails of the cosmic ray leaking out of the ends of the mask.
-        Please mark any cases where this occurs.
-      </p>
-    </div>
-
-
-    <div class="span12">
-      <a id="missing-ccds-anchor"></a>
-      <h3>What's up with missing CCDs in the FoV image?</h3>
-      <p> Sometimes good CCDs go bad. 
-        Half of CCD31 is known to suffer from non-linear gain effects. 
-        CCD62 was over-exposed during SV (2012-11-07) and now has a low saturation point.  
-        CCD2 was lost during Y1 (2014-11-28) likely due to an electrostatic shock. 
-        For Y1A1 CCD2, CCD31, and CCD62 have been removed from the DES exposure checker. 
-        Clicking on these CCDs in the FoV image will return a "File Missing" error and occasionally they appear blacked out on the FoV image.
-      </p>
-    </div>
-
-    <div class="span12">
-      <a id="rectangular-masks"></a>
-      <h3>What is the large rectangular mask on CCD57?</h3>
-      <p> For the Y2 processing, a new mask bit was added to flag 'SUSPECT' pixels. These are pixels that are fine for most scientific uses, but are probably not well-enough characterized for weak lensing analyses. These bits are currently flattened into the MASK plane displayed by the exposure checker and can be seen as rectangular masked regions. 
-
-The most pronounced example of this feature occurs on CCD57, where there is a fairly large region on the left side of the image that has high readout noise. This masked region appears on all Y2+ images and should <b>not</b> be flagged as a problem. There are several other examples of 'SUSPECT' bits including the masking of tape bumps, which appear as six small squares around the edges of each image.
-      </p>
-    </div>
-
 
   </div>
   <div id="push"></div>
