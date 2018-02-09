@@ -2,6 +2,54 @@
         <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Problem</span>
         <span class="caret"></span>
         </button>
+        
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Artifacts</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Speckling</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Edge-bleed</a></li>
+            </ul>
+          </li>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Unusual galaxies</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Galaxy shape unusual</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Galaxy too bright</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Galaxy too dim</a></li>
+               <li><a class="problem" tabindex="-1" href="#">Galaxy too small</a></li>
+                 <li><a class="problem" tabindex="-1" href="#">Galaxy too big</a></li>
+            </ul>
+          </li>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Unusual stars</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Star shape unusual</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Star too bright</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Star too dim</a></li>
+            </ul>
+          </li>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Whole image problems</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">No objects</a></li>
+              <li><a class="problem" tabindex="-1" href="#">No galaxies</a></li>
+              <li><a class="problem" tabindex="-1" href="#">No stars</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Galaxies not evenly distributed</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Galaxies all same magnitude</a></li>
+                <li><a class="problem" tabindex="-1" href="#">Galaxies all same shape</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Preferred orientation for galaxies</a></li>
+                <li><a class="problem" tabindex="-1" href="#">Stars all same magnitude</a></li>
+                <li><a class="problem" tabindex="-1" href="#">Too many cosmic rays</a></li>
+                <li><a class="problem" tabindex="-1" href="#">Cosmic rays not evenly distributed</a></li>
+            </ul>
+          </li>
+
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Masking</a>
@@ -21,6 +69,7 @@
               <li><a class="problem" tabindex="-1" href="#">Quilted sky</a></li>
               <li><a class="problem" tabindex="-1" href="#">Wavy sky</a></li>
               <li><a class="problem" tabindex="-1" href="#">Anti-bleed</a></li>
+               <li><a class="problem" tabindex="-1" href="#">Sky background too bright</a></li>
             </ul>
           </li>
           <li class="dropdown-submenu">
@@ -40,13 +89,6 @@
               <li><a class="problem" tabindex="-1" href="#">Bright spray</a></li>
               <li><a class="problem" tabindex="-1" href="#">Brush strokes</a></li>
               <li><a class="problem" tabindex="-1" href="#">Bright arc</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="#">Tracks</a>
-            <ul class="dropdown-menu">
-              <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Airplane</a></li>
             </ul>
           </li><li class="dropdown-submenu">
             <a tabindex="-1" href="#">Instrument/Site</a>
