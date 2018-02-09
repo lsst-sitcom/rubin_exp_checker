@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>DES exposure checker | Heat map</title>
+  <title>Exposure checker | Heat map</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon">
-  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -36,9 +36,9 @@
         <ul class="nav pull-right hide">
 	  <!--#include file="release_selector.shtml"-->
         </ul>
-      </div> 
+      </div>
     </div>
-    
+
     <!-- content area -->
     <div class="span12">
       <h1>Problem heat maps</h1>
@@ -71,52 +71,52 @@
 $(document).ready(function () {
   // set up release
   setRelease($.cookie('default-release'));
-  
+
   spinner = new Spinner({color: "#049cdb"}).spin();
   $('#loading').append(spinner.el);
-  
+
   var width = 940, height = 470, max_count = 20, cell_size = 128;
 
   var color = d3.scale.linear()
       .domain([0, max_count])
       .range(["white", "#9d261d"])
       .interpolate(d3.interpolateLab);
-  
+
   var x = d3.scale.linear()
       .domain([0, 4096])
       .range([0, width]);
-  
+
   var y = d3.scale.linear()
       .domain([0, 2048])
       .range([height, 0]);
-  
+
   var hexbin = d3.hexbin()
       .size([width, height])
       .radius(x(cell_size));
-  
+
   var xAxis = d3.svg.axis()
       .scale(x)
       .orient("bottom")
       .tickSize(6, -height);
-  
+
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
       .tickSize(6, -width);
-  
+
   var svg = d3.select("#heat_map").append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("id", "hexagon_box")
     .append("g");
-  
+
   svg.append("clipPath")
       .attr("id", "clip")
     .append("rect")
       .attr("class", "mesh")
       .attr("width", width)
       .attr("height", height);
-      
+
   // get data and show heat map
   function showHeatMap(problem) {
     $('.hexagon').remove();
@@ -139,7 +139,7 @@ $(document).ready(function () {
       $('#loading').hide();
     });
   }
- 
+
   // connect problem selector to anchor in page
   $('a[class*="problem"]').on('click', function(evt) {
       evt.preventDefault();

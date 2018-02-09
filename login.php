@@ -30,7 +30,7 @@ elseif (isset($_POST['reset_pw'])) {
     if ($answer) {
       // this was a valid email address:
       // get new password and username, send email
-      $subject = "Password reset for DES exposure checker website";
+      $subject = "Password reset for exposure checker website";
       $message = "Dear " . $answer['username'] .",\n\n";
       $message .= "Someone, probably you, requested a password reset. ";
       $message .= "Your new password is\n\n";

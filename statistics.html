@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>DES exposure checker | Statistics</title>
+  <title>Exposure checker | Statistics</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
@@ -21,7 +21,7 @@
   <div class='container'>
     <div class="navbar">
       <div class="navbar-inner">
-	<a class="brand" href="index.html">DES exposure checker</a>
+	<a class="brand" href="index.html">Exposure checker</a>
 	<ul class="nav">
           <li><a href="viewer.html">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
@@ -34,9 +34,9 @@
         <ul class="nav pull-right hide">
           <!--#include file="release_selector.shtml"-->
         </ul>
-      </div> 
+      </div>
     </div>
-    
+
     <!-- content area -->
     <div class="span6">
       <h1>Statistics</h1>
@@ -82,7 +82,7 @@
     // set up release
     setRelease($.cookie('default-release'));
 
-    // define donut shapes 
+    // define donut shapes
     var radius1 = 100;
     var arc1 = d3.svg.arc()
         .outerRadius(radius1)
@@ -92,14 +92,14 @@
         .outerRadius(radius2)
         .innerRadius(radius2 - 24);
     var pie = d3.layout.pie().sort(null);
-    
+
     // get data and show stats
     d3.json("stats.php?release="+ release + "&total&today&breakup", function(error, response) {
       // checked chart: simply show the numbers as text
       var svg = d3.select("#basic_stats").append("svg")
         .attr("width", radius1*2)
         .attr("height", radius1*2);
-        
+
       var g = svg.selectAll(".arc")
         .data([response.total])
         .enter().append("g");
@@ -116,7 +116,7 @@
         .attr("dy", "75px")
         .style("font-size", "14px")
         .text("images checked");
-        
+
       var g = svg.selectAll(".arc")
         .data([response.today])
         .enter().append("g");
@@ -135,17 +135,17 @@
         .style("font-size", "14px")
         .style("fill", "#46a546")
         .text("today");
-      
+
       // fine chart
       svg = d3.select("#basic_stats").append("svg")
         .attr("width", radius1*2)
-        .attr("height", radius1*2);  
+        .attr("height", radius1*2);
       g = svg.selectAll(".arc")
         .data(pie([response.fine/response.checked, (response.checked - response.fine)/response.checked]))
         .enter().append("g")
           .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
           //.attr("class", "arc");
-      g.append("path")  
+      g.append("path")
           .attr("class", "arc")
           .attr("d", arc1)
           .style("fill", function(d, i) { if (i == 0) return '#46a546'; else return '#9d261d'; });
@@ -161,7 +161,7 @@
         .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
         .style("text-anchor", "middle")
         .text("OK");
-      
+
       // one chart per problem
       svg = d3.select("#problem_stats").selectAll(".pie")
         .data(response.breakup)
@@ -172,7 +172,7 @@
       g = svg.selectAll(".arc")
         .data(function(d) { return pie([(d.all-d.false_positive)/(response.checked - response.fine), d.false_positive/(response.checked - response.fine), (response.checked - response.fine - d.all)/(response.checked - response.fine)]); })
         .enter().append("g")
-        .attr("transform", "translate(" + radius2 + "," + radius2 + ")")      .attr("class", "arc");    
+        .attr("transform", "translate(" + radius2 + "," + radius2 + ")")      .attr("class", "arc");
       g.append("path")
         .attr("class", "arc")
         .attr("d", arc2)
@@ -196,7 +196,7 @@
           .attr("transform", "translate(" + radius2 + "," + radius2 + ")")
           .style("text-anchor", "middle")
           .text(function(d) { return d.name; });
-    
+
     });
   });
 </script>
