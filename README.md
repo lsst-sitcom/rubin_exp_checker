@@ -1,6 +1,6 @@
-# DES Exposure Checker
+# Exposure Checker
 
-Crowdsourced image quality control for the Dark Energy Survey (DES). The code available here is for a web-app that asks users to identify flaws in survey images. The app loads and displays FITS image directly in the browser and works on desktop and mobile devices.
+Crowdsourced image quality control. The code available here is for a web-app that asks users to identify flaws in survey images. The app loads and displays FITS image directly in the browser and works on desktop and mobile devices.
 
 More details can be found in the associated paper ([Astronomy & Computing](http://adsabs.harvard.edu/abs/2016A%26C....16...99M), [arXiv](http://arxiv.org/abs/1511.03391)).
 
@@ -16,7 +16,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
 
 1. Clone the repository and go into the new directory.
 2. Copy `htaccess.txt` to `.htaccess` and append whatever else may be needed for your installation.
-3. Execute 
+3. Execute
 
    ```
    sqlite3 files.db < sql/files.sql
@@ -30,7 +30,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    mv files.db users.db .db/
    ````
 
-   Once there, make sure that the webserver user can read from and write to those files. 
+   Once there, make sure that the webserver user can read from and write to those files.
 4. Load information about the test images into the file database. As you can see from the schema in `sql/files.sql`,  each image needs to have 4 items of information:
 
    ```sql
@@ -67,16 +67,16 @@ $config = array(
 );
 ```
 
-The code has a mechanism to switch between data releases. For that define a list of releases, e.g. 
+The code has a mechanism to switch between data releases. For that define a list of releases, e.g.
 
 ```php
  "releases" => array("SVA1", "Y1A1")
 ```
 
- Set the arrays for `filedb`, `fovpath`,`fitspath` with one key-value pair for each release, e.g. 
+ Set the arrays for `filedb`, `fovpath`,`fitspath` with one key-value pair for each release, e.g.
 
 ```php
-"filedb" => array("SVA1" => ".db/files.sva1.db", 
+"filedb" => array("SVA1" => ".db/files.sva1.db",
                   "Y1A1" => ".db/files.y1a1.db")
 ```
 

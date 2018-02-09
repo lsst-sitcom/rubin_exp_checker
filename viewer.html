@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>DES exposure checker | Viewer</title>
+  <title>Exposure checker | Viewer</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon">
-  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -22,7 +22,7 @@
     <!-- NAVBAR -->
     <div class="navbar">
       <div class="navbar-inner">
-	<a class="brand" href="index.html">DES exposure checker</a>
+	<a class="brand" href="index.html">Exposure checker</a>
 	<ul class="nav">
           <li class="active"><a href="#">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
@@ -33,7 +33,7 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide" id="user-menu">
-	  
+
           <li id="mydata-li" class="dropdown" style="display: none">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <span id="username">Username</span> <span class="badge userrank">&nbsp;</span>
@@ -49,9 +49,9 @@
           <li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li>
 	  <!--#include file="release_selector.shtml"-->
         </ul>
-      </div> 
+      </div>
     </div>
-    
+
     <!-- BUTTONS -->
     <div style="margin-top:20px; position:relative;">
       <button id="fine-button" class="btn btn-success send">Next</button>
@@ -68,7 +68,7 @@
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
-            <li><a tabindex="-1" href="#" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
+            <li><a tabindex="-1" href="#" id="dm-button"><u>D</u>ownload image from DM</a></li>
             <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
             <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
           </ul>
@@ -77,11 +77,11 @@
         <button class="btn btn-primary" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
       </span>
     </div>
-    
+
     <!-- IMAGE -->
     <div id="loading" class="hide" style="position:relative; left:512px; top:266px; z-index:1000; width:48px;"></div>
     <div id="wicked-science-visualization" style="margin: 10px 0px; height:512px; width: 1024px; background-color:#CCCCCC;"></div>
-    
+
     <!-- MODALS -->
     <div class="modal hide" id="problem-modal">
       <div class="modal-header">
@@ -96,7 +96,7 @@
         <button id="problem-text-button" class="btn btn-primary">Done</button>
       </div>
     </div>
-    
+
     <div class="modal hide" id="fov-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -108,7 +108,7 @@
       </div>
       <div id="fov-url" class="hide"></div>
     </div>
-    
+
     <div class="modal hide" id="mystats-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -130,7 +130,7 @@
       </div>
       <div class="modal-body"></div>
     </div>
-    
+
     <div class="modal hide" id="congrats-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -144,7 +144,7 @@
         <button class="btn btn-primary" data-dismiss="modal">Keep going!</button>
       </div>
     </div>
-    
+
     <div class="modal hide" id="share-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -154,17 +154,17 @@
         <textarea style="width:516px;" type="text" id="share-url" disabled></textarea>
       </div>
     </div>
-    
-    <div class="modal hide" id="desdm-modal" tabindex="-1">
+
+    <div class="modal hide" id="dm-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>URL for finalcut image from DESDM</h3>
+        <h3>URL for finalcut image from DM</h3>
       </div>
       <div class="modal-body">
-        <textarea style="width:516px;" type="text" id="desdm-url" disabled></textarea>
+        <textarea style="width:516px;" type="text" id="dm-url" disabled></textarea>
       </div>
     </div>
-    
+
     <div class="modal hide" id="login-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -179,7 +179,7 @@
         <a href="index.html" class="btn btn-primary login-trigger">Login...</a>
       </div>
     </div>
-    
+
     <div class="modal hide" id="message-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -237,11 +237,11 @@
           getMyData();
       }
     });
-    
+
     var urlparams = $.url().param();
     if (urlparams.hasOwnProperty('release') === false)
       urlparams['release'] = release;
-    
+
     // if user is logged in: show user dropdown
     if (checkSessionCookie()) {
       getMyData();
@@ -266,28 +266,28 @@
         evt.preventDefault();
       });
     }
-    
+
     // get first image data
     getNextImage(urlparams);
-    
+
     // setup FoV chip layout
     setChipLayout();
   });
   $('form').submit(function() {
     return false;
   });
-  
+
   // initialize fields and modals
   problem_default = $('#problem-name').html();
   $('#problem-modal').modal({"backdrop": false, "show": false, "keyboard": false });
   $('#fov-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#share-modal').modal({"backdrop": false, "show": false, "keyboard": true });
-  $('#desdm-modal').modal({"backdrop": false, "show": false, "keyboard": true });
+  $('#dm-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#message-modal').modal({"backdrop": true, "show":false, "keyboard": false});
-  
+
   // button actions
   $('button[class*="send"]').on('click', function(evt) {
     sendResponse();
@@ -303,10 +303,10 @@
       return false;
     };
   });
-  $('#desdm-button').on('click', function() {
-  $('#desdm-modal').modal('show');
+  $('#dm-button').on('click', function() {
+  $('#dm-modal').modal('show');
     var dm_url="getImage.php?type=dm&release="+release+"&expname="+expname+"&ccd="+ccd;
-    var textBox = $('#desdm-url');
+    var textBox = $('#dm-url');
     textBox.load(dm_url).select();
     // Work around Chrome's little problem
     textBox.onmouseup = function() {
@@ -316,7 +316,7 @@
     };
   });
   $('#fov-button').on('click', function() {
-    // load FoV image from DESDM
+    // load FoV image from DM
     $('#fov-body').find('.fov-image').remove();
     var fov_url = "getImage.php?type=fov&release="+release+"&expname="+expname;
     $('<img class="fov-image" src="' + fov_url +'" border="0" />').load(function() {
@@ -371,7 +371,7 @@
     // update typeahead
     var typeahead_source = $('#problem-text').typeahead().data('typeahead').source;
     if ($.inArray(problemName, typeahead_source) == -1)
-      typeahead_source.push(problemName); 
+      typeahead_source.push(problemName);
     if (problemName.length > 11)
       problemName = problemName.substring(0,10) + "...";
     $('#problem-name').html(problemName);
@@ -400,7 +400,7 @@
     if (marks.length == 0)
       $('#clear-button').hide();
   });
-  
+
   // user requests
   $('#mystats-anchor').on('click', function() {
     getMyData();
@@ -415,16 +415,16 @@
       window.location.href="index.html";
       });
   });
-  
+
   // key bindings
   jwerty.key('alt+l', function() {
-    $('#share-button').trigger('click');  
+    $('#share-button').trigger('click');
   });
   jwerty.key('alt+d', function() {
-    $('#desdm-button').trigger('click');  
+    $('#dm-button').trigger('click');
   });
   jwerty.key('alt+m', function() {
-    $('#toggle-mask-button').trigger('click');  
+    $('#toggle-mask-button').trigger('click');
   });
   jwerty.key('alt+s', function() {
     $('#scaling-button').trigger('click');
@@ -439,9 +439,9 @@
     $('#reported-button').trigger('click');
   });
 
-  // Enter and Esc for special keybindings inside the problem modal  
+  // Enter and Esc for special keybindings inside the problem modal
   $('#problem-modal').bind('keydown', jwerty.event('Enter', function () { $('#problem-text-button').trigger('click'); }));
   $('#problem-modal').bind('keydown', jwerty.event('Esc', function () { closeProblemModal(); }));
-  
+
 </script>
 </html>
