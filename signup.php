@@ -6,6 +6,7 @@ $dbh = getDBHandle();
 function createAccount($dbh, $username, $email, $password) {
   $answer = array();
   $sth = $dbh->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
+  $answer["data"] = array($username, $email, $password);
   if ($sth->execute(array($username, $email, $password))) {
     $answer["success"] = TRUE;
     $answer["message"] = "<strong>Hurray!</strong> Your account has been successfully created...";

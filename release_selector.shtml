@@ -4,9 +4,6 @@
     <b class="text-info caret"></b>
   </a>
   <ul class="dropdown-menu">
-    <li><a class="release-button" id="release-button-SVA1" href="#">SVA1</a></li>
-    <li><a class="release-button" id="release-button-Y1A1" href="#">Y1A1</a></li>
-    <li><a class="release-button" id="release-button-Y2T2" href="#">Y2T2</a></li>
-    <li><a class="release-button" id="release-button-Y2T4" href="#">Y2T4</a></li>
+    <li><a class="release-button" id="release-button-DC2" href="#">DC2</a></li>
   </ul>
 </li>

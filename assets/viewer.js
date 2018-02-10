@@ -83,7 +83,9 @@ function clearLastMark() {
 // Define callback to be executed after image is received from the server
 function getImage(f, opts) {
   // Get image data unit
-  var dataunit = f.getDataUnit(2);
+  console.log('getImage');
+  //var dataunit = f.getDataUnit(2);
+  var dataunit = f.getDataUnit(0);
   // Set options to pass to the next callback
   opts["dataunit"] = dataunit;
   opts["f"] = f;
@@ -96,6 +98,7 @@ function createVisualization(arr, opts) {
   var dataunit = opts.dataunit;
   var width = dataunit.width;
   var height = dataunit.height;
+  console.log('createVisualization');
       
   // Get the DOM element
   var el = $('#wicked-science-visualization').get(0);
@@ -110,16 +113,18 @@ function createVisualization(arr, opts) {
   }
   
   // Load array representation of image
-  webfits.loadImage('exposure', arr, width, height);
+  //webfits.loadImage('exposure', arr, width, height);
+  webfits.loadImage('exposure', arr, 1000, 509);
+  console.log('arr size '+arr.length);
   // Set the intensity range and stretch
   if (opts.release != "Y1A1" && opts.release != "SVA1")
       webfits.setRescaling(4.);	
   webfits.setExtent(-1, 1000);  // to prevent crazy values in min/max
+  //webfits.setExtent(900, 1250);  // to prevent crazy values in min/max
   webfits.setStretch(stretch);
-    
   
   // add weight/bad-pixel map
-  var dataunit = opts.f.getDataUnit(3);
+  var dataunit = opts.f.getDataUnit(1);
   // Set options to pass to the next callback
   opts["dataunit"] = dataunit;
   // Asynchronously get pixels representing the image passing a callback and options
@@ -127,7 +132,9 @@ function createVisualization(arr, opts) {
 }
 
 function addMaskLayer(arr, opts) {
-  webfits.loadImage('bpm', arr, 1024, 512);
+  console.log('addMaskLayer');
+  //webfits.loadImage('bpm', arr, 1024, 512);
+  webfits.loadImage('bpm', arr, 1000, 509);
   webfits.draw();
   completeVisualization(opts);
 }
@@ -135,6 +142,7 @@ function addMaskLayer(arr, opts) {
 // to be done once all elements of webfits are in place
 function completeVisualization(response) {
   // add marks if present in response
+  console.log('completeVisualization');
   if (response.marks !== undefined) {
     for (var i=0; i < response.marks.length; i++) {
       addMark(response.marks[i], webfits.reportCtx);

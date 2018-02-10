@@ -125,6 +125,11 @@
     };
 
     Api.prototype.loadImage = function(identifier, arr, width, height) {
+      // document.write("loadImage"+",");
+      // document.write("width = "+width+",");
+      // document.write("height = "+height+",");
+      // document.write("arr.length = "+arr.length+",");
+      // document.write("identifier = "+identifier+",");
       this.images[identifier] = {
         arr: new Float32Array(arr),
         width: width,
@@ -166,6 +171,7 @@
     };
       
     Api.prototype.setScales = function(r, g, b) {
+      // document.write("setScales,");
       this.scales.r = r;
       this.scales.g = g;
       this.scales.b = b;
@@ -191,9 +197,11 @@
 
     // color all masked pixels blue
     Api.prototype.addMask = function(arr) {
+      // document.write("addMask,");
       var data = this.images.bpm.arr;
       var length = arr.length;
       var value;
+      // document.write("value = "+data.slice(0,50)+",");
       while (length -= 4) {
         value = data[length / 4];
           if (value % 32768 != 0) { // issue with fits.js, compression and Uint16
@@ -204,9 +212,22 @@
       }
     };
 
+    Api.prototype.median = function(arr) {
+        var total = 0, i;
+        var data = arr.slice();
+        var median = 0, numsLen = arr.length;
+        data.sort();
+        med = data[numsLen/2]
+        for (i = 0; i < arr.length; i += 1){
+          arr[i] -= med
+        }
+    };
+
     Api.prototype.drawAsinh = function(minval) {
+      // document.write("drawAsinh,");
       var arr, data, height, imgData, length, max, min, pixel, range, value, width;
       data = this.images[this.currentImage].arr;
+      this.median(data);
       width = this.images[this.currentImage].width;
       height = this.images[this.currentImage].height;
       imgData = this.ctx.getImageData(0, 0, width, height);
@@ -238,6 +259,7 @@
     };
     
     Api.prototype.teardown = function() {
+      // document.write("teardown,");
       this.el.removeChild(this.canvas);
       this.ctx = void 0;
       return this._reset();
