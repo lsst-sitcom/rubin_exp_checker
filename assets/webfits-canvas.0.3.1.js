@@ -49,7 +49,9 @@
       }
       this.offsetLeft = this.canvas.offsetLeft;
       this.offsetTop = this.canvas.offsetTop;
-      this.showMask = true;
+      //ADW: Don't show mask by default
+      //this.showMask = true;
+      this.showMask = false;
       parentStyle = this.canvas.parentElement.style;
       parentStyle.width = "" + this.canvas.width + "px";
       parentStyle.height = "" + this.canvas.height + "px";
