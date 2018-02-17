@@ -1,6 +1,12 @@
 <?php
 
 include_once("config.php.inc");
+include_once("common.nersc.php.inc");
+
+// ADW: Added to avoid the timezone errors everywhere
+if( ! ini_get('date.timezone') ) {
+    date_default_timezone_set('GMT');
+}
 
 function check_or_abort($dbh) {
     if (!$dbh) {
@@ -46,7 +52,7 @@ function getNextImage($dbh, $uid) {
     if (isset($_POST['expname']) && isset($_POST['ccd'])) {
         $sql .= ' WHERE ccd = ? AND files.expname = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(1, $_POST['ccd'], PDO::PARAM_INT);
+        $stmt->bindParam(1, $_POST['ccd'], PDO::PARAM_STR, 6);
         $stmt->bindParam(2, $_POST['expname'], PDO::PARAM_STR, 14);
         $stmt->execute();
         $res = check_or_abort($stmt);
@@ -129,8 +135,11 @@ function getUIDFromSID($dbh) {
        setcookie("sid", "", time() - 3600, "/", $config['domain']);
     $stmt->closeCursor();
     return $result;
+  }
+  else if (function_exists('getUID')){
+      return getUID();
   } else
-    return FALSE;
+      return FALSE;
 }
 
 function numberSuffix($num) {
@@ -207,4 +216,6 @@ function sendEmail($email, $subject, $message) {
     $message .= "\nhttp://" . $config['domain'];
     return mail($email,$subject,$message,$header);
 }
+
+
 ?>

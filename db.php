@@ -66,6 +66,7 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
 
 // return the next image
 $row = getNextImage($dbh, $uid);
+$row['uid'] = $uid;
 if ($row) {
     $row['name'] = "getImage.php?release=".$config['release']."&name=".$row['name'];
     // problem marks are requested

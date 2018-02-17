@@ -3,7 +3,7 @@
 CREATE TABLE files (
  fileid INTEGER PRIMARY KEY ASC,
  expname TEXT,
- ccd INT,
+ ccd TEXT,
  band TEXT,
  name TEXT
 );

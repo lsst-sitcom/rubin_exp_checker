@@ -44,6 +44,16 @@ if (isset($_GET['type'])) {
 	echo $path;
       }
    }
+   if ($config['release'] == "DC2") {
+      if ($_GET['type'] == "fov") {
+        $path = str_replace("%e", $_GET['expname'], $config['fovpath'][$config['release']]);
+	echo $path;
+	download_file($path);
+      }
+
+     if ($_GET['type'] == "dm")
+       echo "not available yet!";
+   }
    else {
      if ($_GET['type'] == "dm")
        echo "not available yet!";
