@@ -137,7 +137,8 @@ function getUIDFromSID($dbh) {
     return $result;
   }
   else if (function_exists('getUID')){
-      return getUID();
+      $uid = getUID();
+      return $uid ? $uid : FALSE;
   } else
       return FALSE;
 }

@@ -44,8 +44,8 @@ function checkSessionCookie() {
 function uid2username(uid) {
   var arr = [];
   while (uid > 0){
-      arr.push(uid % 48 + 48);
-      uid = Math.floor(uid / 48);
+      arr.push(uid % 49 + 47);
+      uid = Math.floor(uid / 49);
   }
   return String.fromCharCode.apply(null, arr).toLowerCase();
 }
