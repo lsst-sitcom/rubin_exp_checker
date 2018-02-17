@@ -82,13 +82,12 @@ function clearLastMark() {
 
 // Define callback to be executed after image is received from the server
 function getImage(f, opts) {
-  // Get image data unit
-  console.log('getImage...!');
+  // Get image data unit (ADW: The HDU numbers should be set in config)
   //var dataunit = f.getDataUnit(2);
   // var i = 0;
   var i = 1;
   var dataunit = f.getDataUnit(i);
-  console.log('image data unit: ' + i);
+  console.log('Loading image data from HDU: ' + i);
   // Set options to pass to the next callback
   opts["dataunit"] = dataunit;
   opts["f"] = f;
@@ -101,7 +100,6 @@ function createVisualization(arr, opts) {
   var dataunit = opts.dataunit;
   var width = dataunit.width;
   var height = dataunit.height;
-  console.log('createVisualization');
       
   // Get the DOM element
   var el = $('#wicked-science-visualization').get(0);
@@ -118,18 +116,17 @@ function createVisualization(arr, opts) {
   // Load array representation of image
   webfits.loadImage('exposure', arr, width, height);
   //webfits.loadImage('exposure', arr, 1000, 509);
-  console.log('arr size '+arr.length);
+
   // Set the intensity range and stretch
   if (opts.release != "Y1A1" && opts.release != "SVA1" && opts.release != "DC2")
       webfits.setRescaling(4.);	
   webfits.setExtent(-1, 1000);  // to prevent crazy values in min/max
   webfits.setStretch(stretch);
   
-  // add weight/bad-pixel map
-  // var i = 1;
+  // add weight/bad-pixel map (ADW: Again, should be set in config)
   var i = 1;
   var dataunit = opts.f.getDataUnit(i);
-  console.log('mask data unit: '+i);
+  console.log('Loading mask data from HDU: '+i);
   // Set options to pass to the next callback
   opts["dataunit"] = dataunit;
   // Asynchronously get pixels representing the image passing a callback and options
@@ -137,7 +134,6 @@ function createVisualization(arr, opts) {
 }
 
 function addMaskLayer(arr, opts) {
-  console.log('addMaskLayer');
   var dataunit = opts.dataunit;
   var width = dataunit.width;
   var height = dataunit.height;
@@ -150,7 +146,6 @@ function addMaskLayer(arr, opts) {
 // to be done once all elements of webfits are in place
 function completeVisualization(response) {
   // add marks if present in response
-  console.log('completeVisualization');
   if (response.marks !== undefined) {
     for (var i=0; i < response.marks.length; i++) {
       addMark(response.marks[i], webfits.reportCtx);
@@ -180,7 +175,6 @@ function completeVisualization(response) {
 }
 
 function setNextImage(response) {
-  console.log('setNextImage');
   if (response.error === undefined) { 
     console.log('creating astro.FITS.File');
     var f = new astro.FITS.File(response.name, getImage, response);
@@ -212,7 +206,6 @@ function userClass(uc) {
 }
 
 function showCongrats(congrats) {
-  console.log('showCongrats');
   $('#congrats_text').html(congrats.text);
   if (congrats.detail !== undefined) {
     $('#congrats_details').html(congrats.detail);
@@ -275,15 +268,11 @@ function getNextImage(image_props) {
   console.log('params',params);
   $.post('db.php', params,
     function(response) {
-      console.log('function',response);
       if (response.congrats !== undefined) {
-        console.log('about to showCongrats');
         showCongrats(response.congrats);
       }
-      console.log('about to setNextImage',response.error);
       setNextImage(response);
     }, 'json')
-    //}, 'json')
     .fail(function(jqXHR, status) {
       console.log('failure: ',status);
       console.log(jqXHR);
