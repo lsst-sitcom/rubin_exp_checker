@@ -1,10 +1,6 @@
 # Exposure Checker
 
-This project provides a web-app for crowdsourced image quality control for LSST DESC. The app loads and displays FITS images directly in the browser and works on desktop and mobile devices. Users are asked to identify features in survey images, which are recorded and tracked. The LSST implementation is based off of the [DES exposure checker](https://github.com/pmelchior/des-exp-checker). More details can be found in the associated paper in ([Astronomy & Computing](http://adsabs.harvard.edu/abs/2016A%26C....16...99M), [arXiv](http://arxiv.org/abs/1511.03391)).
-
-The live version of the LSST DESC exposure checker can be found on NERSC (password protected):
-
-https://portal-auth.nersc.gov/projecta/lsst/desc-exp-checker/
+This project provides a web-app for crowdsourced image quality control for LSST DESC. The app loads and displays FITS images directly in the browser and works on desktop and mobile devices. Users are asked to identify features in survey images, which are recorded and tracked. The LSST implementation is based off of the [DES exposure checker](https://github.com/pmelchior/des-exp-checker). More details can be found in [Melchior et al., Astron.Comput., 16, 99 (2016)](http://adsabs.harvard.edu/abs/2016A%26C....16...99M).
 
 The license is MIT. Feel free to use and modify, but please cite our paper if you do.
 
@@ -20,7 +16,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    sqlite3 users.db < sql/users.sql
    ```
 
-Move the db files into a directory that the webserver can access but that is hidden from direct access. Because of `.htaccess`, files and directories that start with a `.` are inaccessible when requested through the webserver, so you do:
+   Move the db files into a directory that the webserver can access but that is hidden from direct access. Because of `.htaccess`, files and directories that start with a `.` are inaccessible when requested through the webserver, so you do:
 
    ````bash
    mkdir .db
