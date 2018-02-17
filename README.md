@@ -1,12 +1,10 @@
 # Exposure Checker
 
-Crowdsourced image quality control. The code available here is for a web-app that asks users to identify flaws in survey images. The app loads and displays FITS image directly in the browser and works on desktop and mobile devices.
+This project provides a web-app for crowdsourced image quality control for LSST DESC. The app loads and displays FITS images directly in the browser and works on desktop and mobile devices. Users are asked to identify features in survey images, which are recorded and tracked. The LSST implementation is based off of the [DES exposure checker](https://github.com/pmelchior/des-exp-checker). More details can be found in the associated paper in ([Astronomy & Computing](http://adsabs.harvard.edu/abs/2016A%26C....16...99M), [arXiv](http://arxiv.org/abs/1511.03391)).
 
-More details can be found in the associated paper ([Astronomy & Computing](http://adsabs.harvard.edu/abs/2016A%26C....16...99M), [arXiv](http://arxiv.org/abs/1511.03391)).
+The live version of the LSST DESC exposure checker can be found on NERSC (password protected):
 
-A live demo version of the exposure checker in action can be found here:
-
-http://des-exp-checker.pmelchior.net
+https://portal-auth.nersc.gov/projecta/lsst/desc-exp-checker/
 
 The license is MIT. Feel free to use and modify, but please cite our paper if you do.
 
@@ -15,36 +13,39 @@ The license is MIT. Feel free to use and modify, but please cite our paper if yo
 The app requires a webserver (tested on apache and nginx) with PHP and SQLite support. Then:
 
 1. Clone the repository and go into the new directory.
-2. Copy `htaccess.txt` to `.htaccess` and append whatever else may be needed for your installation.
-3. Execute
+2. Create two empty database files `files.db` and `users.db`:
 
-   ```
+   ```bash
    sqlite3 files.db < sql/files.sql
    sqlite3 users.db < sql/users.sql
    ```
 
-   This step creates two empty database files `files.db` and `users.db`, move them into a directory the webserver can access but that is hidden from direct access. Because of `.htaccess`, files and directories that start with a `.` are inaccessible when requested through the webserver, so you do:
+Move the db files into a directory that the webserver can access but that is hidden from direct access. Because of `.htaccess`, files and directories that start with a `.` are inaccessible when requested through the webserver, so you do:
 
-   ````
+   ````bash
    mkdir .db
    mv files.db users.db .db/
    ````
-
-   Once there, make sure that the webserver user can read from and write to those files.
-4. Load information about the test images into the file database. As you can see from the schema in `sql/files.sql`,  each image needs to have 4 items of information:
+   
+3. Load information about the test images into the file database. As you can see from the schema in `sql/files.sql`,  each image requires 4 pieces of information:
 
    ```sql
    expname TEXT,
-   ccd INT,
+   ccd TEXT,
    band TEXT,
    name TEXT
    ```
 
    `ccd` and `band` should be obvious, `expname` is the short but unique name of the exposure, and `name` (as a bit of a misnomer) is actually the filename of the FITS file in question. No full paths are needed, you'll set them in  `$config['fitspath']` next.
 
-5. Copy `config.php.template` to `config.php.inc` and edit as needed (see below).
-6. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.template`, and `README.md`.
+4. Edit `config.php.inc` as needed (see below). If you want to start fresh, check out `config.php.template`.
+5. On a production environment: Remove `.git`, `config.php.template`, and `README.md`.
+6. Run `fix_permissions.sh` to update file permission:
 
+   ```
+   ./fix_permissions.sh
+   ```
+   
 ## Configuration
 
 ### Config.php.inc
