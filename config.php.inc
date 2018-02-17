@@ -6,8 +6,9 @@ $config = array(
     "adminemail" => "yymao.astro@gmail.com",
     "adminname" => "exposure checker",
     "domain" => "portal.nersc.gov/projecta/lsst/desc-exp-checker",
-    "userdb" => ".db/users.db",
-    "filedb" => array("DC2" => ".db/files.db"),
+    "userdb" => ".db/users.DC2-test.db",
+    "filedb" => array("DC2" => ".db/files.DC2-test.db"),
+    
     //"userdb" => "exclusive/users.db",
     //"filedb" => array("SVA1" => "exclusive/files.SVA1.db",
     //                  "Y1A1" => "exclusive/files.Y1A1.db",
