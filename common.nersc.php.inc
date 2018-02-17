@@ -8,8 +8,8 @@ function username2uid($username){
     $uid = 0;
     $mult = 1;
     foreach (str_split(strtoupper($username)) as $c) {
-        $uid += (ord($c) - 48) * $mult;
-        $mult *= 48;
+        $uid += (ord($c) - 47) * $mult;
+        $mult *= 49;
     }
     return $uid;
 }
