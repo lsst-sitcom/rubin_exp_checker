@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 $config = array(
     "adminemail" => "yymao.astro@gmail.com",
     "adminname" => "exposure checker",
-    "domain" => "portal.nersc.gov/projecta/lsst/yymao/desc-exp-checker",
+    "domain" => "portal.nersc.gov/projecta/lsst/desc-exp-checker",
     "userdb" => ".db/users.db",
     "filedb" => array("DC2" => ".db/files.db"),
     //"userdb" => "exclusive/users.db",
