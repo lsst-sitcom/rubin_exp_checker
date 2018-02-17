@@ -180,8 +180,9 @@ function completeVisualization(response) {
 }
 
 function setNextImage(response) {
+  console.log('setNextImage');
   if (response.error === undefined) { 
-    console.log('setNextImage');
+    console.log('creating astro.FITS.File');
     var f = new astro.FITS.File(response.name, getImage, response);
   }
   else {
@@ -211,6 +212,7 @@ function userClass(uc) {
 }
 
 function showCongrats(congrats) {
+  console.log('showCongrats');
   $('#congrats_text').html(congrats.text);
   if (congrats.detail !== undefined) {
     $('#congrats_details').html(congrats.detail);
@@ -243,6 +245,7 @@ function clearUI() {
 }
 
 function sendResponse(image_props) {
+  console.log('sendResponse');
   if (image_props === undefined)
     image_props = {'release': release};
   image_props['fileid'] = fileid;
@@ -258,6 +261,7 @@ function sendResponse(image_props) {
 }
 
 function getNextImage(image_props) {
+  console.log('getNextImage');
   // show spinner
   $('#loading').show();
   $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
@@ -268,13 +272,21 @@ function getNextImage(image_props) {
     for (var attr in image_props)
       params[attr] = image_props[attr];
   }
+  console.log('params',params);
   $.post('db.php', params,
     function(response) {
-      if (response.congrats !== undefined)
+      console.log('function',response);
+      if (response.congrats !== undefined) {
+        console.log('about to showCongrats');
         showCongrats(response.congrats);
+      }
+      console.log('about to setNextImage',response.error);
       setNextImage(response);
     }, 'json')
-    .fail(function() {
+    //}, 'json')
+    .fail(function(jqXHR, status) {
+      console.log('failure: ',status);
+      console.log(jqXHR);
       alert('Failure when saving response');
   });
   clearUI();

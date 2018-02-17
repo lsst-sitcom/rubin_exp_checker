@@ -6,5 +6,6 @@ deny from all
 
 # Enable Serve Side Includes
 Options +Includes
+Options +FollowSymLinks
 AddType text/html .shtml
-AddOutputFilter INCLUDES .html
+AddOutputFilter INCLUDES .html .shtml

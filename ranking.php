@@ -3,7 +3,7 @@
 include "common.php.inc";
 $dbh = getDBHandle();
 
-$query = 'SELECT username, total_files, flagged_files FROM submissions JOIN users ON (users.userid=submissions.userid) WHERE release=? AND total_files > 0 ORDER BY total_files DESC';
+$query = 'SELECT userid, total_files, flagged_files FROM submissions WHERE release=? AND total_files > 0 ORDER BY total_files DESC';
 if (isset($_GET['limit'])) {
   if (is_numeric($_GET['limit'])) {
     $query .= ' LIMIT ?';

@@ -31,6 +31,22 @@ function setRelease(release_, attach_listener) {
 }
 
 function checkSessionCookie() {
-  return ($.cookie('sid') != null);    
+  var auth = false;
+  $.newt_ajax({
+    type: "GET", 
+    url: "/login/", 
+    async: false,
+    success: res => { auth = res.auth; }
+  });
+  return auth;
+}
+
+function uid2username(uid) {
+  var arr = [];
+  while (uid > 0){
+      arr.push(uid % 48 + 48);
+      uid = Math.floor(uid / 48);
+  }
+  return String.fromCharCode.apply(null, arr).toLowerCase();
 }
 

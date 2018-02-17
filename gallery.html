@@ -84,32 +84,6 @@
       describe what you see, and click on the object in the image.
       That's all you have to do to get entry to the Hall of Fame.</p>
     </div>
-    <div class="span6">
-      <h3>Comet C/2010 R1</h3>
-      <p>This comet was spotted by <em>beckermr</em> in the r-band exposure DECam_00181220
-      of the VVDS 14hr field. Based on its coordinates in six exposures (from u to Y bands)
-      <table class="table table-striped table-condensed">
-        <thead><tr><th>Image</th><th>Date_obs [UTC]</th><th>Coordinates</th></tr></thead>
-        <tr><td>181208</td><td>2013-02-23 07:37:26</td><td><script>coords(210.039,4.234);</script></td></tr>
-        <tr><td>181214</td><td>2013-02-23 07:55:24</td><td><script>coords(210.037,4.235);</script></td></tr>
-        <tr><td>181220</td><td>2013-02-23 08:13:24</td><td><script>coords(210.034,4.236);</script></td></tr>
-        <tr><td>181226</td><td>2013-02-23 08:31:29</td><td><script>coords(210.032,4.237);</script></td></tr>
-        <tr><td>181232</td><td>2013-02-23 08:49:24</td><td><script>coords(210.029,4.238);</script></td></tr>
-        <tr><td>181238</td><td>2013-02-23 09:07:22</td><td><script>coords(210.027,4.239);</script></td></tr>
-      </table>
-      we could <a href="http://www.minorplanetcenter.net/cgi-bin/checkcmt.cgi">determine</a>
-      that it is already known under the name <a href="http://ssd.jpl.nasa.gov/sbdb.cgi?sstr=C/2010%20R1">C/2010 R1</a>.
-      At the time of observation, it was 5.98 AU away from Earth. On its hyperbolic orbit, its closest approach brings it
-      within 4.69 AU, before it will eventually leave the solar system.
-      </p>
-    </div>
-    <div class="span6">
-      <p class="img-polaroid">
-        <a href="viewer.html?release=SVA1&expname=DECam_00181220&ccd=54" title="Click to view the original image">
-          <img src="material/comet_animated.gif"/></a>
-        <small>First reported by: beckermr on 2013-10-07 17:48:40</small>
-      </p>
-    </div>
 
     <div class="span12">
     <h3>List of Awesome! objects</h3>
@@ -147,7 +121,7 @@
         var html = "<table class='table table-condensed table-striped'><thead><tr><th>Image</th><th>Description</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>";
         for (var i=0; i < response.length; i++) {
           html += "<td class='imagenamecol'><a href='viewer.html?release=" + release + "&expname=" + response[i]['expname'] + "&ccd=" + response[i]['ccd'] + "&qa_id=" + response[i]['qa_id'] + "'>" + response[i]['expname'] + ", CCD " + response[i]['ccd'] + "</a></td>";
-          html += "<td>" + response[i]['detail'] + "</td><td>" + response[i]['username'] + "</td><td class='timecol'>" + response[i]['timestamp'] + "</td></tr>";
+          html += "<td>" + response[i]['detail'] + "</td><td>" + uid2username(response[i]['userid']) + "</td><td class='timecol'>" + response[i]['timestamp'] + "</td></tr>";
         }
         html += "</tbody></table>";
         $('#awesome-table').html(html);
