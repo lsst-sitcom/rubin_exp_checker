@@ -16,7 +16,7 @@ $config = array(
     // 
     "dmpath" => array("DC2" => "https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/%r/red/%e/%e_%c.fits.fz"),
     "fitspath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/"),
-    "fovpath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/focalplane_summary/v151687-fr-focalplane-summary.png"),
+    "fovpath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/focalplane_summary/%e-focalplane-summary.png"),
 
 //https://expchecker:ySLZR2pKAZ@desar2.cosmology.illinois.edu/DESFiles/desardata/QA/se_pngs/Y1A1/%r/%e/%e_proj_TN.png"),
 
