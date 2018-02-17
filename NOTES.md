@@ -7,22 +7,29 @@ In this document we make notes for the sanity of future developers (aka ourselve
 When installing on NERSC, we opt to use NERSC's authentication system and bypass 
 all user management systems that are in this code repo. 
 
-On the backend, NERSC provides the sign-in user's username (as a server-side environment variable callled "uid"),
-so the backend (i.e. php code) can directly access this info to obtain sign-in information. 
+On the back end, NERSC provides the sign-in user's user name 
+(as a server-side environment variable called `uid`, see `getUsername` in `common.nersc.php.inc`),
+so the back end (i.e. php code) can directly access this variable to obtain sign-in information. 
 We hence do not need to track sessions (we modified `getUIDFromSID` in `common.php.inc` to make this work). 
 
-However, most of the database required an integer user ID. Hence, we map the username to user id 
-using a 1-to-1 reversible mapping (see `username2uid` in `common.nersc.php.inc`), and use the user id
-throughout the database. 
+However, most of the database required an integer user id. 
+Hence, we map the user name to an integer id using a 1-to-1 reversible mapping 
+(see `username2uid` in `common.nersc.php.inc`), and use the user id throughout the database. 
 
-Becuase of this bypassing, we are not using the `seeds`, `sessions`, and `users` tables in the users database. 
-We also do not use `login.php`, `signup.php`, and `usermanagement.php`. 
+Because of this bypassing strategy, we are not using the `seeds`, `sessions`, and `users` tables in the users database. 
+We also do not use `login.php`, `signup.php`, and `usermanagement.php` on the back end. 
 
-On the frontend, NERSC provides the [newt API](https://newt.nersc.gov/) which allows us checking sign-in information 
-using ajax. Because of this, we can get rid of our own cookie entirely. 
-When the sign-in information is needed on the frontend, instead of checking cookie, we directly check with newt
+On the front end, NERSC provides the [newt API](https://newt.nersc.gov/), 
+which allows us to obtain sign-in information using ajax. 
+Hence, we can get rid of our own cookie entirely. 
+When the sign-in information is needed on the front end, 
+instead of checking cookie, we directly check with newt
 (see `checkSessionCookie` in `assets/common.js`). 
 
-Sometimes we want to display usernames on the frontend, but since the database on teh backend only store user ids,
-we have to convert the ids back to usernames. So an inverse mapping function in javascipt can be used for this purpose 
-(`uid2username` in `assets/common.js`). 
+In many cases we want to display user names on the front end, 
+but the databases on the back end only store user ids.
+Original code uses the `users` table to obtain user names from user ids; 
+however, we are not using the `users` table anymore.
+So we let the back end just return user id, 
+and implemented an inverse mapping function on the front end to convert user ids back
+to user names (see `uid2username` in `assets/common.js`). 
