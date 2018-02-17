@@ -16,7 +16,7 @@ using a 1-to-1 reversible mapping (see `username2uid` in `common.nersc.php.inc`)
 throughout the database. 
 
 Becuase of this bypassing, we are not using the `seeds`, `sessions`, and `users` tables in the users database. 
-We also do not use 'login.php`, `signup.php`, and `usermanagement.php`. 
+We also do not use `login.php`, `signup.php`, and `usermanagement.php`. 
 
 On the frontend, NERSC provides the [newt API](https://newt.nersc.gov/) which allows us checking sign-in information 
 using ajax. Because of this, we can get rid of our own cookie entirely. 
