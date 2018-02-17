@@ -82,12 +82,10 @@ function clearLastMark() {
 
 // Define callback to be executed after image is received from the server
 function getImage(f, opts) {
-  // Get image data unit (ADW: The HDU numbers should be set in config)
-  //var dataunit = f.getDataUnit(2);
-  // var i = 0;
-  var i = 1;
-  var dataunit = f.getDataUnit(i);
-  console.log('Loading image data from HDU: ' + i);
+  // Get image data unit (ADW: Can the HDU indices be set in config?)
+  var hdu = 1;
+  console.log('Loading IMAGE data from HDU: ' + hdu);
+  var dataunit = f.getDataUnit(hdu);
   // Set options to pass to the next callback
   opts["dataunit"] = dataunit;
   opts["f"] = f;
@@ -124,9 +122,9 @@ function createVisualization(arr, opts) {
   webfits.setStretch(stretch);
   
   // add weight/bad-pixel map (ADW: Again, should be set in config)
-  var i = 1;
-  var dataunit = opts.f.getDataUnit(i);
-  console.log('Loading mask data from HDU: '+i);
+  var hdu = 2;
+  console.log('Loading MASK data from HDU: '+hdu);
+  var dataunit = opts.f.getDataUnit(hdu);
   // Set options to pass to the next callback
   opts["dataunit"] = dataunit;
   // Asynchronously get pixels representing the image passing a callback and options
