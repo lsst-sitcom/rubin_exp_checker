@@ -53,6 +53,8 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
                                 );
         if($uc == 1)
             $congrats['text'] .= "<strong>first 10 images</strong>!";
+        elseif($uc == 2)
+            $congrats['text'] .= "<strong>first 100 images</strong>!";
         else {
             $fps = $activity['alltime'] / $config['images_per_fp'];
             $congrats['text'] .= "<strong>". numberSuffix($fps). " focal plane</strong>!";

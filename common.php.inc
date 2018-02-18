@@ -151,21 +151,22 @@ function numberSuffix($num) {
     }
 }
 
+// Ugh, these should be one function...
 function userClass($total_files) {
     global $config;
-    if ($total_files / $config['images_per_fp'] >= 100000)
-      return 8;
     if ($total_files / $config['images_per_fp'] >= 10000)
-      return 7;
+      return 8;
     if ($total_files / $config['images_per_fp'] >= 1000)
-      return 6;
+      return 7;
     if ($total_files / $config['images_per_fp'] >= 100)
-      return 5;
+      return 6;
     if ($total_files / $config['images_per_fp'] >= 10)
-      return 4;
+      return 5;
     if ($total_files / $config['images_per_fp'] >= 5)
-      return 3;
+      return 4;
     if ($total_files / $config['images_per_fp'] >= 1)
+      return 3;
+    if ($total_files >= 100)
       return 2;
     if ($total_files >= 10)
       return 1;
@@ -175,14 +176,14 @@ function userClass($total_files) {
 function missingFilesForNextClass($total_files, $userclass) {
   global $config;
   switch($userclass) {
-    case 0: return 10 - $total_files; break;
-    case 1: return $config['images_per_fp'] - $total_files; break;
-    case 2: return 5*$config['images_per_fp'] - $total_files; break;
-    case 3: return 10*$config['images_per_fp'] - $total_files; break;
-    case 4: return 100*$config['images_per_fp'] - $total_files; break;
-    case 5: return 1000*$config['images_per_fp'] - $total_files; break;
-    case 6: return 10000*$config['images_per_fp'] - $total_files; break;
-    case 7: return 100000*$config['images_per_fp'] - $total_files; break;
+    case 0: return   10 - $total_files; break;
+    case 1: return  100 - $total_files; break;
+    case 2: return        $config['images_per_fp'] - $total_files; break;
+    case 3: return      5*$config['images_per_fp'] - $total_files; break;
+    case 4: return     10*$config['images_per_fp'] - $total_files; break;
+    case 5: return    100*$config['images_per_fp'] - $total_files; break;
+    case 6: return   1000*$config['images_per_fp'] - $total_files; break;
+    case 7: return  10000*$config['images_per_fp'] - $total_files; break;
     case 8: return 0; break;
   }
 }
