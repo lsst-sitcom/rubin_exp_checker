@@ -392,9 +392,9 @@ function setDECamChipLayout() {
 }
 
 function setLSSTChipLayout() {
-  var WIDTH = 530., HEIGHT = 490.;
-  var GAP = [1.25, 2.]; // Gaps between CCDs
-  var PAD = [10., 0.]; // Gaps at the edge?
+  var WIDTH = 530., HEIGHT = 530.;
+  var GAP = [1., 1.]; // Gaps between CCDs
+  var PAD = [3., 3.]; // Gaps at the edge of the FoV
   // LSST raft/sensor layout from here:
   // https://confluence.lsstcorp.org/display/LSWUG/Representation+of+a+Camera
   // Note that the FoV image is y-axis inverted compared to the above link
@@ -439,7 +439,7 @@ function setLSSTChipLayout() {
   var NROWS = ROWS.length;
   var MAXCCDS = 15; // Maximum number of CCDs in any row
   var i, j, xpad, ypad;
-  var CCD_SIZE = [(WIDTH-6*GAP[0]-2*PAD[0])/MAXCCDS, (HEIGHT-11*GAP[1]-2*PAD[1])/NROWS];
+  var CCD_SIZE = [(WIDTH-MAXCCDS*GAP[0]-2*PAD[0])/MAXCCDS, (HEIGHT-NROWS*GAP[1]-2*PAD[1])/NROWS];
   
   var html = "<style> .ccdshape { width: " + Math.round(CCD_SIZE[0]-2) + "px; height: " + Math.round(CCD_SIZE[1]-2) + "px; }</style>";
   var xmin, ymax;
