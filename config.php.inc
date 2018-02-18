@@ -1,9 +1,9 @@
 <?php
 //ADW: Let's see...
-ini_set('display_errors', 1); 
+//ini_set('display_errors', 1); 
 
 $config = array(
-    "adminemail" => "yymao.astro@gmail.com",
+    "adminemail" => "kadrlica@fnal.gov",
     "adminname" => "exposure checker",
     "domain" => "portal.nersc.gov/projecta/lsst/desc-exp-checker",
     "userdb" => ".db/users.DC2-test.db",
@@ -15,11 +15,9 @@ $config = array(
     //                  "Y2T2" => "exclusive/files.Y2T2.db",
     //                  "Y2T4" => "exclusive/files.Y2T4.db"),
     // 
-    "dmpath" => array("DC2" => "https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/%r/red/%e/%e_%c.fits.fz"),
-    "fitspath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/"),
+    "dmpath" => array("DC2" => "/global/projecta/projectdirs/lsst/groups/SSim/DC2/eyeball/full_fp_data/test_out/%e/%r/%s_%h.fits"),
+    "fitspath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/binned_sensor_halves/"),
     "fovpath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/focalplane_summary/%e-focalplane-summary.png"),
-
-//https://expchecker:ySLZR2pKAZ@desar2.cosmology.illinois.edu/DESFiles/desardata/QA/se_pngs/Y1A1/%r/%e/%e_proj_TN.png"),
 
     "releases" => array("DC2"),
     "release" => NULL, # set by client
@@ -64,6 +62,14 @@ $config = array(
       "Quilted sky" => 63,
       "Wavy sky" => 64,
       "Anti-bleed" => 65,
+
+      // Simulation
+      "Speckling" => 71,
+      "Cosmic" => 72,
+      "Star" => 73,
+      "Galaxy" => 74,
+      "Sky background" => 75,
+      "Instrument" => 76,
 
       "Other..." => 255,
       "Awesome!" => 1000,
