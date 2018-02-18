@@ -10,7 +10,7 @@ set -e
 chmod o+rx .
 chmod o+r .htaccess *.html *.shtml *.php.inc
 chmod o+rx *.php
-chmod -R o+rX assets exclusive
+chmod -R o+rX assets exclusive material
 chmod -R o+rwX .db
 
 # end subshell
