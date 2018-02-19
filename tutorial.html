@@ -37,7 +37,7 @@
       <a id="tutorial-anchor"></a>
     </div>
     <div class="span12">
-      <p>The <a href="viewer.html">Viewer</a> displays an image from a single DECam CCD for you to inspect.
+      <p>The <a href="viewer.html">Viewer</a> displays an image from half of an LSST CCD for you to inspect.
       Initally we show you two primary buttons:</p>
       <button id="fine-button" class="btn btn-success">Next</button>
       <!--#include file="problem_selector.shtml"-->
@@ -52,7 +52,7 @@
         <button class="btn btn-primary">Clear Last</button>
       </div>
       <p style="margin-top:10px">
-      With the <span style="font-weight: bold; color:#006dcc">False</span> button, you can report a non-existent problem that has been falsely flagged by DESDM,
+      With the <span style="font-weight: bold; color:#006dcc">False</span> button, you can report a non-existent problem that has been falsely flagged by DM,
       e.g. a mask that covers an area that appears totally fine.
       From the shape of the mask you can often guess which problem was mistakenly masked.
       If so, chose the appropriate category and click on this button to report it.
@@ -68,7 +68,7 @@
       <button id="info-button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Info</span><span class="caret"></span></button>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
         <li><a tabindex="-1" href="#tutorial-anchor" id="share-button">Share <u>l</u>ink</a></li>
-        <li><a tabindex="-1" href="#tutorial-anchor" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
+        <li><a tabindex="-1" href="#tutorial-anchor" id="desdm-button"><u>D</u>ownload image from NERSC</a></li>
         <li><a tabindex="-1" href="#tutorial-anchor" id="fov-button">Show entire <u>F</u>oV</a></li>
         <li><a tabindex="-1" href="#tutorial-anchor" id="reported-button">Show reported <u>p</u>roblems</a></li>
       </ul>
@@ -77,7 +77,7 @@
       <button class="btn btn-primary">Toggle <u>s</u>caling</button>
       </p>
       <p>
-        The <span style="font-weight: bold; color:#006dcc">Info</span> button opens a menu with a link to the image you are currently viewing, the path to the full resolution FITS file from DESDM, a PNG showing the entire focal plane. You can also overlay problems previously reported for this image by other users.
+        The <span style="font-weight: bold; color:#006dcc">Info</span> button opens a menu with a link to the image you are currently viewing, the path to the full resolution FITS file at NERSC, a PNG showing the entire focal plane. You can also overlay problems previously reported for this image by other users.
         The <span style="font-weight: bold; color:#006dcc">Toggle Mask</span> button allows you to turn on and off the image mask, while the <span style="font-weight: bold; color:#006dcc">Toggle Scaling</span> button lets you change the image scaling.
       </p>
       <p>
