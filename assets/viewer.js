@@ -121,12 +121,6 @@ function createVisualization(arr, opts) {
       webfits.setRescaling(4.);	
   webfits.setExtent(-1, 1000);  // to prevent crazy values in min/max
   webfits.setStretch(stretch);
-  console.log('set context');
-  //webfits.ctx.translate(0, height);
-  //webfits.ctx.scale(-1,1);
-
-  //webfits.canvas.translate(0, height);
-  //webfits.canvas.scale(1,-1);
 
   // add weight/bad-pixel map (ADW: Again, should be set in config)
   var hdu = 2;
@@ -244,7 +238,7 @@ function clearUI() {
 }
 
 function sendResponse(image_props) {
-  console.log('sendResponse');
+  //console.debug('sendResponse');
   if (image_props === undefined)
     image_props = {'release': release};
   image_props['fileid'] = fileid;
