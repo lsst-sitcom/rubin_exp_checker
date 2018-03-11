@@ -260,7 +260,7 @@ function sendResponse(image_props) {
 }
 
 function getNextImage(image_props) {
-  console.log('getNextImage');
+  //console.debug('getNextImage');
   // show spinner
   $('#loading').show();
   $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
@@ -271,7 +271,7 @@ function getNextImage(image_props) {
     for (var attr in image_props)
       params[attr] = image_props[attr];
   }
-  console.log('params',params);
+  //console.debug('params',params);
   $.post('db.php', params,
     function(response) {
       if (response.congrats !== undefined) {
