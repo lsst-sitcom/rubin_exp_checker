@@ -215,23 +215,66 @@
     };
 
     Api.prototype.median = function(arr) {
-        var total = 0, i;
+        // Subtract the median from an array in place.
+        var i = 0;
+        var len = arr.length;
         var data = arr.slice();
-        var median = 0, numsLen = arr.length;
         data.sort();
-        med = data[numsLen/2]
-        for (i = 0; i < arr.length; i += 1){
+        var med = data[len/2];
+        for (i = 0; i < len; i++){
           arr[i] -= med
-        }
+        };
+    };
+
+    Api.prototype.flipYAxis = function(arr,width,height) {
+        // Flips the y-axis of an input array in place.
+        // Loops through top half of image and switches rows.
+        // Note that 'arr' has 4 entries per value [r,g,b,alpha]
+
+        //console.log("Flipping Y-Axis...");
+        var i, j;
+        var idx1,idx2,tmp;
+
+        // Only need to loop over first half of image
+        for (i = 0; i < height/2; i++){
+            for (j = 0; j < width; j++){
+                idx1 = width*i + j;
+                idx2 = width*(height - i) + j;
+                tmp = arr[idx1];
+                arr[idx1] = arr[idx2];
+                arr[idx2] = tmp;
+            };
+        };
+    };
+
+    Api.prototype.flipCanvas = function() {
+      // This function flips the canvas y-axis orientation *after* the
+      // image data has been drawn. The drawback of this method is
+      // that the image is drawn twice.
+      // https://stackoverflow.com/a/47404427
+      console.log("Flipping canvas...");
+
+      // flip the canvas
+      this.ctx.transform(1, 0, 0, -1, 0, this.height)
+
+      // if you have transparent pixels
+      this.ctx.globalCompositeOperation = "copy"; 
+      this.ctx.drawImage(this.ctx.canvas,0,0);
+      this.ctx.globalCompositeOperation = "source-over"; // reset to default
     };
 
     Api.prototype.drawAsinh = function(minval) {
-      // document.write("drawAsinh,");
+      // This function is poorly constructed. It packages the
+      // infrastructure to draw the image to the canvas with the asinh
+      // scaling. It would be best to separate these, but currently
+      // combined for speed (avoids two loops).
+
+      // console.log("drawAsinh,");
       var arr, data, height, imgData, length, max, min, pixel, range, value, width;
       data = this.images[this.currentImage].arr;
-      this.median(data);
       width = this.images[this.currentImage].width;
       height = this.images[this.currentImage].height;
+      this.median(data);
       imgData = this.ctx.getImageData(0, 0, width, height);
       arr = imgData.data;
       if (minval === undefined)
@@ -249,12 +292,18 @@
         arr[length + 2] = value;
         arr[length + 3] = 255;
       }
+      // Add the mask to the array
       if (this.showMask && this.nImages % 2 == 0)
         this.addMask(arr);
+
+      // Flip the vertical orientation of the image
+      this.flipYAxis(arr, 4*width, height);
+
       imgData.data = arr;
-      //this.ctx.scale(1,-1);
-      //this.ctx.translate(0, height);
       this.ctx.putImageData(imgData, 0, 0);
+      // This is a post-draw flip option
+      //this.flipCanvas();
+
       return this._applyTransforms();
     };
     
