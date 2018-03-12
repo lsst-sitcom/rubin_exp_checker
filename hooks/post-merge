@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Git post-merge hook to change file permissions
+# Must be added to .git/hooks/ by hand in deployment directory
+#
+# > ln -s hooks/post-merge .git/hooks/post-merge
+
+echo "post-merge: fixing file permission"
+./fix_permission.sh
