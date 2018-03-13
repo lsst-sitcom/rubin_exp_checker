@@ -5,5 +5,6 @@
   </a>
   <ul class="dropdown-menu">
     <li><a class="release-button" id="release-button-DC2" href="#">DC2</a></li>
+    <li><a class="release-button" id="release-button-r1.1" href="#">r1.1</a></li>
   </ul>
 </li>
