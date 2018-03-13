@@ -44,7 +44,7 @@ if (isset($_GET['type'])) {
 	echo $path;
       }
    }
-   if ($config['release'] == "DC2") {
+   if ($config['release'] == "DC2" || $config['release'] == "r1.1") {
       if ($_GET['type'] == "fov") {
         $path = str_replace("%e", $_GET['expname'], $config['fovpath'][$config['release']]);
 	echo $path;
