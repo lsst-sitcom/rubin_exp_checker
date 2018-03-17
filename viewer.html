@@ -53,7 +53,8 @@
 
     <!-- BUTTONS -->
     <div style="margin-top:20px; position:relative;">
-      <button id="fine-button" class="btn btn-success send">Next</button>
+      <button id="skip-button" class="btn btn-primary skip">Skip</button>
+      <button id="fine-button" class="btn btn-success send">Submit</button>
       <!--#include file="problem_selector.shtml"-->
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
         <button class="btn btn-primary" id="negative-button" data-toggle="button">False</button>
@@ -73,7 +74,7 @@
           </ul>
         </div>
         <button class="btn btn-primary" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
-        <button class="btn btn-primary" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
+        <button class="btn btn-primary" href="#" id="scaling-button">Toggle s<u>c</u>aling</button>
       </span>
     </div>
 
@@ -284,6 +285,9 @@
   $('#message-modal').modal({"backdrop": true, "show":false, "keyboard": false});
 
   // button actions
+  $('button[class*="skip"]').on('click', function(evt) {
+    getNextImage();
+  });
   $('button[class*="send"]').on('click', function(evt) {
     sendResponse();
   });
@@ -311,6 +315,11 @@
     };
   });
   $('#fov-button').on('click', function() {
+    if ( $('#fov-modal').is(':visible') ) {
+      // if FoV image already displayed, close it
+      $('#fov-modal').modal('hide');
+      return;
+    }
     // load FoV image from DM
     $('#fov-body').find('.fov-image').remove();
     var fov_url = "getImage.php?type=fov&release="+release+"&expname="+expname;
@@ -421,7 +430,7 @@
   jwerty.key('alt+m', function() {
     $('#toggle-mask-button').trigger('click');
   });
-  jwerty.key('alt+s', function() {
+  jwerty.key('alt+c', function() {
     $('#scaling-button').trigger('click');
   });
   jwerty.key('alt+f', function() {
@@ -432,6 +441,13 @@
   });
   jwerty.key('alt+p', function() {
     $('#reported-button').trigger('click');
+  });
+  // these are currently easter eggs
+  jwerty.key('alt+s', function() {
+    $('#skip-button').trigger('click');
+  });
+  jwerty.key('alt+u', function() {
+    $('#next-button').trigger('click');
   });
 
   // Enter and Esc for special keybindings inside the problem modal
