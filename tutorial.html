@@ -38,15 +38,17 @@
     </div>
     <div class="span12">
       <p>The <a href="viewer.html">Viewer</a> displays an image from half of an LSST CCD for you to inspect.
-      Initally we show you two primary buttons:</p>
-      <button id="fine-button" class="btn btn-success">Next</button>
+      Initally three buttons are shown:</p>
+      <button id="skip-button" class="btn btn-primary skip">Skip</button>
+      <button id="fine-button" class="btn btn-success">Submit</button>
       <!--#include file="problem_selector.shtml"-->
       <p style="margin-top:10px">
-      If there are no obvious issues with the image displayed, simply press <span style="font-weight: bold; color:#46a546">Next</span>.
+      If you are quickly scanning through images without assessing them, press the <span style="font-weight: bold; color:#006dcc">Skip</span> button to move to the next image.
+      If there are no obvious issues with the image displayed, simply press <span style="font-weight: bold; color:#46a546">Submit</span> to flag the image as good.
       Otherwise, click the <span style="font-weight: bold; color:#9d261d">Problem</span> button and select one of the predefined problem categories.
-      Click on the problematic location(s) to mark the image.</p>
+      Click on the location(s) of the problematic features to mark them on the image.</p>
 
-      <p>In the course of marking problem regions, two new buttons will appear:</p>
+      <p>In the course of marking problems, two new buttons will appear:</p>
       <div id="mark-buttons">
         <button class="btn btn-primary" data-toggle="button">False</button>
         <button class="btn btn-primary">Clear Last</button>
@@ -54,11 +56,11 @@
       <p style="margin-top:10px">
       With the <span style="font-weight: bold; color:#006dcc">False</span> button, you can report a non-existent problem that has been falsely flagged by DM,
       e.g. a mask that covers an area that appears totally fine.
-      From the shape of the mask you can often guess which problem was mistakenly masked.
-      If so, chose the appropriate category and click on this button to report it.
+      Because DM interpolates over some features (cosmic rays, bleed trails, etc.) it can be extremely difficult to assess whether DM is performing properly.
+      If you do determine that a mask is struly added in error, choose the appropriate mask category click on this button to report it.
       When you click on the image, a mark will appear to indicate that you are reporting a false positive.
       After you've marked the first problem, another button <span style="font-weight: bold; color:#006dcc">Clear Last</span> will appear to let you undo your mark(s).</br>
-      Once you are done marking all problems, click <span style="font-weight: bold; color:#46a546">Next</span> to submit the problems and advance to the next image.
+      Once you are done marking all problems, click <span style="font-weight: bold; color:#46a546">Submit</span> to log the problems and advance to the next image.
       </p>
 
       <p>
@@ -97,7 +99,7 @@
     <div class="span7" >
       <a id="speckle-anchor"></a>
       <h3>Speckling</h3>
-      <p> Speckling can occur near bright objects and arises from a bug in PhoSim.
+      <p> Speckling can occur near bright objects and arises from a hardware-specific feature in PhoSim runs.
       </p>
     </div>
     <div class="span5">
@@ -301,7 +303,7 @@
     <div class="span7">
       <a id="anti-bleed-anchor"></a>
       <h3>Anti-bleed</h3>
-      <p> Anti-bleeds are dark streaks extending vertical from bright stars towards the long edges of the CCD.
+      <p> Anti-bleeds are dark streaks extending vertically from bright stars towards the long edges of the CCD.
         They have a width roughly comparable to the masked region of the star.
         They appear in the reduced images themselves and are thus not purely an artifact of the sky background subtraction.
         We don't understand the root cause of this yet...
@@ -319,17 +321,16 @@
     </div>
     <div class="span7">
       <a id="ab-jump-anchor"></a>
-      <h3>A/B jump</h3>
-      <p> The top and bottom halves of the DECam CCDs are read out by two different amplifiers.
-        The gains on these amplifiers are different leading to a different background level on the two halves of each CCD.
-        This should be corrected for in flat fielding; however, a failure can lead to a strong change in the background level at the horizontal mid-plane of the CCDs.
-        This is most pronounced with the low-light-level non-linearity of CCD 31.
+      <h3>Amp jump</h3>
+      <p>The LSST CCDs are read out by 16 different amplifiers (8 per exposure checker image).
+        The gains on these amplifiers are different leading to a different background level in different sections of each CCD.
+        Differences between amplifiers should be corrected in processing; however, a failure can lead to a strong change in the background level at the horizontal mid-plane of the CCDs.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/ab_jump.gif"><img src="material/ab_jump.gif" /></a>
-        <small>A/B bias jump characteristic of CCD 31 (factor 2 downsampled)</small>
+        <small>Amplifier bias-level jump (factor 2 downsampled)</small>
       </p>
     </div>
 
@@ -348,6 +349,7 @@
       </p>
     </div>
 
+    <!-- Not in DC2
     <div class="span7">
       <a id="tape-bump-anchor"></a>
       <h3>Tape bump</h3>
@@ -363,7 +365,7 @@
         <small>Tape bump at the bottom center, together with fringing</small>
       </p>
     </div>
-
+    -->
     <div class="span7">
       <a id="tree-rings-anchor"></a>
       <h3>Tree rings</h3>
@@ -403,11 +405,9 @@
     <div class="span7">
       <a id="bright-spray-anchor"></a>
       <h3>Bright spray</h3>
-      <p> The worst scattered light features come bright off-axis stars scattering off of the wall of the shutter.
+      <p> Light from bright off-axis stars can scatter at grazing incidence off of various surfaces in the optical train..
         This leads to broad bright sprays fanning out from the edge of the focal plane.
         These features can be most easily identified on the full focal plane images via the <button class="btn btn-small btn-primary">Info</button> button.
-        After Year 1, we applied an anti-reflective paint to the shutter wall and this issues should be corrected for Year 2 and beyond.
-        More information can be found <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=7002">here</a>.
       </p>
     </div>
     <div class="span5">
@@ -461,6 +461,7 @@
       </p>
     </div>
 
+    <!-- Not included in DC2
     <div class="span12">
       <h2>Tracks</h2>
     </div>
@@ -498,7 +499,9 @@
         <small>An airplane trail (factor 2 downsampled)</small>
       </p>
     </div>
+    -->
 
+    <!-- Not included in DC2 (or probably any simulations)
     <div class="span12">
       <h2>Instrument/Telescope</h2>
     </div>
@@ -592,6 +595,7 @@
         <small>Image with "bizarre PSF" (possibly a guider fault)</small>
       </p>
     </div>
+    -->
 
     <div class="span7">
       <a name="awesome-anchor"></a>
