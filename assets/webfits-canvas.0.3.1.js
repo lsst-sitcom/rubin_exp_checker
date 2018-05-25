@@ -200,16 +200,39 @@
 
     // color all masked pixels blue
     Api.prototype.addMask = function(arr) {
-      // document.write("addMask,");
       var data = this.images.bpm.arr;
       var length = arr.length;
-      var value;
+      var value, bitValue, color;
+
+      //https://github.com/LSSTDESC/desc-exp-checker/issues/25
+      var maskPlaneDict = [
+	  //[5, [0, 0, 255]],   // DETECTED (blue)
+	  //[6, [0, 255, 255]], // DETECTED_NEGATIVE (cyan)
+	  //[2, [0, 255, 0]],   // INTRP (green)
+	  [8, [255, 165, 0]],   // NO_DATA (orange)
+          [1, [0, 255, 0]],     // SAT (green)
+	  [4, [255, 255, 0]],   // EDGE (yellow)
+	  [3, [255, 0, 255]],   // CR (magenta)
+          [0, [255, 0, 0]],     // BAD (red)
+	  //[7, [255, 255, 0]], // SUSPECT (yellow)
+      ];
+
       while (length -= 4) {
         value = data[length / 4];
-          if (value % 32768 != 0) { // issue with fits.js, compression and Uint16
-          arr[length + 0] = 0;
-          arr[length + 1] = 0;
-          arr[length+2] = 255;
+        if (value % 32768 != 0) { // issue with fits.js, compression and Uint16
+          value = value % 32768;
+          for (var i=0; i < maskPlaneDict.length; i++) { 
+	    bitValue = 2**maskPlaneDict[i][0];
+	    color = maskPlaneDict[i][1];
+	    if ((value & bitValue) == bitValue) {
+	      arr[length + 0] = color[0];
+	      arr[length + 1] = color[1];
+	      arr[length + 2] = color[2];
+	    }
+	  }
+          //arr[length + 0] = 0;
+          //arr[length + 1] = 0;
+          //arr[length + 2] = 255;
         }
       }
     };
