@@ -22,33 +22,12 @@ setRelease();
 
 if (isset($_GET['type'])) {
    $dbh = getDBHandle();
-   // depending on release, need runname or whole other sheband for paths
-   if ($config['release'] == "SVA1" || $config['release'] == "Y1A1") {
-      $sql = 'SELECT runname FROM runs WHERE expname = ?';
-      $stmt = $dbh->prepare($sql);
-      $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
-      $stmt->execute();
-      $res = check_or_abort($stmt);
-      $row = $res->fetch(PDO::FETCH_ASSOC);
-
-      if ($_GET['type'] == "fov") {
-        $path = str_replace("%r", $row['runname'], $config['fovpath'][$config['release']]);
-        $path = str_replace("%e", $_GET['expname'], $path);
-	download_file($path);
-      }
-
-      if ($_GET['type'] == "dm") {
-      	$path = str_replace("%r", $row['runname'], $config['dmpath'][$config['release']]);
-        $path = str_replace("%e", $_GET['expname'], $path);
-	$path = str_replace("%c", sprintf("%02d", $_GET['ccd']), $path);
-	echo $path;
-      }
-   }
-   if ($config['release'] == "DC2" || $config['release'] == "r1.1") {
+   if ( True ) {
       if ($_GET['type'] == "fov") {
         $path = str_replace("%e", $_GET['expname'], $config['fovpath'][$config['release']]);
 	echo $path;
 	download_file($path);
+        //download_file("assets/fov_not_available.png");
       }
 
      if ($_GET['type'] == "dm")
