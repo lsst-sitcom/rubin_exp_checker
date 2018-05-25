@@ -8,7 +8,8 @@ $config = array(
     "domain" => "portal.nersc.gov/projecta/lsst/desc-exp-checker",
     "userdb" => ".db/users.DC2-test.db",
     "filedb" => array("DC2" => ".db/files.DC2-test.db",
-                      "r1.1" => ".db/files.r1.1-test.db"),
+                      "r1.1" => ".db/files.r1.1-test.db",
+                      "r1.2" => ".db/files.r1.2-test.db"),
     
     //"userdb" => "exclusive/users.db",
     //"filedb" => array("SVA1" => "exclusive/files.SVA1.db",
@@ -17,16 +18,21 @@ $config = array(
     //                  "Y2T4" => "exclusive/files.Y2T4.db"),
     // 
     "dmpath" => array("DC2" => "/global/projecta/projectdirs/lsst/groups/SSim/DC2/eyeball/full_fp_data/test_out/%e/%r/%s_%h.fits",
-                      "r1.1" => "./exclusive/full_fp_data/"),
+                      "r1.1" => "./exclusive/output_edge30_34/full_fp_data/",
+                      "r1.2" => "./exclusive/output_r1.2p_30/full_fp_data/"),
 
     "fitspath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/binned_sensor_halves/",
-                        "r1.1" => "./exclusive/binned_sensor_halves/"),
+                        "r1.1" => "./exclusive/output_edge30_34/binned_sensor_halves/",
+                        "r1.2" => "./exclusive/output_r1.2p_30/binned_sensor_halves/"),
 
     "fovpath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/focalplane_summary/%e-focalplane-summary.png",
-                       "r1.1" => "./exclusive/focalplane_summary/%e-focalplane-summary.png"),
+                       "r1.1" => "./exclusive/output_edge30_34/focalplane_summary/%e-focalplane-summary.png",
+                       "r1.2" => "./exclusive/output_r1.2p_30/focalplane_summary/%e-focalplane-summary.png"),
+
 
     "releases" => array("DC2",
-                        "r1.1"),
+                        "r1.1",
+                        "r1.2"),
     "release" => NULL, # set by client
     "images_per_fp" => 394,
     "problem_code" => array(
