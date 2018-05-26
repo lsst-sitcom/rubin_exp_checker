@@ -43,5 +43,9 @@ if (isset($_GET['type'])) {
 else {
         $path = $config['fitspath'][$config['release']];
         download_file($path.$_GET['name'], True);
+        // For debug, comment out previous line and uncomment following lines
+        //$response = array();
+	//$response['file'] = $path.$_GET['name'];
+	//echo json_encode($response);
 }
 ?>
