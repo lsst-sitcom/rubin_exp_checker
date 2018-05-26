@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Git post-checkout hook to change file permissions
+# Must be added to .git/hooks/ by hand in deployment directory
+#
+# > ln -s hooks/post-checkout .git/hooks/post-checkout
+
+echo "post-checkout: fixing file permission"
+./fix_permission.sh
