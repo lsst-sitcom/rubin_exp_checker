@@ -320,7 +320,7 @@ function getLeaderboard() {
         total = response[i]['total_files'];
       width_flagged = (100*response[i]['flagged_files']/total) + "%";
       width_total = (100*(response[i]['total_files']-response[i]['flagged_files'])/total) + "%";
-      html += "<tr><td># "+ counter +"</td><td><span class='namecol'>" + response[i]['username'] + "</span></td>";
+      html += "<tr><td># "+ counter +"</td><td><span class='namecol'>" + uid2username(response[i]['userid']) + "</span></td>";
       html += "<td><div class='ratingcol'><span class='ratingbar bad' style='width:" + width_flagged +"'></span>";
       html += "<span class='ratingbar good' style='left:" + width_flagged +"; width:" + width_total +"'></span></div></td>";
       html += "<td>" + response[i]['total_files'] + "</td></tr>";
