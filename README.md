@@ -35,10 +35,11 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    `ccd` and `band` should be obvious, `expname` is the short but unique name of the exposure, and `name` (as a bit of a misnomer) is actually the filename of the FITS file in question. No full paths are needed, you'll set them in  `$config['fitspath']` next.
 
 4. Edit `config.php.inc` as needed (see below). If you want to start fresh, check out `config.php.template`.
-5. On a production environment: Remove `.git`, `config.php.template`, and `README.md`.
-6. Run `fix_permissions.sh` to update file permission:
+5. Add the new release to `release_selector.shtml`.
+6. On a production environment: Remove `.git`, `config.php.template`, and `README.md`.
+7. Run `fix_permissions.sh` to update file permission:
 
-   ```
+   ```bash
    ./fix_permissions.sh
    ```
    
