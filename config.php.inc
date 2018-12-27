@@ -8,8 +8,8 @@ $config = array(
     "domain" => "portal.nersc.gov/projecta/lsst/desc-exp-checker",
     "userdb" => ".db/users.DC2-test.db",
     "filedb" => array("DC2" => ".db/files.DC2-test.db",
-                      "r1.1p" => ".db/files.r1.1-test.db",
-                      "r1.2p" => ".db/files.r1.2-test.db",
+                      "r1.1p" => ".db/files.r1.1p-test.db",
+                      "r1.2p" => ".db/files.r1.2p-test.db",
                       "r1.1i" => ".db/files.r1.1i-test.db"),
                       
     
@@ -31,8 +31,8 @@ $config = array(
                         "r1.1i" => "./exclusive/output_r1.1i/binned_sensor_halves/"),
 
     "fovpath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/focalplane_summary/%e-focalplane-summary.png",
-                       "r1.1" => "./exclusive/output_edge30_34/focalplane_summary/%e-focalplane-summary.png",
-                       "r1.2" => "./exclusive/output_r1.2p_30/focalplane_summary/%e-focalplane-summary.png",
+                       "r1.1p" => "./exclusive/output_edge30_34/focalplane_summary/%e-focalplane-summary.png",
+                       "r1.2p" => "./exclusive/output_r1.2p_30/focalplane_summary/%e-focalplane-summary.png",
                        "r1.1i" => "./exclusive/output_r1.1i/focalplane_summary/%e-focalplane-summary.png"),
 
 
