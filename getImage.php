@@ -33,12 +33,12 @@ if (isset($_GET['type'])) {
      if ($_GET['type'] == "dm")
        echo "not available yet!";
    }
-   else {
-     if ($_GET['type'] == "dm")
-       echo "not available yet!";
-     if ($_GET['type'] == "fov")
-       download_file("assets/fov_not_available.png");
-   }
+   //else {
+   //  if ($_GET['type'] == "dm")
+   //    echo "not available yet!";
+   //  if ($_GET['type'] == "fov")
+   //    download_file("assets/fov_not_available.png");
+   //}
 }
 else {
         $path = $config['fitspath'][$config['release']];
