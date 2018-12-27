@@ -16,7 +16,7 @@ if (isset($_GET['problem'])) {
         $result = array();
         while($row = $stm->fetch(PDO::FETCH_ASSOC)) {
             $row['qa_id'] = intval($row['qa_id']);
-            $row['ccd'] = intval($row['ccd']);
+            $row['ccd'] = $row['ccd'];
             $row['problem'] = intval($row['problem']);
             if ($row['problem'] != 0) { // good exposure don't have locations
                 // correct for downsampling of factor 4
