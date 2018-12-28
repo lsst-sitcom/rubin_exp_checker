@@ -13,6 +13,7 @@
               <li><a class="problem" tabindex="-1" href="#">Galaxy</a></li>
               <li><a class="problem" tabindex="-1" href="#">Sky background</a></li>
               <li><a class="problem" tabindex="-1" href="#">Instrument</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Knots</a></li>
             </ul>
           </li>
           <li class="dropdown-submenu">
