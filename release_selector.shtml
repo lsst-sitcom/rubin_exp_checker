@@ -4,10 +4,13 @@
     <b class="text-info caret"></b>
   </a>
   <ul class="dropdown-menu">
-    <li><a class="release-button" id="release-button-r1.1i" href="#">r1.1i</a></li>
-    <li><a class="release-button" id="release-button-r1.2p" href="#">r1.2p</a></li>
-    <li><a class="release-button" id="release-button-r1.1p" href="#">r1.1p</a></li>
+    <li><a class="release-button" id="release-button-r2.0i" href="#">r2.0i</a></li>
+    <li><a class="release-button" id="release-button-r2.1i" href="#">r2.1i</a></li>
     <!--
+    <li><a class="release-button" id="release-button-r1.2i" href="#">r1.2i</a></li>
+    <li><a class="release-button" id="release-button-r1.2p" href="#">r1.2p</a></li>
+    <li><a class="release-button" id="release-button-r1.1i" href="#">r1.1i</a></li>
+    <li><a class="release-button" id="release-button-r1.1p" href="#">r1.1p</a></li>
     <li><a class="release-button" id="release-button-DC2" href="#">pre-DC2</a></li>
     -->
   </ul>
