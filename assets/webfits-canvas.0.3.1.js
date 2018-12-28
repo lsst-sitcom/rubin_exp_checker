@@ -208,7 +208,7 @@
       var maskPlaneDict = [
 	  //[5, [0, 0, 255]],   // DETECTED (blue)
 	  //[6, [0, 255, 255]], // DETECTED_NEGATIVE (cyan)
-	  [2, [0, 255, 0]],   // INTRP (green)
+	  [2, [0, 255, 0]],     // INTRP (green)
 	  [8, [255, 165, 0]],   // NO_DATA (orange)
           [1, [0, 255, 0]],     // SAT (green)
 	  [4, [255, 255, 0]],   // EDGE (yellow)
