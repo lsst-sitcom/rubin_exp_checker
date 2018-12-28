@@ -93,7 +93,7 @@
       <a id="simulation-anchor"></a>
       <h2>Simulation</h2>
 
-      This section is for collecting feedback and issues on the simulation software. Issues with the instrument signature removal and masking software should be addressed below. Since we don't know exactly what we will run into yet, this section is currently pretty open ended.
+      This section is for collecting feedback and issues on the simulation software. It is currently filled with problem classes (and examples) that were detected in DECam data from DES. Since we don't know exactly what issues we will run across with LSST, this section is open ended and evolving. If you see an issue that you don't know how to classify, mark it with "Other..." and report it on the #desc-dc2-eyeball channel.
 
     </div>
     <div class="span7" >
@@ -324,13 +324,13 @@
       <h3>Amp jump</h3>
       <p>The LSST CCDs are read out by 16 different amplifiers (8 per exposure checker image).
         The gains on these amplifiers are different leading to a different background level in different sections of each CCD.
-        Differences between amplifiers should be corrected in processing; however, a failure can lead to a strong change in the background level at the horizontal mid-plane of the CCDs.
+        Differences between amplifiers should be corrected in processing; however, a failure can lead to a strong change in the background level at the amplifier boundaries.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="material/ab_jump.gif"><img src="material/ab_jump.gif" /></a>
-        <small>Amplifier bias-level jump (factor 2 downsampled)</small>
+        <a href="material/amp_jump.png"><img src="material/amp_jump.png" /></a>
+        <small>Amplifier bias-level jump</small>
       </p>
     </div>
 
