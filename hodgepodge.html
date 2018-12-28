@@ -57,7 +57,7 @@
     </div>
 
     <div class="span10">
-    <h3>What's in the bag</h3>
+    <h3>What's in the bag...</h3>
     <div id="hodgepodge-table"></div>
     </div>
 
@@ -84,6 +84,7 @@
 
     $.get('problems.php', {'output': 'html', 'release': release, 'problem':'Other...'},
       function(response) {
+        console.log(response);
         var html = "<table class='table table-condensed table-striped'><thead><tr><th>Description</th><th># of images found</th></tr></thead><tbody>";
         for (var i=0; i < response.length; i++) {
           html += "<tr><td><a href='viewer.html?problem=Other...&detail=" + encodeURIComponent(response[i].detail).replace(/'/g, "%27") + "&show_marks'>" + response[i].detail + "</a></td><td>" + response[i].count + "</td></tr>";
