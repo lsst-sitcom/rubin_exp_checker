@@ -5,7 +5,7 @@
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
-  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
   <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
 
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -41,10 +41,12 @@
     <p id="getin-buttons" style="display: none">
       <a href="viewer.html" class="btn btn-primary btn-large">Let's go</a>
     </p>
+    <!--
     <p id="login-buttons">
       <button class="btn btn-primary btn-large" id="open-login-button">Log in</button>
       <button class="btn btn-primary btn-large" id="open-signup-button">Sign up</button>
     </p>
+    -->
     </div>
     <div id="basic_stats" style="position: absolute; top: 30px; right:30px;"></div>
     </div>
@@ -212,46 +214,49 @@
         $('#leaderboard').html(html);
     }, 'json');
 
-    if (checkSessionCookie()) {
-      $('#getin-buttons').show();
-      $('#login-buttons').hide();
-    }
-    else {
-      $('#logIn').modal({"show": false });
-      $('#signUp').modal({"show": false });
-      $('#resetPW').modal({"show": false });
-      $('#login_button').on('click', logIn).button();
-      $('#signup_button').on('click', signUp).button();
-      $('#reset_button').on('click', resetPW).button();
-      $('#open-login-button').on('click', function(evt) {
-        $('#logIn').modal('show');
-        $('#username').focus();
-        evt.preventDefault();
-      });
-      $('#open-signup-button').on('click', function(evt) {
-        $('#signUp').modal('show');
-        $('#signup-name').focus();
-        evt.preventDefault();
-      });
-      $('#email-anchor').on('click', function(evt) {
-	$('#logIn').modal('hide');
-	$('#resetPW').modal('show');
-	$('#reset-email').focus();
-      });
+    $('#getin-buttons').show();
+    $('#login-buttons').hide();
 
-      $('#signup-name').on('input', function(evt) {
-        var name = $(evt.target).val();
-        if (name.length) {
-          var chunks = name.split(" ");
-          name = chunks[0][0].toLowerCase();
-          if (chunks.length > 1)
-            name += chunks[1].toLowerCase();
-          $('#signup-username').val(name);
-        } else {
-          $('#signup-username').val('');
-        }
-      });
-    }
+    //if (checkSessionCookie()) {
+    //  $('#getin-buttons').show();
+    //  $('#login-buttons').hide();
+    //}
+    //else {
+    //  $('#logIn').modal({"show": false });
+    //  $('#signUp').modal({"show": false });
+    //  $('#resetPW').modal({"show": false });
+    //  $('#login_button').on('click', logIn).button();
+    //  $('#signup_button').on('click', signUp).button();
+    //  $('#reset_button').on('click', resetPW).button();
+    //  $('#open-login-button').on('click', function(evt) {
+    //    $('#logIn').modal('show');
+    //    $('#username').focus();
+    //    evt.preventDefault();
+    //  });
+    //  $('#open-signup-button').on('click', function(evt) {
+    //    $('#signUp').modal('show');
+    //    $('#signup-name').focus();
+    //    evt.preventDefault();
+    //  });
+    //  $('#email-anchor').on('click', function(evt) {
+    //    $('#logIn').modal('hide');
+    //    $('#resetPW').modal('show');
+    //    $('#reset-email').focus();
+    //  });
+    // 
+    //  $('#signup-name').on('input', function(evt) {
+    //    var name = $(evt.target).val();
+    //    if (name.length) {
+    //      var chunks = name.split(" ");
+    //      name = chunks[0][0].toLowerCase();
+    //      if (chunks.length > 1)
+    //        name += chunks[1].toLowerCase();
+    //      $('#signup-username').val(name);
+    //    } else {
+    //      $('#signup-username').val('');
+    //    }
+    //  });
+    //}
 
     var width=200;
     d3.json("stats.php?release=" + release + "&total&today", function(error, response) {
