@@ -1,5 +1,5 @@
   <div id="foot">
     <div class="container" style="text-align:right">
-      <div class="breadcrumb muted" style="margin: 24px 0 0 0;"><a href="https://github.com/LSSTDESC/desc-exp-checker">GitHub</a> | <a href="https://lsstc.slack.com/messages/C932BQ550">Slack</a> | Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;"><a href="https://github.com/LSSTDESC/desc-exp-checker">GitHub</a> | <a href="https://lsstc.slack.com/messages/C932BQ550">Slack</a> | Created by Alex Drlica-Wagner, Peter Melchior, Erin Sheldon</div>
     </div>
   </div>
