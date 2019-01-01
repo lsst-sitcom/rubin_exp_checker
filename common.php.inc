@@ -123,19 +123,7 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
 
 function getUIDFromSID($dbh) {
   global $config;
-  if (in_array('sid',array_keys($_COOKIE))) {
-    $stmt = $dbh->prepare("SELECT uid FROM `sessions` WHERE sid = ?");
-    $stmt->bindParam(1, $_COOKIE['sid'], PDO::PARAM_STR, 40);
-    $stmt->execute();
-    $result = FALSE;
-    if ($row = $stmt->fetch(PDO::FETCH_ASSOC))
-      $result = $row['uid'];
-    else // CAVEAT: this can be used to guess SID by polling the server with a crafted cookie
-       setcookie("sid", "", time() - 3600, "/", $config['domain']);
-    $stmt->closeCursor();
-    return $result;
-  }
-  else if (function_exists('getUID')){
+  if (function_exists('getUID')){
       $uid = getUID();
       return $uid ? $uid : FALSE;
   } else
