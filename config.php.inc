@@ -8,19 +8,13 @@ $config = array(
     "domain" => "portal.nersc.gov/projecta/lsst/desc-exp-checker",
     "userdb" => ".db/users.DC2-test.db",
     "filedb" => array("DC2" => ".db/files.DC2-test.db",
-                      "r1.1p" => ".db/files.r1.1-test.db",
+                      "r1.1p" => ".db/files.r1.1p-test.db",
                       "r1.1i" => ".db/files.r1.1i-test.db",
                       "r1.2i" => ".db/files.1.2i-20180907.db",
                       "r1.2p" => ".db/files.1.2p-20180907.db",
                       "r2.0i" => ".db/files.2.0i-20181020-stretchfix.db",
                       "r2.1i" => ".db/files.2.1i-20181222.db"),
     
-    //"userdb" => "exclusive/users.db",
-    //"filedb" => array("SVA1" => "exclusive/files.SVA1.db",
-    //                  "Y1A1" => "exclusive/files.Y1A1.db",
-    //                  "Y2T2" => "exclusive/files.Y2T2.db",
-    //                  "Y2T4" => "exclusive/files.Y2T4.db"),
-    // 
     "dmpath" => array("DC2" => "/global/projecta/projectdirs/lsst/groups/SSim/DC2/eyeball/full_fp_data/test_out/%e/%r/%s_%h.fits",
                       "r1.1p" => "./exclusive/output_edge30_34/full_fp_data/",
                       "r1.1i" => "./exclusive/output_r1.1i/full_fp_data/",
@@ -51,9 +45,9 @@ $config = array(
 
     "releases" => array("DC2",
                         "r1.1p",
+                        "r1.1i",
                         "r1.2p",
                         "r1.2i",
-                        "r1.1i",
                         "r2.0i",
                         "r2.1i"),
                         
