@@ -5,15 +5,15 @@
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
-  <meta name="author" content="Peter Melchior, Erin Sheldon">
   <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <script type="text/javascript" src="assets/fits.js"></script>
+  <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
+  <script type="text/javascript" src="assets/viewer.js"></script>
+
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <script type="text/javascript" src="assets/fits.js"></script>
-  <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
-  <script type="text/javascript" src="assets/viewer.js"></script>
 </head>
 
 <body>
@@ -41,11 +41,14 @@
             <ul class="dropdown-menu">
               <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
               <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
+              <!--
               <li class="divider"></li>
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
+              -->
             </ul>
           </li>
-          <li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li>
+          <!--<li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li>          <li id="login-li"><a class="login-trigger">Log in ...</a></li>
+           -->
 	  <!--#include file="release_selector.shtml"-->
         </ul>
       </div>
@@ -54,7 +57,7 @@
     <!-- BUTTONS -->
     <div style="margin-top:20px; position:relative;">
       <button id="skip-button" class="btn btn-primary skip">Skip</button>
-      <button id="fine-button" class="btn btn-success send">Submit</button>
+      <button id="submit-button" class="btn btn-success send">Submit</button>
       <!--#include file="problem_selector.shtml"-->
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
         <button class="btn btn-primary" id="negative-button" data-toggle="button">False</button>
@@ -170,13 +173,10 @@
         <h3>Login required</h3>
       </div>
       <div class="modal-body">
-        <p>To report problems you need to log in with your exposure checker credentials.<br>
-        If you've done that, your session may be expired. If you haven't signed up yet, please do so.</p>
-        <p>Don't worry, we bring'll you back to this image afterwards.</p>
+        <!--ADW: Couldn't get the NEWT form to work: https://newt.nersc.gov/api/-->
+        <p>To submit a response you need to log in with your NERSC/NEWT credentials.</p>
       </div>
-      <div class="modal-footer">
-        <a href="index.html" class="btn btn-primary login-trigger">Login...</a>
-      </div>
+      <div class="modal-footer"></div>
     </div>
 
     <div class="modal hide" id="message-modal">
@@ -241,7 +241,7 @@
     // if user is logged in: show user dropdown
     if (checkSessionCookie()) {
       getMyData();
-      setInterval(getMyData, 600000);
+      setInterval(getMyData, 600000); // 10 minutes
       $('#login-li').hide();
       $('#mydata-li').show();
       // return to last image the user has seen before he logged in
@@ -255,11 +255,6 @@
       $('a[class*="login-trigger"]').on('click', function(evt) {
         $.cookie('lastfile', $('#share-url').val(), {expires: 1});
         window.location.href=this.attr('href');
-      });
-      // is not: show message when user clicks on the problem button
-      $('#problem-button').on('click', function(evt) {
-        $('#login-modal').modal('show');
-        evt.preventDefault();
       });
     }
 
@@ -289,7 +284,18 @@
     getNextImage();
   });
   $('button[class*="send"]').on('click', function(evt) {
-    sendResponse();
+    if (!checkSessionCookie()) {
+      $('#login-modal').modal('show');
+    }
+    else {
+      sendResponse();
+    }
+  });
+  $('#problem-button').on('click', function(evt) {
+    if (!checkSessionCookie()) {
+      $('#login-modal').modal('show');
+      evt.preventDefault();
+    }
   });
   $('#share-button').on('click', function() {
     $('#share-modal').modal('show');
@@ -447,7 +453,7 @@
     $('#skip-button').trigger('click');
   });
   jwerty.key('alt+u', function() {
-    $('#next-button').trigger('click');
+    $('#submit-button').trigger('click');
   });
 
   // Enter and Esc for special keybindings inside the problem modal
