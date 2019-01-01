@@ -5,7 +5,12 @@
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
+  <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
   <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+
+  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+  <script src="https://newt.nersc.gov/js/newt.js"></script>
+
   <script type="text/javascript" src="assets/fits.js"></script>
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
   <script type="text/javascript" src="assets/viewer.js"></script>
@@ -41,14 +46,8 @@
             <ul class="dropdown-menu">
               <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
               <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
-              <!--
-              <li class="divider"></li>
-              <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
-              -->
             </ul>
           </li>
-          <!--<li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li>          <li id="login-li"><a class="login-trigger">Log in ...</a></li>
-           -->
 	  <!--#include file="release_selector.shtml"-->
         </ul>
       </div>
@@ -136,7 +135,7 @@
     <div class="modal hide" id="congrats-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Congratulations</h3>
+        <h3>Congratulations!</h3>
       </div>
       <div class="modal-body">
         <p id="congrats_text"></p>
@@ -160,7 +159,7 @@
     <div class="modal hide" id="dm-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Location of original image from DM</h3>
+        <h3>Image location</h3>
       </div>
       <div class="modal-body">
         <textarea style="width:516px;" type="text" id="dm-url" disabled></textarea>
@@ -197,8 +196,6 @@
   </div>
   <!--#include file="footer.shtml"-->
 </body>
-<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
-<script src="https://newt.nersc.gov/js/newt.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
 <script type="text/javascript" src="assets/jwerty.js"></script>
 <script type="text/javascript" src="assets/purl.js"></script>
@@ -419,11 +416,6 @@
   $('#leaderboard-anchor').on('click', function() {
     getLeaderboard();
     $('#rank-modal').modal('show');
-  });
-  $('#logout').on('click', function() {
-    $.post('login.php',{'logout':true}, function() {
-      window.location.href="index.html";
-      });
   });
 
   // key bindings

@@ -34,10 +34,9 @@ function setRelease() {
 function getDBHandle() {
     setRelease();
     global $config;
-    $dbh = new PDO('sqlite:'. $config['userdb']);
     $filedbfile = $config['filedb'][$config['release']];
     if (file_exists($filedbfile)) {
-        $dbh->query('ATTACH DATABASE "' . $filedbfile .'" AS files');
+        $dbh = new PDO('sqlite:'. $filedbfile);
         return check_or_abort($dbh);
     }
     else
@@ -189,24 +188,27 @@ function missingFilesForNextClass($total_files, $userclass) {
 }
 
 function getActivity($dbh, $uid, $date=FALSE) {
+    //ADW: Should these queries be DISTINCT? Shouldn't checking the same image count?
     $activity = array();
     if ($date === FALSE)
         $date = date('Y-m-d H:i:s', strtotime('-1 day'));
     $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp > '".$date."%'";
     $res = check_or_abort($dbh->query($sql));
     $activity['today'] = array_pop($res->fetch(PDO::FETCH_NUM));
-    $sql = "SELECT total_files FROM submissions WHERE userid=".$uid;
+    $sql = "SELECT COUNT(DISTINCT(fileid)) as total_files FROM qa WHERE userid=".$uid;
     $res = check_or_abort($dbh->query($sql));
     $activity['alltime'] = array_pop($res->fetch(PDO::FETCH_NUM));
+    //echo json_encode($activity);
     return $activity;
 }
 
-function giveBonusPoints($dbh, $uid, $points) {
-    $stmt = $dbh->prepare("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?");
-    $stmt->bindParam(1, $points, PDO::PARAM_INT);
-    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
-    check_or_abort($stmt->execute());
-}
+//ADW: I like this idea, but we'll need re-implement without the submissions table
+//function giveBonusPoints($dbh, $uid, $points) {
+//    $stmt = $dbh->prepare("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?");
+//    $stmt->bindParam(1, $points, PDO::PARAM_INT);
+//    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
+//    check_or_abort($stmt->execute());
+//}
 
 function sendEmail($email, $subject, $message) {
     global $config;

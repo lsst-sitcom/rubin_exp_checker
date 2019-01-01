@@ -14,9 +14,9 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
             if ($problem['problem'][0] == "-") {
                 $problem['problem'] = substr($problem['problem'], 1);
                 $code = -$codes[$problem['problem']];
-            }
-            else
+            } else {
                 $code = $codes[$problem['problem']];
+            }
             $problem['x'] = (int) $problem['x'];
             $problem['y'] = (int) $problem['y'];
             if ($problem['detail'] == '')
@@ -24,22 +24,8 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
             // stores x,y, and (occasionally) a free-form comment
             $sth->execute(array($_POST['fileid'], $uid, $code, $problem['x'], $problem['y'], $problem['detail']));
         }
-        // update attached user database to reflect user action
-        $sth2 = $dbh->prepare('UPDATE submissions SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE userid = ? AND release= ?');
-        $sth2->execute(array($uid, $config['release']));
-        // check whether the user/release already existed in submissions
-        if ($sth2->rowCount() == 0) {
-            $sth2 = $dbh->prepare('INSERT INTO submissions VALUES (?, ?, 1, 1)');
-            $sth2->execute(array($uid, $config['release']));
-        }
     } else {
         $sth->execute(array($_POST['fileid'], $uid, 0, null, null, null));
-        $sth2 = $dbh->prepare('UPDATE submissions SET total_files = total_files + 1 WHERE userid = ? AND release = ?');
-        $sth2->execute(array($uid, $config['release']));
-        if ($sth2->rowCount() == 0) {
-            $sth2 = $dbh->prepare('INSERT INTO submissions VALUES (?, ?, 1, 0)');
-            $sth2->execute(array($uid, $config['release']));
-        }
     }
     $activity = getActivity($dbh, $uid);
 
