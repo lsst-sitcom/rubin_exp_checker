@@ -170,7 +170,7 @@ $(function() {
                 stayInDOM = true;
             }
         }else{}
-        $('body').prepend($("<div> </div>").load("assets/newt_header.html"));
+        $('body').prepend($("<div> </div>").load("newt_header.html"));
         $('body').css('margin-top', '0');
         $('#topAuth').hide();
 
