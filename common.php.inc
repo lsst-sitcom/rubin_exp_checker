@@ -183,20 +183,19 @@ function getActivity($dbh, $uid, $date=FALSE) {
     $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp > '".$date."%'";
     $res = check_or_abort($dbh->query($sql));
     $activity['today'] = array_pop($res->fetch(PDO::FETCH_NUM));
-    $sql = "SELECT COUNT(DISTINCT(fileid)) as total_files FROM qa WHERE userid=".$uid;
+    $sql = "SELECT total_files FROM submissions WHERE userid=".$uid;
     $res = check_or_abort($dbh->query($sql));
     $activity['alltime'] = array_pop($res->fetch(PDO::FETCH_NUM));
     //echo json_encode($activity);
     return $activity;
 }
 
-//ADW: I like this idea, but we'll need re-implement without the submissions table
-//function giveBonusPoints($dbh, $uid, $points) {
-//    $stmt = $dbh->prepare("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?");
-//    $stmt->bindParam(1, $points, PDO::PARAM_INT);
-//    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
-//    check_or_abort($stmt->execute());
-//}
+function giveBonusPoints($dbh, $uid, $points) {
+    $stmt = $dbh->prepare("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?");
+    $stmt->bindParam(1, $points, PDO::PARAM_INT);
+    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
+    check_or_abort($stmt->execute());
+}
 
 function sendEmail($email, $subject, $message) {
     global $config;
