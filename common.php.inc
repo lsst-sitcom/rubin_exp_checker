@@ -35,12 +35,10 @@ function getDBHandle() {
     setRelease();
     global $config;
     $filedbfile = $config['filedb'][$config['release']];
-    if (file_exists($filedbfile)) {
-        $dbh = new PDO('sqlite:'. $filedbfile);
-        return check_or_abort($dbh);
-    }
-    else
+    if (!is_writable($filedbfile))
         check_or_abort(FALSE);
+    $dbh = new PDO('sqlite:'. $filedbfile);
+    return check_or_abort($dbh);
 }
 
 function getNextImage($dbh, $uid) {
