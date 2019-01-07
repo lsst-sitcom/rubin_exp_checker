@@ -4,8 +4,8 @@ In this document we make notes for the sanity of future developers (aka ourselve
 
 ## Interfacing with NERSC authentication
 
-When installing on NERSC, we opt to use NERSC's authentication system and bypass 
-all user management systems that are in this code repo. 
+When installing on NERSC, we opt to use NERSC's authentication system (NEWT) and bypass 
+the older user management systems that were in this code repo. 
 
 On the back end, NERSC provides the sign-in user's user name 
 (as a server-side environment variable called `uid`, see `getUsername` in `common.nersc.php.inc`),
@@ -18,6 +18,7 @@ Hence, we map the user name to an integer id using a 1-to-1 reversible mapping
 
 Because of this bypassing strategy, we are not using the `seeds`, `sessions`, and `users` tables in the users database. 
 We also do not use `login.php`, `signup.php`, and `usermanagement.php` on the back end. 
+In subsequent versions of the code these components will be removed.
 
 On the front end, NERSC provides the [newt API](https://newt.nersc.gov/), 
 which allows us to obtain sign-in information using ajax. 
@@ -33,3 +34,14 @@ however, we are not using the `users` table anymore.
 So we let the back end just return user id, 
 and implemented an inverse mapping function on the front end to convert user ids back
 to user names (see `uid2username` in `assets/common.js`). 
+
+## Database tables
+
+The original implementation of the code used two separate database fiels:
+* `userdb` - the database schema stored both user login, seed, session information (see above) and global submission information across all releases.
+* `filedb` - this schema (one per release) stores information about the files in the release and the qa feedback from users.
+
+The changes to user management described above make the majority of the `userdb` data obsolete.
+
+The interface between the userdb.submissions table and the filedb.qa table is fragile. The information in the two tables can easily get out of sync if one or both of the tables is independently edited or replaced. As we have been moving rapidly between releases, it seems more robust to rely solely on tables in `filedb`. We have replaced the global submissions table with a **per release** submissions table stored with the file qa data. Note that this does lead to a slight change in that badges are now assigned per release, rather than globally. It is conceivable that we may again want some global submission information, but that can be considered when releases are more stable.
+

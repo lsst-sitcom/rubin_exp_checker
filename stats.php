@@ -6,7 +6,8 @@ $dbh = getDBHandle();
 $stats = array();
 // basic stats: how many files done
 if (isset($_GET['total'])) {
-    // to the degree that submission come in slower than 1/second, this is correct
+    // PM: to the degree that submission come in slower than 1/second, this is correct
+    // ADW: Why not just count all the entries?
     $stmt = $dbh->query('SELECT COUNT(DISTINCT(timestamp)) FROM qa');
     $stats['total'] = intval($stmt->fetchColumn());
 }

@@ -7,6 +7,10 @@
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
   <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  
+  <!-- For NEWT login -->
+  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+  <script src="https://newt.nersc.gov/js/newt.js"></script>
 
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -41,12 +45,9 @@
     <p id="getin-buttons" style="display: none">
       <a href="viewer.html" class="btn btn-primary btn-large">Let's go</a>
     </p>
-    <!--
     <p id="login-buttons">
       <button class="btn btn-primary btn-large" id="open-login-button">Log in</button>
-      <button class="btn btn-primary btn-large" id="open-signup-button">Sign up</button>
     </p>
-    -->
     </div>
     <div id="basic_stats" style="position: absolute; top: 30px; right:30px;"></div>
     </div>
@@ -79,115 +80,15 @@
       <div id="leaderboard"></div>
     </div>
   </div>
-
-    <!-- Login modal -->
-    <div class="modal hide" id="logIn">
-      <div class="modal-header">
-	<a class="close" data-dismiss="modal">x</a>
-	<h3>Log in</h3>
-      </div>
-      <div class="modal-body">
-	<form id="log-in-form" class="form-horizontal" style="margin-bottom: 0px;">
-	  <fieldset>
-	    <div class="control-group">
-	      <label class="control-label" for="username">Account name</label>
-	      <div class="controls">
-		<input type="text" class="input" id="username" name="username">
-	      </div>
-            </div>
-	    <div class="control-group">
-	      <label class="control-label" for="hash">Password</label>
-	      <div class="controls">
-		<input type="password" class="input" name="hash">
-	      </div>
-	    </div>
-	  </fieldset>
-	</form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
-        &nbsp;&nbsp;
-        <a id="email-anchor" title="How to get your password reset" href="#">Forgot password?</a>
-      </div>
-    </div>
-
-    <!-- Reset password modal -->
-    <div class="modal hide" id="resetPW">
-      <div class="modal-header">
-	<a class="close" data-dismiss="modal">x</a>
-	<h3>Reset password</h3>
-      </div>
-      <div class="modal-body">
-	<form id="reset-pw-form" class="form-horizontal" style="margin-bottom: 0px;">
-	  <fieldset>
-	    <div class="control-group">
-	      <label class="control-label" for="email">Email address</label>
-	      <div class="controls">
-		<input type="text" class="input" id="reset-email" name="email">
-	      </div>
-            </div>
-	  </fieldset>
-	</form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-success" id="reset_button" data-toggle="button" data-loading-text="Submitting...">Send</button>
-      </div>
-      <div class="alert alert-success hide" id="reset_message">Reset request submitted. Check you email!</div>
-    </div>
-
-    <!-- Sign up modal -->
-    <div class="modal hide" id="signUp">
-      <div class="modal-header">
-	<a class="close" data-dismiss="modal">x</a>
-	<h3>Sign up as new user</h3>
-      </div>
-      <div class="modal-body">
-	<form id="sign-up-form" class="form-horizontal" style="margin-bottom: 0px;">
-	  <fieldset>
-	    <div class="control-group">
-	      <label class="control-label" for="name">Your name</label>
-	      <div class="controls">
-		<input id="signup-name" type="text" class="input" name="name" required="required" minlength="6" placeholder="Firstname Lastname">
-              </div>
-	    </div>
-	    <div class="control-group">
-	      <label class="control-label" for="username">Your username</label>
-	      <div class="controls">
-		<input id="signup-username" type="text" class="input " name="username" required="required" placeholder="flastname">
-              </div>
-	    </div>
-	    <div class="control-group">
-	      <label class="control-label" for="email">Your email</label>
-	      <div class="controls">
-		<input id="signup-email" type="email" class="input" name="email" required="required">
-              </div>
-	    </div>
-	    <div class="control-group">
-	      <label class="control-label" for="password">Pick a password</label>
-	      <div class="controls">
-		<input id="signup-password" type="password" class="input" name="password" required="required" minlength="8">
-              </div>
-	    </div>
-	    <div class="form-actions" style="margin-bottom: 0px;">
-	      <button class="btn btn-success" id="signup_button" data-toggle="button" data-loading-text="Transmitting...">Sign up</button>
-	    </div>
-	  </fieldset>
-	</form>
-	<div class="alert alert-success hide" id="signup_message"></div>
-      </div>
-    </div>
-
-    <div id="push"></div>
+  <div id="push"></div>
   </div>
   <!--#include file="footer.shtml"-->
 </body>
+
 <script type="text/javascript" src="assets/sha1.js"></script>
-<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
-<script src="https://newt.nersc.gov/js/newt.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="assets/jwerty.js"></script>
-<script type="text/javascript" src="assets/login.js"></script>
 <script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
@@ -214,49 +115,25 @@
         $('#leaderboard').html(html);
     }, 'json');
 
-    $('#getin-buttons').show();
-    $('#login-buttons').hide();
-
-    //if (checkSessionCookie()) {
-    //  $('#getin-buttons').show();
-    //  $('#login-buttons').hide();
-    //}
-    //else {
-    //  $('#logIn').modal({"show": false });
-    //  $('#signUp').modal({"show": false });
-    //  $('#resetPW').modal({"show": false });
-    //  $('#login_button').on('click', logIn).button();
-    //  $('#signup_button').on('click', signUp).button();
-    //  $('#reset_button').on('click', resetPW).button();
-    //  $('#open-login-button').on('click', function(evt) {
-    //    $('#logIn').modal('show');
-    //    $('#username').focus();
-    //    evt.preventDefault();
-    //  });
-    //  $('#open-signup-button').on('click', function(evt) {
-    //    $('#signUp').modal('show');
-    //    $('#signup-name').focus();
-    //    evt.preventDefault();
-    //  });
-    //  $('#email-anchor').on('click', function(evt) {
-    //    $('#logIn').modal('hide');
-    //    $('#resetPW').modal('show');
-    //    $('#reset-email').focus();
-    //  });
-    // 
-    //  $('#signup-name').on('input', function(evt) {
-    //    var name = $(evt.target).val();
-    //    if (name.length) {
-    //      var chunks = name.split(" ");
-    //      name = chunks[0][0].toLowerCase();
-    //      if (chunks.length > 1)
-    //        name += chunks[1].toLowerCase();
-    //      $('#signup-username').val(name);
-    //    } else {
-    //      $('#signup-username').val('');
-    //    }
-    //  });
-    //}
+    // Same thing in both cases
+    if (checkSessionCookie()) {
+      // If the user is logged in
+      $('#getin-buttons').show();
+      $('#login-buttons').hide();
+    }
+    else {
+      $('#getin-buttons').show();
+      $('#login-buttons').hide();
+     
+      // If we eventually want to do NEWT login directly
+      //$('#logIn').modal({"show": false });
+      //$('#login_button').on('click', logIn).button();
+      //$('#open-login-button').on('click', function(evt) {
+      //  $('#logIn').modal('show');
+      //  $('#username').focus();
+      //  evt.preventDefault();
+      //});
+    };
 
     var width=200;
     d3.json("stats.php?release=" + release + "&total&today", function(error, response) {
@@ -306,11 +183,6 @@
         .text("today");
     });
   });
-
-  // connect Enter in logIn and signUp modal
-  $('#logIn').bind('keydown', jwerty.event('Enter', function () { $('#login_button').trigger('click'); }));
-  $('#signUp').bind('keydown', jwerty.event('Enter', function () { $('#signup_button').trigger('click'); }));
-
 
 </script>
 
