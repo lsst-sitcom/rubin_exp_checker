@@ -52,7 +52,7 @@ $config = array(
                         "r2.1i"),
                         
     "release" => NULL, # set by client
-    "images_per_fp" => 394,
+    "images_per_fp" => 378,
     "problem_code" => array(
       "OK" => 0,
 
