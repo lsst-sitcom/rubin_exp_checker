@@ -34,14 +34,11 @@ function setRelease() {
 function getDBHandle() {
     setRelease();
     global $config;
-    $dbh = new PDO('sqlite:'. $config['userdb']);
     $filedbfile = $config['filedb'][$config['release']];
-    if (file_exists($filedbfile)) {
-        $dbh->query('ATTACH DATABASE "' . $filedbfile .'" AS files');
-        return check_or_abort($dbh);
-    }
-    else
+    if (!is_writable($filedbfile))
         check_or_abort(FALSE);
+    $dbh = new PDO('sqlite:'. $filedbfile);
+    return check_or_abort($dbh);
 }
 
 function getNextImage($dbh, $uid) {
@@ -124,19 +121,7 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
 
 function getUIDFromSID($dbh) {
   global $config;
-  if (in_array('sid',array_keys($_COOKIE))) {
-    $stmt = $dbh->prepare("SELECT uid FROM `sessions` WHERE sid = ?");
-    $stmt->bindParam(1, $_COOKIE['sid'], PDO::PARAM_STR, 40);
-    $stmt->execute();
-    $result = FALSE;
-    if ($row = $stmt->fetch(PDO::FETCH_ASSOC))
-      $result = $row['uid'];
-    else // CAVEAT: this can be used to guess SID by polling the server with a crafted cookie
-       setcookie("sid", "", time() - 3600, "/", $config['domain']);
-    $stmt->closeCursor();
-    return $result;
-  }
-  else if (function_exists('getUID')){
+  if (function_exists('getUID')){
       $uid = getUID();
       return $uid ? $uid : FALSE;
   } else
@@ -189,6 +174,7 @@ function missingFilesForNextClass($total_files, $userclass) {
 }
 
 function getActivity($dbh, $uid, $date=FALSE) {
+    //ADW: Should these queries be DISTINCT? Shouldn't checking the same image count?
     $activity = array();
     if ($date === FALSE)
         $date = date('Y-m-d H:i:s', strtotime('-1 day'));
@@ -198,6 +184,7 @@ function getActivity($dbh, $uid, $date=FALSE) {
     $sql = "SELECT total_files FROM submissions WHERE userid=".$uid;
     $res = check_or_abort($dbh->query($sql));
     $activity['alltime'] = array_pop($res->fetch(PDO::FETCH_NUM));
+    //echo json_encode($activity);
     return $activity;
 }
 

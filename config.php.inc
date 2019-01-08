@@ -6,7 +6,7 @@ $config = array(
     "adminemail" => "kadrlica@fnal.gov",
     "adminname" => "exposure checker",
     "domain" => "portal.nersc.gov/projecta/lsst/desc-exp-checker",
-    "userdb" => ".db/users.DC2-test.db",
+    //"userdb" => ".db/users.DC2-test.db",
     "filedb" => array("DC2" => ".db/files.DC2-test.db",
                       "r1.1p" => ".db/files.r1.1p-test.db",
                       "r1.1i" => ".db/files.r1.1i-test.db",
@@ -52,7 +52,7 @@ $config = array(
                         "r2.1i"),
                         
     "release" => NULL, # set by client
-    "images_per_fp" => 394,
+    "images_per_fp" => 378,
     "problem_code" => array(
       "OK" => 0,
 

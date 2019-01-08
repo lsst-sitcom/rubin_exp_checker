@@ -2,8 +2,8 @@
 
 include "common.php.inc";
 $dbh = getDBHandle();
- 
-$query = 'SELECT userid, count(userid) as total_files, sum(problem > 0) as flagged_files FROM qa GROUP BY userid ORDER BY total_files DESC';
+
+$query = 'SELECT userid, total_files, flagged_files FROM submissions WHERE total_files > 0 ORDER BY total_files DESC';
 if (isset($_GET['limit'])) {
   if (is_numeric($_GET['limit'])) {
     $query .= ' LIMIT ?';
