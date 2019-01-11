@@ -8,9 +8,6 @@
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
   <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
 
-  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
-  <script type="text/javascript" src="assets/newt.js"></script>
-
   <script type="text/javascript" src="assets/fits.js"></script>
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
   <script type="text/javascript" src="assets/viewer.js"></script>
@@ -70,7 +67,7 @@
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
-            <li><a tabindex="-1" href="#" id="dm-button"><u>D</u>ownload original image</a></li>
+            <li><a tabindex="-1" href="#" id="dm-button"><u>D</u>ownload FITS file</a></li>
             <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
             <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
           </ul>
@@ -196,6 +193,7 @@
   </div>
   <!--#include file="footer.shtml"-->
 </body>
+<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
 <script type="text/javascript" src="assets/jwerty.js"></script>
 <script type="text/javascript" src="assets/purl.js"></script>
@@ -306,7 +304,7 @@
     };
   });
   $('#dm-button').on('click', function() {
-  $('#dm-modal').modal('show');
+    $('#dm-modal').modal('show');
     var dm_url="getImage.php?type=dm&release="+release+"&expname="+expname+"&ccd="+ccd;
     var textBox = $('#dm-url');
     textBox.load(dm_url).select();
