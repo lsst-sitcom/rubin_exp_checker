@@ -9,3 +9,4 @@ Options +Includes
 Options +FollowSymLinks
 AddType text/html .shtml
 AddOutputFilter INCLUDES .html .shtml
+AddOutputFilter INCLUDES .fits

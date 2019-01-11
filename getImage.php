@@ -18,27 +18,38 @@ function download_file($file, $revalidate = False) { // $file = include path
         exit;
 }
 include("common.php.inc");
+// A newline is leaking in somewhere
+ob_clean();
+flush();
 setRelease();
 
 if (isset($_GET['type'])) {
    $dbh = getDBHandle();
-   if ( True ) {
-      if ($_GET['type'] == "fov") {
-        $path = str_replace("%e", $_GET['expname'], $config['fovpath'][$config['release']]);
+   if ($_GET['type'] == "fov") {
+     $path = str_replace("%e", $_GET['expname'], $config['fovpath'][$config['release']]);
 	echo $path;
 	download_file($path);
-        //download_file("assets/fov_not_available.png");
-      }
-
-     if ($_GET['type'] == "dm")
-       echo "not available yet!";
+     //download_file("assets/fov_not_available.png");
    }
-   //else {
-   //  if ($_GET['type'] == "dm")
-   //    echo "not available yet!";
-   //  if ($_GET['type'] == "fov")
-   //    download_file("assets/fov_not_available.png");
-   //}
+
+   if ($_GET['type'] == "dm") {
+     $sql = 'SELECT name FROM files WHERE expname = ? and ccd = ?';
+     $stmt = $dbh->prepare($sql);
+     $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
+     $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_STR, 14);
+     $stmt->execute();
+     $res = check_or_abort($stmt);
+     $row = $res->fetch(PDO::FETCH_ASSOC);
+
+     //echo "not available yet!";
+
+     // This would use download_file
+     //$path = 'https://'.$config['domain'].'/getImage.php?release='.$config['release'].'name='.$row['name'];
+
+     // This provides the url
+     $path = 'https://'.$config['domain'].$config['fitspath'][$config['release']].$row['name'];
+     echo $path;
+   }	  
 }
 else {
         $path = $config['fitspath'][$config['release']];

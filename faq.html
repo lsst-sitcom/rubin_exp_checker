@@ -39,20 +39,25 @@
 	<a href="https://github.com/LSSTDESC/desc-exp-checker/issues">GitHub issue</a>.
       </p>
     </div>
-
+    <!--
     <div class="span12">
       <a id="login-anchor"></a>
       <h3>Why do I need to login twice?</h3>
       <p>You may have noticed that NERSC requires you to login to view the Exposure Checker site, but then you need to login again using a widget at the top of the page. This is a "feature" that resulted as NERSC prepared to move to a two-factor authentication system. We have been told that NERSC hopes to resolve this situation in a few months.
       </p>
     </div>
-
+    -->
     <div class="span12">
       <a id="login-anchor"></a>
       <h3>Why can't I submit my responses?</h3>
-      <p>Check that you are logged into the authenticated NERSC portal (i.e., "https://portal-auth.nersc.gov"). If the URL in your browser start with "https://portal.nersc.gov" instead then you are not properly authenticated and your submissions will not be recorded.
+      <p>Check that you are logged into the authenticated NERSC portal (i.e., <a href="https://portal-auth.nersc.gov">https://portal-auth.nersc.gov</a>). If the URL in your browser start with <a href="https://portal.nersc.gov">https://portal.nersc.gov</a> instead then you are not properly authenticated and your submissions will not be recorded.
       </p>
-      <p>It's also possible that you are not logged in. See the previous question about logging in twice.
+    </div>
+
+    <div class="span12">
+      <a id="mask-anchor"></a>
+      <h3>What do the mask colors mean?</h3>
+      <p>LSST DM stores information about why a pixel is masked in a "bit mask plane", and we color the mask based on the highest bit in this plane. We try to follow the DM convention for mapping colors to mask bits, which can be found <a href="https://pipelines.lsst.io/getting-started/display.html#interpreting-displayed-mask-colors">here</a>.
       </p>
     </div>
 

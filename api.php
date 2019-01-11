@@ -20,8 +20,11 @@ if (isset($_GET['problem'])) {
             $row['problem'] = intval($row['problem']);
             if ($row['problem'] != 0) { // good exposure don't have locations
                 // correct for downsampling of factor 4
-                $row['x'] = intval($row['x'])*4;
-                $row['y'] = intval($row['y'])*4;
+                //$row['x'] = intval($row['x'])*4;
+                //$row['y'] = intval($row['y'])*4;
+                // return raw pixel value
+                $row['x'] = intval($row['x']);
+                $row['y'] = intval($row['y']);
             }
             if (!isset($_GET['short'])) {
                 $row['false_positive'] = FALSE;

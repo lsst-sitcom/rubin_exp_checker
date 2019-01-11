@@ -35,7 +35,8 @@ function getDBHandle() {
     setRelease();
     global $config;
     $filedbfile = $config['filedb'][$config['release']];
-    if (!is_writable($filedbfile))
+    //if (!is_writable($filedbfile))
+    if (!file_exists($filedbfile))
         check_or_abort(FALSE);
     $dbh = new PDO('sqlite:'. $filedbfile);
     return check_or_abort($dbh);
@@ -139,15 +140,15 @@ function numberSuffix($num) {
 // Ugh, these should be one function...
 function userClass($total_files) {
     global $config;
-    if ($total_files / $config['images_per_fp'] >= 10000)
-      return 8;
     if ($total_files / $config['images_per_fp'] >= 1000)
-      return 7;
+      return 8;
     if ($total_files / $config['images_per_fp'] >= 100)
-      return 6;
+      return 7;
     if ($total_files / $config['images_per_fp'] >= 10)
-      return 5;
+      return 6;
     if ($total_files / $config['images_per_fp'] >= 5)
+      return 5;
+    if ($total_files / $config['images_per_fp'] >= 2)
       return 4;
     if ($total_files / $config['images_per_fp'] >= 1)
       return 3;
@@ -205,6 +206,5 @@ function sendEmail($email, $subject, $message) {
     $message .= "\nhttp://" . $config['domain'];
     return mail($email,$subject,$message,$header);
 }
-
 
 ?>
