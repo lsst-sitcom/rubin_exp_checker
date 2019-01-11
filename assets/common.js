@@ -30,13 +30,24 @@ function setRelease(release_, attach_listener) {
   }
 }
 
-function checkSessionCookie() {
+function checkNewtSessionCookie() {
   var auth = false;
   $.newt_ajax({
     type: "GET", 
     url: "/login/", 
     async: false,
     success: res => { auth = res.auth; }
+  });
+  return auth;
+}
+
+function checkSessionCookie() {
+  var auth = false;
+  $.ajax({
+    type: "GET", 
+    url: "auth.php",
+    async: false,
+    success: res => { auth = $.parseJSON(res)["auth"]; }
   });
   return auth;
 }
