@@ -43,9 +43,9 @@
       <button id="fine-button" class="btn btn-success">Submit</button>
       <!--#include file="problem_selector.shtml"-->
       <p style="margin-top:10px">
-      If you are quickly scanning through images without assessing them, press the <span style="font-weight: bold; color:#006dcc">Skip</span> button to move to the next image.
-      If there are no obvious issues with the image displayed, press <span style="font-weight: bold; color:#46a546">Submit</span> to flag the image as good.
-      Otherwise, click the <span style="font-weight: bold; color:#9d261d">Problem</span> button and select one of the predefined problem categories.
+      If you are quickly scanning through images without assessing them, press the <span class="text-info" style="font-weight: bold;">Skip</span> button to move to the next image.
+      If there are no obvious issues with the image displayed, press <span class="text-success" style="font-weight: bold;">Submit</span> to flag the image as good.
+      Otherwise, click the <span class="text-error" style="font-weight: bold;">Problem</span> button and select one of the predefined problem categories.
       Click on the location(s) of the problematic features to mark them on the image.</p>
 
       <p>In the course of marking problems, two new buttons will appear:</p>
@@ -54,13 +54,13 @@
         <button class="btn btn-primary">Clear Last</button>
       </div>
       <p style="margin-top:10px">
-      With the <span style="font-weight: bold; color:#006dcc">False</span> button, you can report a non-existent problem that has been falsely flagged by data management (DM),
-      e.g. a mask that covers an area that appears totally fine.
+      With the <span class="text-info" style="font-weight: bold;">False</span> button, you can report a non-existent problem that has been falsely flagged by data management (DM),
+      e.g., a mask that covers an area that appears totally fine.
       Because DM interpolates over some features (cosmic rays, bleed trails, etc.) it can be very difficult to assess whether DM is performing properly.
       If you do determine that a mask was added in error, choose the appropriate mask category click on this button to report it.
       When you click on the image, a mark will appear to indicate that you are reporting a false positive.
-      After you've marked the first problem, another button <span style="font-weight: bold; color:#006dcc">Clear Last</span> will appear to let you undo your mark(s).
-        Once you are done marking all problems, click <span style="font-weight: bold; color:#46a546">Submit</span> to log the problems and advance to the next image.
+      After you've marked the first problem, another button <span class="text-info" style="font-weight: bold;">Clear Last</span> will appear to let you undo your mark(s).
+        Once you are done marking all problems, click <span class="text-success" style="font-weight:bold;">Submit</span> to log the problems and advance to the next image.
       </p>
       <p>
         The Exposure Checker provides a means to further investigate an image using these buttons:</p>
@@ -78,19 +78,35 @@
       <button class="btn btn-primary">Toggle s<u>c</u>aling</button>
       </p>
       <p>
-        The <span style="font-weight: bold; color:#006dcc">Info</span> button opens a menu with a link to the image you are currently viewing, the path to the full resolution FITS file, and a PNG showing the entire focal plane. You can also overlay problems previously reported for this image by other users.
-        The <span style="font-weight: bold; color:#006dcc">Toggle Mask</span> button allows you to turn on and off the image mask, while the <span style="font-weight: bold; color:#006dcc">Toggle Scaling</span> button lets you change the image scaling.
+        The <span class="text-info" style="font-weight: bold;">Info</span> button opens a menu with a link to the image you are currently viewing, the path to the binned FITS file, and a PNG showing the entire focal plane field of view (FoV). You can also overlay problems previously reported for this image by other users.
+        The <span class="text-info" style="font-weight: bold;">Toggle Mask</span> button allows you to turn on and off the image mask, while the <span class="text-info" style="font-weight: bold;">Toggle Scaling</span> button lets you change the image scaling.
       </p>
+    </div>
+
+    <div class="span12">
+      <a id="checker-anchor"></a>
+      <h3>How to Check an Image</h3>
+      <p> The Exposure Checker is most useful for discovering previously unknown issues in our data. We rely on you to train your own built-in neural network (i.e., brain) to be able to classify what is normal and abnormal in our images. While there isn't an exact perscription for how you check an image, below we list a few basic steps that you might consider.
+      </p>
+      <ul>
+        <li><b>Toggle the Scaling:</b> By toggling the scaling you can examine both bright and faint features in the image. The large stretch (darker background) images are good for identifying features like cosmic rays, while the small stretch (lighter background) is better for seeing background issues.</li>
+        <li><b>Toggle the Mask:</b> The mask will display features that have already have been identified and corrected by DM. It will also allow you to identify over-agressive masking.</li>
+        <li><b>Check Previously Marked Problems:</b> Checking problems marked by other users can be useful, especially if you are new to the exposure checker. That said, every cosmologist should recognize the power of blinding...</li>
+        <li><b>Investigate the Focal Plane Image:</b> Take a look at the full focal plane FoV image. Often background mis-estimation can be more easly seen in the more heavily binned images. You can also use the FoV image to navigate to another CCD of interest, but be careful that this navigation will not submit your input for the current CCD.</li>
+        <li><b>Mark Problems:</b> Mark issues that you find in the image. If you find something that doesn't seem to fit with known problem classes, add it as <span class="text-error" style="font-weight:bold;">"Other..."</span>. Remember to click on the image after entering text to mark <span class="text-error" style="font-weight:bold;">"Other..."</span> or <span class="text-error" style="font-weight:bold;">"Awesome"</span> features. You can mark multiple problems per image, but problems are not logged until you press <span class="text-success" style="font-weight:bold;">Submit</span>.</li>
+        <li><b>Download the FITS File:</b> If you find something very strange, you can download the binned FITS file to investigate further with ds9. This is not necessary for most images; however, the header of this FITS file does provide useful metadata (i.e., telescope pointing, observing conditions, etc.)</li>
+        <li><b>Submit Your Input:</b> Don't forget to click the <span class="text-success" style="font-weight:bold;">Submit</span> button! This is the only way to log your feedback on an image. If you don't want your feedback logged, you can press <span class="text-info" style="font-weight:bold;">Skip</span> instead, but this will not add to your score.</li>
+      </ul>
       <p>
-      You now have everything you need to start looking at images.
-      If you still have questions, go the <a href="faq.html">FAQ</a> page and see if we cover it already.<br>
+      You should now have everything you need to start looking at images.
+      If you still have questions, check out the <a href="faq.html">FAQ</a> page or post a message to <a href="https://lsstc.slack.com/messages/C932BQ550">#desc-dc-eyeballs</a>.
       The remainder of this tutorial goes into more detail about several common imaging artifacts. The <b>Simulation</b> section is geared towards issues in LSST DESC simulated images, while the other sections document common problems in real DES data.
       </p>
     </div>
 
     <div class="span12">
       <a id="simulation-anchor"></a>
-      <h2>Simulation</h2>
+      <h3>Simulation</h3>
 
       This section is for collecting feedback and issues on the simulation software. It is currently filled with problem classes (and examples) that were detected in DECam data from DES. Since we don't know exactly what issues we will run across with LSST, this section is open ended and evolving. If you see an issue that you don't know how to classify, mark it with "Other..." and report it on the <a href="https://lsstc.slack.com/messages/C932BQ550">#desc-dc2-eyeball</a> channel.
 
@@ -146,7 +162,7 @@
 
     <div class="span12">
       <a id="masking-anchor"></a>
-      <h2>Masking</h2>
+      <h3>Masking</h3>
     </div>
     <div class="span7" >
       <a id="column-mask-anchor"></a>
@@ -235,7 +251,7 @@
     </div>
 
     <div class="span12">
-      <h2>Sky Estimation</h2>
+      <h3>Sky Estimation</h3>
     </div>
     <div class="span7">
       <a id="dark-rim-anchor"></a>
@@ -312,7 +328,7 @@
     </div>
 
     <div class="span12">
-      <h2>Flat Field</h2>
+      <h3>Flat Field</h3>
     </div>
     <div class="span7">
       <a id="ab-jump-anchor"></a>
@@ -395,7 +411,7 @@
     </div>
 
     <div class="span12">
-      <h2>Reflections</h2>
+      <h3>Reflections</h3>
     </div>
     <div class="span7">
       <a id="bright-spray-anchor"></a>
@@ -455,7 +471,7 @@
 
     <!-- Not included in DC2
     <div class="span12">
-      <h2>Tracks</h2>
+      <h3>Tracks</h3>
     </div>
     <div class="span7">
       <a id="satellite-anchor"></a>
@@ -495,7 +511,7 @@
 
     <!-- Not included in DC2 (or probably any simulations)
     <div class="span12">
-      <h2>Instrument/Telescope</h2>
+      <h3>Instrument/Telescope</h3>
     </div>
     <div class="span7">
       <a id="guiding-anchor"></a>
@@ -574,7 +590,7 @@
 
     <div class="span7">
       <a id="other-anchor"></a>
-      <h2>Other...</h2>
+      <h3>Other...</h3>
       <p>Sometimes none of the existing categories fit.
         In this case, you can describe the problem in your own words.
         Please do so in a way that is as comprehensible and consistent as possible. To help you do that, we remember the descriptions you've used before and show them to you.
@@ -591,7 +607,7 @@
 
     <div class="span7">
       <a id="awesome-anchor"></a>
-      <h2>Awesome!</h2>
+      <h3>Awesome!</h3>
       <p>Rarely, you'll come across a truly phenomenal sight: a comet, a dense star cluster, a group of interacting galaxies, etc. 
       Report these objects by selecting "Awesome!" from the drop-down, then describe what you see and click on the object. 
       We collect these objects in our <a href="gallery.html">Gallery</a>.</p>
@@ -607,7 +623,7 @@
     </div>
 
     <div class="span12">
-    <h2>Want to help?</h2>
+    <h3>Want to help?</h3>
     Help is always welcome! If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. The best way to contact us is through the <a href="https://lsstc.slack.com/messages/C932BQ550">#desc-dc2-eyeball</a> channel or by opening a <a href="https://github.com/LSSTDESC/desc-exp-checker/issues">GitHub issue</a>.
   </div>
   <div id="push"></div>
