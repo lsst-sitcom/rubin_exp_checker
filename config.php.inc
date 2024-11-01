@@ -21,7 +21,7 @@ $config = array(
                         "r1.2p" => "exclusive/output-1.2p-20180907/binned_sensor_halves/",
                         "r1.2i" => "exclusive/output-1.2i-20180907/binned_sensor_halves/",
                         "r2.0i" => "exclusive/output-2.0i-20181020-stretchfix/binned_sensor/",
-                        "r2.1i" => "exclusive/output-2.1i-20181222/binned_sensor/"),
+                        "r2.1i" => "exclusive/output-2.1i-20190119/binned_sensor/"),
                         
 
     "fovpath" => array("DC2" => "https://portal.nersc.gov/projecta/lsst/desc-exp-checker/exclusive/focalplane_summary/%e-focalplane-summary.png",
@@ -31,7 +31,7 @@ $config = array(
                        "r1.2p" => "exclusive/output-1.2p-20180907/focalplane_summary/%e-focalplane-summary.png",
                        "r1.2i" => "exclusive/output-1.2i-20180907/focalplane_summary/%e-focalplane-summary.png",
                        "r2.0i" => "exclusive/output-2.0i-20181020-stretchfix/focal_plane/%e.png",
-                       "r2.1i" => "exclusive/output-2.1i-20181222/focal_plane/%e.png"),
+                       "r2.1i" => "exclusive/output-2.1i-20190119/focal_plane/%e.png"),
 
 
     "releases" => array("DC2",
