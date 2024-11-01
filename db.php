@@ -8,9 +8,14 @@ $uid = getUIDFromSID($dbh);
 if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
     // parse POST data and store each element in table qa
     $sth = $dbh->prepare('INSERT INTO qa (fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?)');
+    $nprobs = 0;
     if (isset($_POST['problems'])) {
         $codes = $config['problem_code'];
         foreach ($_POST['problems'] as $problem) {
+            // Awesome! flags aren't problems
+            if ($codes[$problem['problem']] < $codes['Awesome!']) {
+                $nprobs = $nprobs + 1;
+            }
             if ($problem['problem'][0] == "-") {
                 $problem['problem'] = substr($problem['problem'], 1);
                 $code = -$codes[$problem['problem']];
@@ -24,6 +29,8 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
             // stores x,y, and (occasionally) a free-form comment
             $sth->execute(array($_POST['fileid'], $uid, $code, $problem['x'], $problem['y'], $problem['detail']));
         }
+     }       
+     if ($nprobs > 0) {
         // update attached user database to reflect user action
         $sth2 = $dbh->prepare('UPDATE submissions SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE userid = ?');
         $sth2->execute(array($uid));
