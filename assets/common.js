@@ -1,6 +1,7 @@
 var release = null;
 
 function setRelease(release_, attach_listener) {
+  console.debug("setRelease");
   if (release_ != null) {
     // check if release is still present in the list
     var found = false;
@@ -16,7 +17,7 @@ function setRelease(release_, attach_listener) {
   }
   
   if (release == null) {
-       var node = $('#release-switch').find('.release-button').last()[0];
+    var node = $('#release-switch').find('.release-button').last()[0];
     release = node.id.split("-").pop();
   }
 
@@ -30,29 +31,21 @@ function setRelease(release_, attach_listener) {
   }
 }
 
-function checkNewtSessionCookie() {
-  var auth = false;
-  $.newt_ajax({
-    type: "GET", 
-    url: "/login/", 
-    async: false,
-    success: res => { auth = res.auth; }
-  });
-  return auth;
-}
-
 function checkSessionCookie() {
+  console.debug("checkSessionCookie");
   var auth = false;
   $.ajax({
-    type: "GET", 
-    url: "auth.php",
+    type: "GET",
+    url: "/auth",
     async: false,
     success: res => { auth = $.parseJSON(res)["auth"]; }
   });
+  console.debug("authorized: " + auth);
   return auth;
 }
 
 function uid2username(uid) {
+  // This should match code in common.py
   var arr = [];
   while (uid > 0){
       arr.push(uid % 49 + 47);
