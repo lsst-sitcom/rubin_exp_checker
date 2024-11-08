@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -162,15 +162,15 @@
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %}
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   // initial setup
   $(document).ready(function(){
-    $.get('email.php', function(response) {
-      $('#email-anchor').attr('href', 'mailto:' + response);
+    $.get('contact', function(response) {
+      $('#email-anchor').attr('href', response);
     });
   });
 </script>

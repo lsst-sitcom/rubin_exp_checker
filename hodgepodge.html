@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -31,7 +31,7 @@
           <li class="active"><a href="#">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-          <!--#include file="release_selector.shtml"-->
+          {% include "release_selector.shtml" %}
         </ul>
       </div>
     </div>
@@ -62,8 +62,8 @@
     </div>
 
     <div class="span12">
-    <h3>Do you need help?</h3>
-    <p>Always. Consolidating the descriptions is not difficult, but it requires some familiarity with the
+    <h3>How to help</h3>
+    <p>Consolidating the descriptions is not difficult, but it requires some familiarity with the
     set of known problems (as we list them in our <a href="tutorial.html">Turorial</a>) and judgement to decide
     if two or more descriptions actually refer to one problem.</p>
     <p>If that sounds like a job for you, please <a href="#" id="email-anchor">contact us</a>.</p>
@@ -71,7 +71,7 @@
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %}
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
@@ -82,9 +82,9 @@
     // set up release
     setRelease($.cookie('default-release'));
 
-    $.get('problems.php', {'output': 'html', 'release': release, 'problem':'Other...'},
+    $.get('problems', {'output': 'html', 'release': release, 'problem':'Other...'},
       function(response) {
-        console.log(response);
+        console.debug(response);
         var html = "<table class='table table-condensed table-striped'><thead><tr><th>Description</th><th># of images found</th></tr></thead><tbody>";
         for (var i=0; i < response.length; i++) {
           html += "<tr><td><a href='viewer.html?problem=Other...&detail=" + encodeURIComponent(response[i].detail).replace(/'/g, "%27") + "&show_marks'>" + response[i].detail + "</a></td><td>" + response[i].count + "</td></tr>";
@@ -92,8 +92,8 @@
         html += "</table>";
       $('#hodgepodge-table').html(html);
     }, 'json');
-    $.get('email.php', function(response) {
-      $('#email-anchor').attr('href', 'mailto:' + response);
+    $.get('contact', function(response) {
+      $('#email-anchor').attr('href', response);
     });
 
   });

@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
 
   <script type="text/javascript" src="assets/fits.js"></script>
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
@@ -45,7 +45,7 @@
               <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
             </ul>
           </li>
-	  <!--#include file="release_selector.shtml"-->
+          {% include "release_selector.shtml" %}
         </ul>
       </div>
     </div>
@@ -64,7 +64,7 @@
     <div style="margin-top:20px; position:relative;">
       <button id="skip-button" class="btn btn-primary skip">Skip</button>
       <button id="submit-button" class="btn btn-success send">Submit</button>
-      <!--#include file="problem_selector.shtml"-->
+      {% include "problem_selector.shtml" %}
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
         <button class="btn btn-primary" id="negative-button" data-toggle="button">False</button>
         <button class="btn btn-primary hide" id="clear-button">Clear Last</button>
@@ -83,7 +83,7 @@
           </ul>
         </div>
         <button class="btn btn-primary" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
-        <button class="btn btn-primary" href="#" id="scaling-button">Toggle s<u>c</u>aling</button>
+        <button class="btn btn-primary" href="#" id="scaling-button">Toggle sc<u>a</u>ling</button>
       </span>
     </div>
 
@@ -179,8 +179,7 @@
         <h3>Login required</h3>
       </div>
       <div class="modal-body">
-        <!--ADW: Couldn't get the NEWT form to work: https://newt.nersc.gov/api/-->
-        <p>To submit a response you need to log in with your NERSC/NEWT credentials.</p>
+        <p>To submit a response you must login.</p>
       </div>
       <div class="modal-footer"></div>
     </div>
@@ -201,7 +200,7 @@
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %} 
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
@@ -315,7 +314,7 @@
   });
   $('#dm-button').on('click', function() {
     $('#dm-modal').modal('show');
-    var dm_url="getImage.php?type=dm&release="+release+"&expname="+expname+"&ccd="+ccd;
+    var dm_url="get_image?type=dm&release="+release+"&expname="+expname+"&ccd="+ccd;
     var textBox = $('#dm-url');
     textBox.load(dm_url).select();
     // Work around Chrome's little problem
@@ -333,7 +332,7 @@
     }
     // load FoV image from DM
     $('#fov-body').find('.fov-image').remove();
-    var fov_url = "getImage.php?type=fov&release="+release+"&expname="+expname;
+    var fov_url = "get_image?type=fov&release="+release+"&expname="+expname;
     $('<img class="fov-image" src="' + fov_url +'" border="0" />').load(function() {
       $(this).width(530).appendTo('#fov-body');
     });
@@ -352,7 +351,7 @@
     if (has_reported_problems === false) {
       $('#loading').show();
       setTimeout(function() { // add a little timeout to give feedback to user
-      $.get('problems.php', {'fileid': fileid , 'release': release}, function(response) {
+      $.get('problems', {'fileid': fileid , 'release': release}, function(response) {
           if (response) {
             for (var i=0; i < response.length; i++) {
               addMark(response[i], webfits.reportCtx);
@@ -436,7 +435,7 @@
   jwerty.key('alt+m', function() {
     $('#toggle-mask-button').trigger('click');
   });
-  jwerty.key('alt+c', function() {
+  jwerty.key('alt+a', function() {
     $('#scaling-button').trigger('click');
   });
   jwerty.key('alt+f', function() {
@@ -450,6 +449,9 @@
   });
   // these are currently easter eggs
   jwerty.key('alt+s', function() {
+    $('#skip-button').trigger('click');
+  });
+  jwerty.key('→', function() {
     $('#skip-button').trigger('click');
   });
   jwerty.key('alt+u', function() {

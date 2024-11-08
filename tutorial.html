@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -41,7 +41,7 @@
       Initally three buttons are shown:</p>
       <button id="skip-button" class="btn btn-primary skip">Skip</button>
       <button id="fine-button" class="btn btn-success">Submit</button>
-      <!--#include file="problem_selector.shtml"-->
+      {% include "problem_selector.shtml" %}
       <p style="margin-top:10px">
       If you are quickly scanning through images without assessing them, press the <span class="text-info" style="font-weight: bold;">Skip</span> button to move to the next image.
       If there are no obvious issues with the image displayed, press <span class="text-success" style="font-weight: bold;">Submit</span> to flag the image as good.
@@ -624,11 +624,11 @@
 
     <div class="span12">
     <h3>Want to help?</h3>
-    Help is always welcome! If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. The best way to contact us is through the <a href="https://lsstc.slack.com/messages/C932BQ550">#desc-dc2-eyeball</a> channel or by opening a <a href="https://github.com/LSSTDESC/desc-exp-checker/issues">GitHub issue</a>.
+    Help is always welcome! If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. The best way to contact us is through the <a href="https://rubin-obs.slack.com/archives/C07Q45NN0CX">#sciunit-image-inspection</a> channel or by opening a <a href="https://github.com/lsst-sitcom/rubin_exp_checker">GitHub issue</a>.
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %}
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>

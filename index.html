@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -30,14 +30,14 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-	  <!--#include file="release_selector.shtml"-->
+	  {% include "release_selector.shtml" %}
         </ul>
       </div>
     </div>
     <div class="hero-unit" id="hero">
     <div style="width: 700px">
-    <h1>Exposure checker</h1>
-    <p>Look at simulated LSST images. Discover flaws we would otherwise have missed.<br>Make our simulations and data processing better!</p>
+    <h1>Exposure Checker</h1>
+    <p>Look at images. Learn about the data. Flag issues.<br>Make our data  better!</p>
     <p id="getin-buttons" style="display: none">
       <a href="viewer.html" class="btn btn-primary btn-large">Let's go</a>
     </p>
@@ -76,7 +76,7 @@
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %} 
 </body>
 
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
@@ -91,7 +91,7 @@
     // set up release
     setRelease($.cookie('default-release'));
 
-    $.get('ranking.php', {'release': release, 'limit': 15, },
+    $.get('ranking', {'release': release, 'limit': 15, },
       function(response) {
         var html = "<table class='table table-condensed table-striped'>";
         var total = null, counter = 1, width_flagged, width_total;
@@ -122,7 +122,7 @@
     };
 
     var width=200;
-    d3.json("stats.php?release=" + release + "&total&today", function(error, response) {
+    d3.json("stats?release=" + release + "&total&today", function(error, response) {
       // checked chart: simply show the numbers as text
       var svg = d3.select("#basic_stats").append("svg")
         .attr("width", width)

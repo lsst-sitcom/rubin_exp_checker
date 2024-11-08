@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -34,7 +34,7 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-	  <!--#include file="release_selector.shtml"-->
+          {% include "release_selector.shtml" %}
         </ul>
       </div>
     </div>
@@ -42,10 +42,10 @@
     <!-- content area -->
     <div class="span12">
       <h1>Problem heat maps</h1>
-      <p>The heat map show the density of problem reports aggregated over all chips. The cells cover 128 DECam pixels and the color scale goes from 0 to 20 counts per cell.
+      <p>The heat map show the density of problem reports aggregated over all chips. The cells cover 128 detector pixels and the color scale goes from 0 to 20 counts per cell.
       Select the problem class below to display the heat map.
       <span class="muted"> (Hint: Start with the <a href="#" class="problem">A/B jump</a> or the <a href="#" class="problem">Tape bump</a>.)</span></p>
-      <!--#include file="problem_selector.shtml"-->
+      {% include "problem_selector.shtml" %}
       <span id="problem_description"></span>
     </div>
     <div id="loading" class="hide" style="position:relative; left:512px; top:400px; z-index:1000; width:48px;"></div>
@@ -53,7 +53,7 @@
    </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %}
 </body>
 
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
@@ -117,7 +117,7 @@ $(document).ready(function () {
   function showHeatMap(problem) {
     $('.hexagon').remove();
     $('#loading').show();
-    d3.json('api.php?release=' + release + '&problem=' + encodeURI(problem) + '&short', function(error, response) {
+    d3.json('api?release=' + release + '&problem=' + encodeURI(problem) + '&short', function(error, response) {
       $('#problem_description').html(problem + " (" + response.length + " reports)");
       var points = [];
       for (var i=0; i < response.length; i++) {
