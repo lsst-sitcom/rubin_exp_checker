@@ -1,12 +1,9 @@
 <?php
-//ADW: Let's see...
-//ini_set('display_errors', 1); 
 
 $config = array(
-    "adminemail" => "kadrlica@fnal.gov",
-    "adminname" => "exposure checker",
-    "domain" => "portal-auth.nersc.gov/projecta/lsst/desc-exp-checker/",
-    //"userdb" => ".db/users.DC2-test.db",
+    "adminemail" => "...<admin@email.com>...",
+    "adminname" => "...<Admin Name>...",
+    "domain" => "...<domain>...",
     "filedb" => array("DC2" => ".db/files.DC2-test.db",
                       "r1.1p" => ".db/files.r1.1p-test.db",
                       "r1.1i" => ".db/files.r1.1i-test.db",
