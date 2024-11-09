@@ -34,26 +34,20 @@
     <!-- content area -->
     <div class="span12">
       <h1>FAQ</h1>
-      <p>This FAQ collects answers to a few commonly occuring questions. More support can be found on the <a href="https://lsstc.slack.com/messages/C932BQ550">#desc-dc2-eyeball</a> channel.
+      <p>This FAQ collects answers to a few commonly occuring questions. 
+        More support can be found on the <a href="{{ slack_link }}">{{ slack_channel }}</a> channel.
         For technical requests (bug reports or improvements), open a
-	<a href="https://github.com/LSSTDESC/desc-exp-checker/issues">GitHub issue</a>.
+	<a href="{{ repo }}/issues">GitHub issue</a>.
       </p>
     </div>
     <!--
-    <div class="span12">
-      <a id="login-anchor"></a>
-      <h3>Why do I need to login twice?</h3>
-      <p>You may have noticed that NERSC requires you to login to view the Exposure Checker site, but then you need to login again using a widget at the top of the page. This is a "feature" that resulted as NERSC prepared to move to a two-factor authentication system. We have been told that NERSC hopes to resolve this situation in a few months.
-      </p>
-    </div>
-    -->
     <div class="span12">
       <a id="login-anchor"></a>
       <h3>Why can't I submit my responses?</h3>
       <p>Check that you are logged into the authenticated NERSC portal (i.e., <a href="https://portal-auth.nersc.gov">https://portal-auth.nersc.gov</a>). If the URL in your browser start with <a href="https://portal.nersc.gov">https://portal.nersc.gov</a> instead then you are not properly authenticated and your submissions will not be recorded.
       </p>
     </div>
-
+    -->
     <div class="span12">
       <a id="mask-anchor"></a>
       <h3>What do the mask colors mean?</h3>
@@ -102,11 +96,11 @@
       <p>Any underlined letter on a button, for example
       <p>
         <button class="btn btn-primary btn-small">Toggle <u>m</u>ask</button>
-        <button class="btn btn-primary btn-small">Toggle s<u>c</u>aling</button>
+        <button class="btn btn-primary btn-small">Toggle <u>s</u>caling</button>
       </p>
       <p>indicates that you can use a keyboard shortcut, namely <strong>Alt+m</strong>
       or <strong>Alt+s</strong> in these two cases.
-      <span class="muted">Hint for Mac users: Alt = Opt</span>
+      <span class="muted">Hint for Mac users: Alt = Option</span>
       </p>
     </div>
 

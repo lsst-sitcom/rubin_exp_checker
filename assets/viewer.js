@@ -269,7 +269,7 @@ function getNextImage(image_props) {
   }
   console.debug('  params:', JSON.stringify(params));
   $.ajax({
-    url: 'db',
+    url: 'submit',
     type: 'POST',
     data: JSON.stringify(params),
     contentType: "application/json; charset=utf-8",

@@ -1,9 +1,9 @@
   <div id="foot">
     <div class="container" style="text-align:right">
       <div class="breadcrumb muted" style="margin: 24px 0 0 0;">
-        <a href="https://github.com/lsst-sitcom/rubin_exp_checker/">GitHub</a> | 
-        <a href="https://rubin-obs.slack.com/archives/C07Q45NN0CX">Slack</a> |
-        Created by Alex Drlica-Wagner, Peter Melchior, Erin Sheldon
+        <a href="{{ repo }}">GitHub</a> | 
+        <a href="{{ slack_link }}">Slack</a> |
+        Developed by Alex Drlica-Wagner, Peter Melchior, Erin Sheldon
       </div>
     </div>
   </div>

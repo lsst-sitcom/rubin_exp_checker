@@ -36,7 +36,7 @@ function checkSessionCookie() {
   var auth = false;
   $.ajax({
     type: "GET",
-    url: "/auth",
+    url: "auth",
     async: false,
     success: res => { auth = $.parseJSON(res)["auth"]; }
   });
