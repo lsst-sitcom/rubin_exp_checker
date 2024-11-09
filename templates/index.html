@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -30,14 +30,14 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-	  <!--#include file="release_selector.shtml"-->
+	  {% include "release_selector.shtml" %}
         </ul>
       </div>
     </div>
     <div class="hero-unit" id="hero">
     <div style="width: 700px">
-    <h1>Exposure checker</h1>
-    <p>Look at simulated LSST images. Discover flaws we would otherwise have missed.<br>Make our simulations and data processing better!</p>
+    <h1>Exposure Checker</h1>
+    <p>Look at images. Learn about the data. Flag issues.<br>Make our data  better!</p>
     <p id="getin-buttons" style="display: none">
       <a href="viewer.html" class="btn btn-primary btn-large">Let's go</a>
     </p>
@@ -66,8 +66,8 @@
       detailed analyses will become available once we have gathered enough submissions, but you can go to our
       <a href="api.html">API page</a> and download the anonymized submissions right now.</p>
       <h4>How can I give feedback?</h4>
-      <p>The code is on <a href="https://github.com/LSSTDESC/desc-exp-checker">github</a>. Please feel free to open a new <a href="https://github.com/LSSTDESC/desc-exp-checker/issues">Issue</a> to let us know what we could fix, add, improve, etc.</p>
-      <p>If you find particular failure cases and you think they may constitute a new class of artifacts, please feel free to bring them up in the Slack channel <a href="https://lsstc.slack.com/messages/C932BQ550">#desc-dc2-eyeballs</a>.</p>
+      <p>The code is on <a href="{{ repo }}">GitHub</a>. Please feel free to open a new <a href="{{ repo }}/issues">Issue</a> to let us know what we could fix, add, improve, etc.</p>
+      <p>If you find particular failure cases and you think they may constitute a new class of artifacts, please feel free to bring them up in the Slack channel <a href="{{ slack_link }}">{{ slack_channel }}</a>.</p>
     </div>
     <div class="span4" style="float: right">
       <h4>Top contributors for <span class="release_name"></span></h4>
@@ -76,7 +76,7 @@
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %} 
 </body>
 
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
@@ -91,7 +91,7 @@
     // set up release
     setRelease($.cookie('default-release'));
 
-    $.get('ranking.php', {'release': release, 'limit': 15, },
+    $.get('ranking', {'release': release, 'limit': 15, },
       function(response) {
         var html = "<table class='table table-condensed table-striped'>";
         var total = null, counter = 1, width_flagged, width_total;
@@ -122,7 +122,7 @@
     };
 
     var width=200;
-    d3.json("stats.php?release=" + release + "&total&today", function(error, response) {
+    d3.json("stats?release=" + release + "&total&today", function(error, response) {
       // checked chart: simply show the numbers as text
       var svg = d3.select("#basic_stats").append("svg")
         .attr("width", width)

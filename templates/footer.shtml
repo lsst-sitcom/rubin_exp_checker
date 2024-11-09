@@ -1,0 +1,9 @@
+  <div id="foot">
+    <div class="container" style="text-align:right">
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">
+        <a href="{{ repo }}">GitHub</a> | 
+        <a href="{{ slack_link }}">Slack</a> |
+        Developed by Alex Drlica-Wagner, Peter Melchior, Erin Sheldon
+      </div>
+    </div>
+  </div>

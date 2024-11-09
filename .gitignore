@@ -1,2 +1,8 @@
 .db/
 exclusive/
+bin/
+bck/
+
+php/config.php.inc
+config.py
+setup.sh

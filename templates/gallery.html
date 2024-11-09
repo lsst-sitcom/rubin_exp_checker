@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -67,7 +67,7 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-          <!--#include file="release_selector.shtml"-->
+          {% include "release_selector.shtml" %}
         </ul>
       </div>
     </div>
@@ -79,13 +79,13 @@
       silly to pass up on the opportunity to share a nice star cluster, an
       asteroid, or a group of interacting galaxies.
       Here we highlight the awesome objects found by our users. To report them,
-      use the <button class="btn">Awesome!</button> selector in the viewer,
+      use the <button class="btn">Awesome!</button> selector in the Viewer,
       describe what you see, and click on the object in the image.
       That's all you have to do to get an entry in the Gallery.</p>
     </div>
 
     <div class="span12">
-    <h3>List of Awesome! objects</h3>
+    <h3>List of "Awesome!" objects</h3>
     <div id="awesome-table"></div>
     </div>
 
@@ -104,7 +104,7 @@
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %}
 </body>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
 <script type="text/javascript" src="assets/common.js"></script>
@@ -114,7 +114,7 @@
     // set up release
     setRelease($.cookie('default-release'));
 
-    $.get('gallery.php', {'release': release},
+    $.get('gallery', {'release': release},
       function(response) {
         var html = "<table class='table table-condensed table-striped'><thead><tr><th>Image</th><th>Description</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>";
         for (var i=0; i < response.length; i++) {
@@ -124,8 +124,8 @@
         html += "</tbody></table>";
         $('#awesome-table').html(html);
     }, 'json');
-    $.get('email.php', function(response) {
-      $('#email-anchor').attr('href', 'mailto:' + response);
+    $.get('contact', function(response) {
+      $('#email-anchor').attr('href', response);
     });
 
   });

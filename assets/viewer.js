@@ -82,6 +82,7 @@ function clearLastMark() {
 
 // Define callback to be executed after image is received from the server
 function getImage(f, opts) {
+  console.debug('viewer.getImage');
   // Get image data unit (ADW: Can the HDU indices be set in config?)
   var hdu = 1;
   console.log('Loading IMAGE data from HDU: ' + hdu);
@@ -174,7 +175,8 @@ function completeVisualization(response) {
 }
 
 function setNextImage(response) {
-  if (response.error === undefined) { 
+  console.log('viewer.setNextImage');
+  if (response.error === undefined) {
     console.log('creating astro.FITS.File: '+response.name);
     var f = new astro.FITS.File(response.name, getImage, response);
   }
@@ -190,7 +192,7 @@ function setNextImage(response) {
 function userClass(uc) {
   // frequent users: color badge acording to # of focal planes done
   // http://getbootstrap.com/2.3.2/components.html#labels-badges
-  // See common.php.inc for number of images per level
+  // See common.py for number of images per level
   switch (uc) {
     case 1: return {class: 1, style: 'badge-success', title: 'Rookie'}; break;
     case 2: return {class: 2, style: 'badge-warning', title: 'Novice'}; break;
@@ -238,7 +240,7 @@ function clearUI() {
 }
 
 function sendResponse(image_props) {
-  //console.debug('sendResponse');
+  console.debug('viewer.sendResponse');
   if (image_props === undefined)
     image_props = {'release': release};
   image_props['fileid'] = fileid;
@@ -254,7 +256,7 @@ function sendResponse(image_props) {
 }
 
 function getNextImage(image_props) {
-  //console.debug('getNextImage');
+  console.debug('viewer.getNextImage');
   // show spinner
   $('#loading').show();
   $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
@@ -265,15 +267,20 @@ function getNextImage(image_props) {
     for (var attr in image_props)
       params[attr] = image_props[attr];
   }
-  //console.debug('params',params);
-  $.post('db.php', params,
-    function(response) {
-      if (response.congrats !== undefined) {
-        showCongrats(response.congrats);
-      }
-      setNextImage(response);
-    }, 'json')
-    .fail(function(jqXHR, status) {
+  console.debug('  params:', JSON.stringify(params));
+  $.ajax({
+    url: 'submit',
+    type: 'POST',
+    data: JSON.stringify(params),
+    contentType: "application/json; charset=utf-8",
+    dataType:    "json",
+    success: function(response) {
+        if (response.congrats !== undefined) {
+            showCongrats(response.congrats);
+        }
+        setNextImage(response);
+    }
+  }).fail(function(jqXHR, status) {
       console.log('failure: ',status);
       console.log(jqXHR);
       alert('Failure when saving response');
@@ -282,13 +289,14 @@ function getNextImage(image_props) {
 }
 
 function getMyData() {
-  $.get('mydata.php', {'release': release}, function(response) {
+  console.debug('viewer.getMyData');
+  $.get('mydata', {'release': release}, function(response) {
     // initial call: create typeahead
     if ($('#total_files').html() == "")
       $('#problem-text').typeahead({source: response.problems});
     else // just update array afterwards
       $('#problem-text').typeahead().data('typeahead').source = response.problems;
-    
+
     $('#username').html(response.username);
     $('.userrank').html("#"+response.rank);
     var uc = userClass(response.userclass);
@@ -311,7 +319,7 @@ function getMyData() {
 }
 
 function getLeaderboard() {
-  $.get('ranking.php', {'release': release}, function(response) {
+  $.get('ranking', {'release': release}, function(response) {
     var html = "<table class='table table-condensed table-striped'><thead><tr><th>Rank</th><th>Username</th><th>Problematic/Total</th><th># Files</th></tr></thead><tbody>";
     var total = null, counter = 1, width_flagged, width_total;
     var username = $('#username').html();
@@ -342,6 +350,7 @@ function closeProblemModal() {
 }
 
 function setDECamChipLayout() {
+  console.debug('viewer.setDECamChipLayout');
   var WIDTH = 530., HEIGHT = 479.;
   var GAP = [1.25, 2.];
   var PAD = [14., 12.];
@@ -395,6 +404,7 @@ function setDECamChipLayout() {
 
 
 function setLSSTChipLayout() {
+  console.log('viewer.setLSSTChipLayout');
   var WIDTH = 530., HEIGHT = 530.;
   var GAP = [1., 1.]; // Gaps between CCDs
   var PAD = [3.5, 3.5]; // Gaps at the edge of the FoV

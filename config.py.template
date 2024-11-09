@@ -1,0 +1,69 @@
+from pathlib import Path
+from typing import Dict
+
+config: Dict[str, any] = {
+    "base_dir": Path(__file__).resolve().parent,
+    "repo": "...<URL>...",
+    "slack_channel" : "...<CHANNEL>...",
+    "slack_link" : "...<URL>...",
+    "contact": "...<URL>...",
+    "domain": "...<DOMAIN>...",
+    "releases": ["r2.1i"],
+    "release": None,
+    "filedb": {
+        "r2.1i": "...<FILE PATH>..."
+    },
+    "fitspath": {
+        "r2.1i": "...<PATH>..."
+    },
+    "fovpath": {
+        "r2.1i": "...<FILE PATH>..."
+    },
+    "images_per_fp": 378,
+    "problem_code": {
+        "OK": 0,
+        # Instrument
+        "Guiding": 11,
+        "Shutter": 12,
+        "Readout": 13,
+        "Haze": 14,
+        # Flat fielding
+        "A/B jump": 21,
+        "Fringing": 22,
+        "Tape bump": 23,
+        "Tree rings": 24,
+        "Vertical jump": 25,
+        "Vertical stripes": 26,
+        # Reflections
+        "Ghost": 32,
+        "Bright spray": 31,
+        "Brush strokes": 33,
+        "Bright arc": 34,
+        # Tracks
+        "Satellite": 41,
+        "Airplane": 42,
+        # Masking
+        "Column mask": 51,
+        "Excessive mask": 53,
+        "Cosmic ray": 54,
+        "Cross-talk": 55,
+        "Edge-bleed": 56,
+        # Sky estimation
+        "Dark rim": 61,
+        "Dark halo": 62,
+        "Quilted sky": 63,
+        "Wavy sky": 64,
+        "Anti-bleed": 65,
+        # Simulation
+        "Speckling": 71,
+        "Cosmic": 72,
+        "Star": 73,
+        "Galaxy": 74,
+        "Sky background": 75,
+        "Instrument": 76,
+        "Knots": 77,
+        # Other
+        "Other...": 255,
+        "Awesome!": 1000
+    }
+}

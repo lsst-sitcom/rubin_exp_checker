@@ -6,7 +6,7 @@
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
-  <link rel="icon" href="assets/DESC_logo_trans.png" type="image/png">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -32,7 +32,7 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-          <!--#include file="release_selector.shtml"-->
+          {% include "release_selector.shtml" %}
         </ul>
       </div>
     </div>
@@ -41,10 +41,9 @@
     <div class="span6">
       <h1>Statistics</h1>
       <p>On the right, you can see how many images have been checked so far,
-        and how many of them during the last 24 hours.
-        The pie chart shows how many of the checked images have been found
-        <b style="color:#46a546">Fine</b> or
-        <b style="color:#9d261d">Problematic</b>.</p>
+        and how many were checked during the last 24 hours.
+        The pie chart shows the fraction of checked images flagged as 
+        <b style="color:#46a546">OK</b> vs. those flagged with at least one <b style="color:#9d261d">Problem</b>.</p>
       <p>Below you find a break-up of the images that have been found problematic.
         <b style="color: #9d261d">Red</b> areas denote the percentage of those image with a given problem,
         while <b style="color: #006dcc">Blue</b> areas indicate the corresponding false-positive fraction
@@ -53,18 +52,18 @@
         When you click on any of the pie charts, you can see examples of images
         that have been found with this kind of problem.</p>
       <small class="muted">There can be multiple problems in any given image,
-        therefore the proportion do not necessarily add up to one.</small>
+        therefore the proportions do not necessarily add up to one.</small>
     </div>
     <div class="span6" id="basic_stats" style="padding-top: 40px">
     </div>
     <div class="span12" id="problem_stats" style="padding-top:20px"></div>
     <div class="span12" style="padding-top: 20px">
-    <p>Also check out our <a href="heat_map.html">Heat map</a> for aggregated results for all chips. If you want to acess our problem reports directly, use our <a href="api.html">API</a>.</p>
+    <p>Also check out our <a href="heat_map.html">Heat Map</a> for the spatial locations of problems aggregated over detectors. If you want to access the individual problem reports directly, use our <a href="api.html">API</a>.</p>
     </div>
   </div>
   <div id="push"></div>
   </div>
-  <!--#include file="footer.shtml"-->
+  {% include "footer.shtml" %} 
 </body>
 
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
@@ -90,7 +89,7 @@
     var pie = d3.layout.pie().sort(null);
 
     // get data and show stats
-    d3.json("stats.php?release="+ release + "&total&today&breakup", function(error, response) {
+    d3.json("stats?release="+ release + "&total&today&breakup", function(error, response) {
       // checked chart: simply show the numbers as text
       var svg = d3.select("#basic_stats").append("svg")
         .attr("width", radius1*2)
