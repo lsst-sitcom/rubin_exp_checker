@@ -150,7 +150,7 @@ The parameter `release` needs to be from `config['releases']` and problem needs 
 
 The API returns JSON of the following form:
 
-```json
+```javascript
 [
   {"qa_id": number,
   "expname": string,
