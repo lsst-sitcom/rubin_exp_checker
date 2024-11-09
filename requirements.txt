@@ -1,0 +1,17 @@
+# This file is used to specify the dependencies of the package
+# when using the Dockerfile on the root folder.
+# This file is inherited from rubintv. Some packages may not 
+# be required by exp_checker.
+setuptools_scm
+asgi_lifespan
+structlog
+boto3
+fastapi
+httpx
+moto
+pytest_asyncio
+websocket-client
+beautifulsoup4
+py-spy
+locust
+locust_plugins
