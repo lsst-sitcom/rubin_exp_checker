@@ -210,11 +210,13 @@ def getActivity(dbh: Connection, uid: int, date: Optional[str] = None) -> Dict[s
     if not date:
         date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')
     sql = f"SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid={uid} AND timestamp > '{date}'"
-    res = check_or_abort(dbh.cursor().execute(sql))
-    activity['today'] = res.fetchone()[0]
+    res = dbh.cursor().execute(sql)
+    row = res.fetchone()
+    activity['today'] = row[0] if row else 0
     sql = f"SELECT total_files FROM submissions WHERE userid={uid}"
-    res = check_or_abort(dbh.cursor().execute(sql))
-    activity['alltime'] = res.fetchone()[0]
+    res = dbh.cursor().execute(sql)
+    row = res.fetchone()
+    activity['alltime'] = row[0] if row else 0
     return activity
 
 def giveBonusPoints(dbh: Connection, uid: int, points: int) -> None:

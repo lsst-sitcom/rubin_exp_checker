@@ -159,7 +159,7 @@ function completeVisualization(response) {
   release = response.release; // locally overwrite the default release to make sure it's from this file
 
   // the image label, colored badge for Y-band
-  if (response.band == 'Y')
+  if (response.band.toLowerCase() == 'y')
     $('#image_name').html(release + ", " + expname + ', CCD ' + ccd + ", <span class='badge badge-important'>" + response.band + "-band</span>");
   else
     $('#image_name').html(release + ", " + expname + ', CCD ' + ccd + ", " + response.band + "-band");
@@ -199,10 +199,9 @@ function userClass(uc) {
     case 3: return {class: 3, style: 'badge-important', title: 'Frequent Checker'}; break;
     case 4: return {class: 4, style: 'badge-info', title: 'Veteran'}; break;
     case 5: return {class: 5, style: 'badge-inverse', title: 'Chief Inspector'}; break;
-    // Should do default badge (silver)
-    case 6: return {class: 6, style: '', title: 'Inspector General'}; break;
-    case 7: return {class: 7, style: '', title: 'Night Inspector'}; break;
-    case 8: return {class: 8, style: '', title: 'Season Inspector'}; break;
+    case 6: return {class: 6, style: 'badge-inverse', title: 'Inspector General'}; break;
+    case 7: return {class: 7, style: 'badge-inverse', title: 'Night Inspector'}; break;
+    case 8: return {class: 8, style: 'badge-inverse', title: 'Season Inspector'}; break;
     default: return {class: 0}; break;
   }
 }
@@ -525,6 +524,51 @@ function setLSSTChipLayout() {
   });
 }
 
+
+function setComCamChipLayout() {
+  console.log('viewer.setLSSTChipLayout');
+  var WIDTH = 494., HEIGHT = 372.; // Dimensions of the pallet
+  var GAP = [4., 6.]; // Gaps between CCDs
+  var PAD = [75., 15.]; // Gaps at the edge of the FoV
+
+  /*
+  // LSST ComCam layout from here:
+  // https://rubin-obs.slack.com/archives/C07Q45NF8TZ/p1730170190236149
+  */
+  var ROWS = [
+      ['006', '007', '008'],
+      ['003', '004', '005'],
+      ['000', '001', '002'],
+  ];
+  var NROWS = ROWS.length;
+  var MAXCCDS = 3; // Maximum number of CCDs in any row
+  var i, j, xpad, ypad;
+  var CCD_SIZE = [(WIDTH-MAXCCDS*GAP[0]-2*PAD[0])/MAXCCDS, (HEIGHT-NROWS*GAP[1]-2*PAD[1])/NROWS];
+  
+  var html = "<style> .ccdshape { width: " + Math.round(CCD_SIZE[0]-2) + "px; height: " + Math.round(CCD_SIZE[1]-2) + "px; }</style>";
+  var xmin, ymax;
+  for (i=0; i < NROWS; i++) {
+    var ccds = ROWS[i];
+    for (j=0; j < ccds.length; j++) {
+      xmin = Math.round(PAD[0] + j*(GAP[0] + CCD_SIZE[0]) + (WIDTH - 2*PAD[0] - ccds.length*(CCD_SIZE[0]+GAP[0]))/2);
+      ymax = Math.round((PAD[1] + i*(GAP[1] + CCD_SIZE[1])));
+      html += "<div class='ccdshape' style='left:" + xmin + "px; top:" + ymax + "px' title='CCD " + ccds[j] + "'></div>";
+    }
+  }
+  $('#ccdmap').html(html);
+  // Connect the ccd outline in FoV image to image loading
+  $('#ccdmap').children('.ccdshape').on('click', function(evt) {
+    var ccdnum = evt.target.title.split(" ").pop();
+    var new_image = {'release': release, 'expname': expname, 'ccd': ccdnum};
+    if (marks.length)
+      sendResponse(new_image);
+    else
+      getNextImage(new_image);
+    $('#fov-modal').modal('hide');
+  });
+}
+
 function setChipLayout() {
-    setLSSTChipLayout();
+    // setLSSTChipLayout();
+    setComCamChipLayout();
 }

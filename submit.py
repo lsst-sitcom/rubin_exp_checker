@@ -3,7 +3,7 @@ import json
 import sqlite3
 
 from .common import getDBHandle, getUIDFromSID, getActivity, userClass
-from .common import getNextImage, getProblems
+from .common import getNextImage, getProblems, numberSuffix
 from .config import config
 
 def submit_image(params: Dict, uid: int) -> None:
@@ -19,23 +19,23 @@ def submit_image(params: Dict, uid: int) -> None:
     None
     """
     dbh = getDBHandle()
-    nprobs = 0
+    nflag = 0
 
-    # Insert the problem details
+    # Insert the problem details (note that "OK" and "Awesome!" included as problems)
     problems = params.get('problems')
     if problems:
         problem_codes = config['problem_code']
         for problem in problems:
-            # Parse false problems from strings
+            # Parse false positive problems from strings
             if problem['problem'][0] == "-":
                 problem['problem'] = problem['problem'][1:]
                 code = -problem_codes[problem['problem']]
             else:
                 code = problem_codes[problem['problem']]
 
-            # OK and Awesome! flags aren't problems
-            if code not in (problem_codes['OK'], problem_codes['Awesome!']):
-                nprobs += 1
+            # "Awesome!" marks shouldn't be flagged as problems
+            if code not in [problem_codes['Awesome!']]:
+                nflag += 1
 
             problem['x'] = int(problem['x'])
             problem['y'] = int(problem['y'])
@@ -43,23 +43,25 @@ def submit_image(params: Dict, uid: int) -> None:
                 problem['detail'] = None
 
             dbh.execute('INSERT INTO qa (fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?)',
-                (params['fileid'], uid, code, problem['x'], problem['y'],problem['detail']))
+                (params['fileid'], uid, code, problem['x'], problem['y'], problem['detail']))
 
-    # Increment the summary tables
-    if nprobs > 0:
-        dbh.execute(
+    if nflag > 0:
+        # Increment the summary table
+        cursor = dbh.execute(
             'UPDATE submissions SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE userid = ?',
             (uid,))
-        if dbh.cursor().rowcount == 0:
+        if cursor.rowcount == 0:
             dbh.execute('INSERT INTO submissions VALUES (?, 1, 1)', (uid,))
     else:
+        # Insert qa for exposures with no flagged problems (i.e., "OK")
         dbh.execute(
             'INSERT INTO qa (fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?)',
             (params['fileid'], uid, 0, None, None, None))
-        dbh.execute(
+        # Increment the summary table
+        cursor = dbh.execute(
             'UPDATE submissions SET total_files = total_files + 1 WHERE userid = ?',
             (uid,))
-        if dbh.cursor().rowcount == 0:
+        if cursor.rowcount == 0:
             dbh.execute('INSERT INTO submissions VALUES (?, 1, 0)', (uid,))
 
     try:
@@ -69,7 +71,7 @@ def submit_image(params: Dict, uid: int) -> None:
     dbh.close()
 
 def get_congrats(uid: int) -> Dict:
-    """Get congratulations message for completion
+    """Get congratulations message for completion.
 
     Parameters
     ----------
@@ -95,10 +97,10 @@ def get_congrats(uid: int) -> Dict:
         elif user_class == 2:
             congrats['text'] += "<strong>first 100 images</strong>!"
         else:
-            fps = activity['alltime'] / config['images_per_fp']
+            fps = activity['alltime'] // config['images_per_fp']
             congrats['text'] += f"<strong>{numberSuffix(fps)} focal plane</strong>!"
     elif activity['alltime'] % config['images_per_fp'] == 0:
-        fps = activity['alltime'] / config['images_per_fp']
+        fps = activity['alltime'] // config['images_per_fp']
         congrats = {
             'text': f"You have just finished your <strong>{numberSuffix(fps)} focal plane</strong>!"
         }
