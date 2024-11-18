@@ -3,7 +3,7 @@
         <span class="caret"></span>
         </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-
+          <!-- Not in real data 
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Simulation</a>
             <ul class="dropdown-menu">
@@ -16,15 +16,21 @@
               <li><a class="problem" tabindex="-1" href="#">Knots</a></li>
             </ul>
           </li>
+          -->
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Tracks</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Airplane</a></li>
+            </ul>
+          </li>
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Masking</a>
             <ul class="dropdown-menu">
               <li><a class="problem" tabindex="-1" href="#">Column mask</a></li>
               <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
               <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
-              <!-- Not in DC2
               <li><a class="problem" tabindex="-1" href="#">Edge-bleed</a></li>
-              -->
               <li><a class="problem" tabindex="-1" href="#">Excessive mask</a></li>
             </ul>
           </li>
@@ -58,7 +64,7 @@
               <li><a class="problem" tabindex="-1" href="#">Brush strokes</a></li>
               <li><a class="problem" tabindex="-1" href="#">Bright arc</a></li>
             </ul>
-          <!-- Not in DC2
+          <!-- Not in DC2 -->
           </li><li class="dropdown-submenu">
             <a tabindex="-1" href="#">Instrument/Site</a>
             <ul class="dropdown-menu">
@@ -69,7 +75,6 @@
               <li><a class="problem" tabindex="-1" href="#">Vertical stripes</a></li>
             </ul>
           </li>
-          -->
           <li class="divider"></li>
           <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
           <li><a tabindex="-1" class="problem" id="other-problem" href="#">Awesome!</a></li>

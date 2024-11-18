@@ -43,26 +43,29 @@ def download_file(file_path: str, revalidate: bool = False) -> StreamingResponse
     return StreamingResponse(iterfile(), headers=headers)
 
 def main(params: Dict):
-    logger.debug(f"{basename(__file__)}.main: {params}")
-    dbh = getDBHandle()
+    logger.debug(f"image.main: {params}")
 
     if (params.get('type') == "fov"):
         # Download the FoV image
-        path = config['fovpath'][config['release']].replace("%e", params['expname'])
+        #path = config['fovpath'][config['release']].replace("%e", params['expname'])
+        path = config['fovpath'][config['release']].format(**params)
         file_path = os.path.join(config['base_dir'], path)
-        if not os.path.exists(file_path):
-            file_path = "assets/fov_not_available.png"
         logger.debug(f"file_path (type={params['type']}): {file_path}")
+        if not os.path.exists(file_path):
+            logger.debug("File not found.")
+            file_path = f"{config['base_dir']}/assets/fov_not_available.png"
         return download_file(file_path);
 
     elif (params.get('type') == "dm"):
         # Provide path/code to access file
-        expname =params['expname']
+        dbh = getDBHandle()
+        expname = params['expname']
         ccd = params['ccd']
         sql = f"SELECT name FROM files WHERE expname = '{expname}' and ccd = '{ccd}'"
         res = dbh.execute(sql)
         row = res.fetchone()
-
+        dbh.close()
+        
         # This builds the URL to automatically download the file
         #file_path = 'https://'+config['domain']+'/get_image?release='+config['release']+'name='+row['name'];
         # This provides the url to the file
