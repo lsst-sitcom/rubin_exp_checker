@@ -114,6 +114,8 @@ def get_fov_image(params: Dict, client):
     response : streaming response for the file
     """
     # Build the S3 key
+    # Example:
+    #comcam/2024-11-19/calexp_mosaic/000040/comcam_calexp_mosaic_2024-11-19_000040.jpg
     camera_name = 'comcam'
     channel_name = 'calexp_mosaic'
     visit = str(params['expname'])
@@ -123,8 +125,6 @@ def get_fov_image(params: Dict, client):
     seq_str = f"{seq_num:06d}"
     filename = f"{camera_name}_{channel_name}_{date_str}_{seq_str}.jpg"
     key = f"{camera_name}/{date_str}/{channel_name}/{seq_str}/{filename}"
-    # Example:
-    #comcam/2024-11-19/calexp_mosaic/000040/comcam_calexp_mosaic_2024-11-19_000040.jpg
 
     # Get the file from S3
     try:
@@ -211,9 +211,13 @@ if __name__ == '__main__':
 
     #print(main(params))
 
-    from lsst.daf.butler import Butler
-    butler = Butler("s3://embargo@rubin-summit-users/butler.yaml",collections="u/kadrlica/binCalexp4")
-    dataId = dict(instrument='LSSTComCam', detector=3, visit=2024110900185)
-    resp = butler_file(butler,  dataId)
-
+    try:
+        from lsst.daf.butler import Butler
+        repo = config['butler_repo']
+        collection = config['butler_collection']
+        butler = Butler(repo,collections=collection)
+        dataId = dict(instrument='LSSTComCam', detector=3, visit=2024110900185)
+        resp = butler_file(butler,  dataId)
+    except:
+        pass
 
