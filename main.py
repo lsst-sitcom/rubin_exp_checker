@@ -7,7 +7,7 @@ from typing import Annotated, Dict
 from typing import AsyncGenerator
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, APIRouter
 from fastapi import Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -34,7 +34,8 @@ def create_butler(repo, collection):
     try:
         from lsst.daf.butler import Butler
         return Butler(repo, collections=collection)
-    except ImportError:
+    except ImportError as e:
+        logger.warn(str(e))
         return None
 
 def create_client(profile_name, endpoint_url):
@@ -60,11 +61,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
 
     yield
 
-
 # Create the app
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan,
+              redirect_slashes=True)
 
-# Redirect to index
+# Redirect to index 
 @app.get("/")
 async def redirect_to_index():
     return RedirectResponse(url="./index.html")
@@ -81,9 +82,9 @@ async def get_problems(release: str,
     response = api.main(params)
     return Response(json.dumps(response))
 
-# Return the authorization
 @app.get("/auth")
 async def get_auth() -> str:
+    """ Get the authentication and username. """
     # This should be replaced by project authorization routine
     response = {"auth": True, "username": "kadrlica"}
     #response = {"auth": False}

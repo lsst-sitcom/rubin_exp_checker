@@ -146,13 +146,18 @@ def main(params: Dict, request: Request):
         file_path = os.path.join(config['base_dir'], path)
         logger.debug(f"file_path (type={params['type']}): {file_path}")
         if not os.path.exists(file_path):
-            logger.debug("File not found.")
+            logger.warn("FoV file not found.")
             file_path = f"{config['base_dir']}/assets/fov_not_available.png"
         return download_file(file_path);
 
     if (params.get('type') == "fov"):
         # Download the FoV image
         logger.debug(f"fov (type={params['type']}): {params}")
+        if params.get('expname') in (None, 'null'):
+            logger.warn("FoV file not found.")
+            file_path = f"{config['base_dir']}/assets/fov_not_available.png"
+            return download_file(file_path)
+
         s3_client = request.app.state.s3_client
         return get_fov_image(params, s3_client)
 
@@ -187,13 +192,14 @@ def main(params: Dict, request: Request):
         dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
         logger.debug(f"dataId: {dataId}")
         butler = request.app.state.butler
-        return butler_file(butler, dataId)
+        if butler is None:
+            logger.warn("Butler not found.")
+            return None
+        else:
+            return butler_file(butler, dataId)
         
 
-
 if __name__ == '__main__':
-
-    
     ## Testing...
     ## This downloads the file
     #params = {'release': 'r2.1i', 'name': 'calexp-v00006854/R21/S02_B.fits'}
@@ -219,3 +225,4 @@ if __name__ == '__main__':
     #print(dataId)
     #resp = butler_file(butler,  dataId)
 
+    pass
