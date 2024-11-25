@@ -138,8 +138,6 @@ def get_fov_image(params: Dict, client):
 
 def main(params: Dict, request: Request):
     logger.debug(f"image.main: {params}")
-    butler = request.app.state.butler
-    s3_client = request.app.state.s3_client
     
     if (params.get('type') == "fov_old"):
         # Download the FoV image
@@ -155,6 +153,7 @@ def main(params: Dict, request: Request):
     if (params.get('type') == "fov"):
         # Download the FoV image
         logger.debug(f"fov (type={params['type']}): {params}")
+        s3_client = request.app.state.s3_client
         return get_fov_image(params, s3_client)
 
     elif (params.get('type') == "dm"):
@@ -187,6 +186,7 @@ def main(params: Dict, request: Request):
         junk, visit, band, det = os.path.splitext(filename)[0].rsplit('_',3)
         dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
         logger.debug(f"dataId: {dataId}")
+        butler = request.app.state.butler
         return butler_file(butler, dataId)
         
 
@@ -211,13 +211,11 @@ if __name__ == '__main__':
 
     #print(main(params))
 
-    try:
-        from lsst.daf.butler import Butler
-        repo = config['butler_repo']
-        collection = config['butler_collection']
-        butler = Butler(repo,collections=collection)
-        dataId = dict(instrument='LSSTComCam', detector=3, visit=2024110900185)
-        resp = butler_file(butler,  dataId)
-    except:
-        pass
+    #from lsst.daf.butler import Butler
+    #repo = config['butler_repo']
+    #collection = config['butler_collection']
+    #butler = Butler(repo,collections=collection)
+    #dataId = dict(instrument='LSSTComCam', detector=3, visit=2024110900185)
+    #print(dataId)
+    #resp = butler_file(butler,  dataId)
 

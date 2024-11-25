@@ -31,8 +31,11 @@ logger = exp_checker_logger()
 def create_butler(repo, collection):
     """ Create the LSST Butler. """
     logger.debug(f"Creating LSST Butler...")
-    from lsst.daf.butler import Butler
-    return Butler(repo, collections=collection)
+    try:
+        from lsst.daf.butler import Butler
+        return Butler(repo, collections=collection)
+    except ImportError:
+        return None
 
 def create_client(profile_name, endpoint_url):
     """ Create the S3 client. """
