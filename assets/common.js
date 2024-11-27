@@ -38,7 +38,8 @@ function checkSessionCookie() {
     type: "GET",
     url: "auth",
     async: false,
-    success: res => { auth = $.parseJSON(res)["auth"]; }
+    dataType: 'json',
+    success: res => { auth = res["auth"]; }
   });
   console.debug("authorized: " + auth);
   return auth;

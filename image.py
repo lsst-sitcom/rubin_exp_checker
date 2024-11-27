@@ -4,7 +4,8 @@ Returns the path to the file or the file content as a StreamingResponse
 """
 import os
 from os.path import basename
-from io import BytesIO
+from io import BytesIO, StringIO, FileIO
+import json
 
 from typing import Dict, List, Optional, Tuple
 from fastapi import Request
@@ -16,12 +17,10 @@ from botocore.exceptions import ClientError
 from botocore.response import StreamingBody
 
 from .config import config
-from .common import setRelease, getDBHandle
+from .common import getDBHandle
 from .common import exp_checker_logger
 
 logger = exp_checker_logger()
-
-setRelease()
 
 def create_headers(revalidate: bool = False):
     """Create headers for streaming file."""
@@ -38,6 +37,26 @@ def create_headers(revalidate: bool = False):
         headers['Cache-Control'] = 'max-age=31556926'
     return headers
 
+def stream_response(stream, chunk_size: int = 1024, revalidate: bool = False) -> StreamingResponse:
+    """ Stream content. """
+
+    def iostream_generator(stream, chunk_size: int = 1024):
+        """Generator to stream data from an IOStream in chunks."""
+        stream.seek(0)  # Ensure stream is at the beginning
+
+        while True:
+            # Read chunk_size bytes from the stream
+            chunk = stream.read(chunk_size)
+            
+            # Break if no more data
+            if not chunk:
+                break
+            
+            yield chunk
+
+    headers = create_headers(revalidate)
+    return StreamingResponse(iostream_generator(stream, chunk_size), headers=headers)
+    
 def download_file(file_path: str, revalidate: bool = False) -> StreamingResponse:
     """Downloads a file from disk to the user's browser.
 
@@ -60,18 +79,31 @@ def download_file(file_path: str, revalidate: bool = False) -> StreamingResponse
 
     return StreamingResponse(iterfile(), headers=headers)
 
-def butler_file(butler, dataId: Dict, revalidate: bool =True):
+def get_content_from_file(file_path: str):
+    """ Access a file using the butler and stream to user's browser.
+
+    Parameters
+    ----------
+    file_path : path to the file
+
+    Returns
+    -------
+    stream : FileIO stream
+    """
+    stream = FileIO(file_path, mode="r")
+    return stream
+    
+def get_content_from_butler(butler, dataId: Dict):
     """ Access a file using the butler and stream to user's browser.
 
     Parameters
     ----------
     butler (lsst.daf.butler.Butler) : to access data
     dataId (dict) : value pairs that label the DatasetRef within a Collection.
-    revalidate (bool, optional): Whether to set cache control headers for revalidation. Defaults to False.
 
     Returns
     -------
-    resp : StreamingResponse
+    stream : BytesIO stream
     """
     # Create the memory object
     from lsst.afw.fits import MemFileManager
@@ -84,23 +116,50 @@ def butler_file(butler, dataId: Dict, revalidate: bool =True):
 
     # Convert to IO stream
     stream = BytesIO(manager.getData())
+    return stream
 
-    def iostream_generator(stream: BytesIO, chunk_size: int = 1024):
-        """Generator to stream data from an IOStream in chunks."""
-        stream.seek(0)  # Ensure stream is at the beginning
+def get_content_from_websocket(dataId: Dict):
+    """ Access a file from a worker pod using a websocket.
 
-        while True:
-            # Read chunk_size bytes from the stream
-            chunk = stream.read(chunk_size)
-            
-            # Break if no more data
-            if not chunk:
-                break
-            
-            yield chunk
+    Parameters
+    ----------
+    dataId (dict) : value pairs that label the DatasetRef within a Collection.
 
-    headers = create_headers(revalidate)
-    return StreamingResponse(iostream_generator(stream), headers=headers)
+    Returns
+    -------
+    stream : BytesIO stream
+    """
+    import websocket
+    import base64
+    
+    datasetType = 'calexpBinned'
+    #dataId = {"instrument": "LSSTComCam", "detector": 3, "visit": 2024110900185}
+    
+    command = {
+        "name": "get fits image",
+        "parameters": {
+            "repo": config['butler_repo'],
+            "collection": config['butler_collection'],
+            "image_name": datasetType,
+            "data_id": dataId, 
+        }
+    }
+
+    # Create the websocket
+    ws = websocket.WebSocket()
+    ws.connect(config['websocket_uri'])
+
+    # Send and receive a message
+    ws.send(json.dumps(command))
+    response = ws.recv()
+    response = json.loads(response)
+
+    # Close the socket
+    ws.close()
+    
+    # Convert the response to IO stream
+    stream = BytesIO(base64.b64decode(response['content']['fits']))
+    return stream
 
 def get_fov_image(params: Dict, client):
     """ Get FoV mosaic from RubinTV S3 bucket.
@@ -148,7 +207,7 @@ def main(params: Dict, request: Request):
         if not os.path.exists(file_path):
             logger.warn("FoV file not found.")
             file_path = f"{config['base_dir']}/assets/fov_not_available.png"
-        return download_file(file_path);
+        return download_file(file_path)
 
     if (params.get('type') == "fov"):
         # Download the FoV image
@@ -178,15 +237,32 @@ def main(params: Dict, request: Request):
         logger.debug(f"file_path (type={params['type']}): {file_path}")
         return file_path
 
-    elif (params.get('type') == "file"):
-        # Download the image file from disk
+    elif (params.get('type') == "old_file"):
+        # Old interface to download the image file from disk
         path = config['fitspath'][config['release']]
         file_path = os.path.join(config['base_dir'], path, params['name'])
         logger.debug(f"file_path (type={params['type']}): {file_path}")
         return download_file(file_path, True)
 
+    elif (params.get('type') == "file"):
+        # Get image file from disk
+        path = config['fitspath'][config['release']]
+        file_path = os.path.join(config['base_dir'], path, params['name'])
+        logger.debug(f"file_path (type={params['type']}): {file_path}")
+        stream = get_content_from_file(file_path)
+        return stream_response(stream, 1024, True)
+    
+    elif (params.get('type') == "ws"):
+        # Get image file from worker through websocket
+        filename = os.path.basename(params['name'])
+        junk, visit, band, det = os.path.splitext(filename)[0].rsplit('_',3)
+        dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
+        logger.debug(f"dataId: {dataId}")
+        stream = get_content_from_websocket(dataId)
+        return stream_response(stream, 1024, True)
+    
     else:
-        # Get image from the butler
+        # Get image file from the butler
         filename = os.path.basename(params['name'])
         junk, visit, band, det = os.path.splitext(filename)[0].rsplit('_',3)
         dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
@@ -196,8 +272,8 @@ def main(params: Dict, request: Request):
             logger.warn("Butler not found.")
             return None
         else:
-            return butler_file(butler, dataId)
-        
+            stream = get_content_from_butler(butler, dataId)
+            return stream_response(stream, 1024, True)
 
 if __name__ == '__main__':
     ## Testing...

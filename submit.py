@@ -2,9 +2,12 @@ from typing import Any, Dict, Optional, Tuple
 import json
 import sqlite3
 
-from .common import getDBHandle, getUIDFromSID, getActivity, userClass
+from .common import getDBHandle, getActivity, userClass
+from .common import username2uid, exp_checker_logger
 from .common import getNextImage, getProblems, numberSuffix
 from .config import config
+
+logger = exp_checker_logger()
 
 def submit_image(params: Dict, uid: int) -> None:
     """Submit image inspection to the database.
@@ -136,7 +139,7 @@ def get_next_image(params: Dict, uid: int) -> Dict:
 
 def main(params: Dict) -> None:
     dbh = getDBHandle()
-    uid = getUIDFromSID(dbh)
+    uid = params['uid']
 
     congrats = None
     if uid and (params.get('fileid') is not None):

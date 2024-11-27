@@ -1,10 +1,9 @@
 import sys
 import json
 from typing import Dict, List, Optional
-import sqlite3
 
 from .config import config
-from .common import getDBHandle
+from .common import getDBHandle, uid2username
 
 def api_handler(problem: str, short: bool = False) -> List[Dict]:
     """Handle API requests for problem data.
@@ -23,8 +22,8 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
     code = config['problem_code'][problem]
 
     # Build the SQL query
-    sql = "SELECT qa.qaid as qa_id, ccd, band, problem, x, y"
-    if short:
+    sql = "SELECT qa.qaid as qa_id, userid as uid, expname as visit, ccd as detector, band, problem, x, y"
+    if not short:
         sql += ", detail"
     sql += " FROM qa JOIN files ON (files.fileid=qa.fileid)"
     sql += f" WHERE problem={code} OR problem=-{code}"
@@ -38,6 +37,7 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
         row_dict = dict(row)
 
         # Convert specific fields
+        row_dict['uid'] = int(row_dict['uid'])
         row_dict['qa_id'] = int(row_dict['qa_id'])
         row_dict['problem'] = int(row_dict['problem'])
 
@@ -57,7 +57,8 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
             row_dict['false_positive'] = row_dict['problem'] < 0
             row_dict['problem'] = problem
             row_dict['release'] = config['release']
-
+            row_dict['username'] = uid2username(row_dict['uid'])
+            
         results.append(row_dict)
     # Close the connection
     dbh.close()

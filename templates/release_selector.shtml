@@ -13,6 +13,6 @@
     <li><a class="release-button" id="release-button-r1.1p" href="#">r1.1p</a></li>
     -->
     <li><a class="release-button" id="release-button-r2.1i" href="#">r2.1i</a></li>
-    <li><a class="release-button" id="release-button-comcam" href="#">ComCam</a></li>
+    <li><a class="release-button" id="release-button-ComCam" href="#">ComCam</a></li>
   </ul>
 </li>
