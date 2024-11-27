@@ -42,12 +42,10 @@ def getCountOfProblem(
 def main(params: Dict) -> Dict:
     logger.info(f'problems.main: {params}')
     dbh = getDBHandle()
-    uid = None
     if params.get("fileid"):
         problems = getProblems(dbh, params["fileid"])
     elif params.get("problem"):
-        if params.get("my_problems"):
-            uid = getUIDFromSID(dbh)
+        uid = params["uid"] if params.get("my_problems") else None
         problems = getCountOfProblem(dbh, params["problem"], uid)
     return problems
 

@@ -13,16 +13,14 @@ from sqlite3 import Connection, Cursor
 from .config import config
 
 __all__ = ['debug_to_console', 'check_or_abort',
-           'setRelease', 'getDBHandle',
+           'getDBHandle',
            'getNextImage', 'getProblems',
-           'getUsername', 'username2uid',
-           'getUID', 'getUIDFromSID',
+           'username2uid', 'uid2username',
            'numberSuffix', 'userClass',
            'missingFilesForNextClass',
            'getActivity','giveBonusPoints',
            'exp_checker_logger',
 ]
-
 
 # Set default timezone if not already set
 if not os.getenv('TZ'):
@@ -41,24 +39,8 @@ def check_or_abort(dbh: Optional[Connection]) -> Connection:
         raise Exception(500, "Internal Server Error")
     return dbh
 
-def GETorPOST(param: str) -> Optional[str]:
-    """Get the value of the given parameter from either GET or POST."""
-    if param in os.environ.get('QUERY_STRING', ''):
-        return os.environ.get(param)
-    if param in os.environ.get('REQUEST_METHOD', ''):
-        return os.environ.get(param)
-    return None
-
-def setRelease() -> None:
-    """Set the current release based on the request parameters."""
-    global config
-    config['release'] = GETorPOST('release')
-    if config['release'] is None or config['release'] not in config['releases']:
-        config['release'] = config['releases'][-1]
-
 def getDBHandle() -> Connection:
     """Get a database handle for the current release."""
-    setRelease()
     global config
     BASE_DIR = Path(__file__).resolve().parent
     db_file = BASE_DIR / config['filedb'][config['release']]
@@ -132,11 +114,8 @@ def getProblems(dbh: Connection, fileid: int, qa_id: Optional[int] = None) -> Li
         })
     return problems
 
-def getUsername() -> str:
-    #return $_SERVER['uid'];
-    return 'kadrlica';
-
 def username2uid(username: str) -> int:
+    """ Hash username as integer. """
     uid = 0
     mult = 1
     for c in username.upper():
@@ -144,13 +123,13 @@ def username2uid(username: str) -> int:
         mult *= 49
     return uid
 
-def getUID() -> int:
-    username = getUsername()
-    return username2uid(username)
-
-def getUIDFromSID(dbh: Connection) -> int:
-    uid = getUID()
-    return uid
+def uid2username(uid):
+    """ Reverse hash to convert integer to username. """
+    arr = []
+    while uid > 0:
+        arr.append(uid % 49 + 47)
+        uid = uid // 49
+    return ''.join(chr(char) for char in arr).lower()
 
 def numberSuffix(num: int) -> str:
     """Get the ordinal suffix for the given number."""

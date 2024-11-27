@@ -1,7 +1,10 @@
 import json
 from sqlalchemy import text
 from .common import userClass, missingFilesForNextClass
-from .common import getDBHandle, getUsername, getUIDFromSID
+from .common import username2uid, uid2username, getDBHandle
+from .common import exp_checker_logger
+
+logger = exp_checker_logger()
 
 # Function to get user data
 def getMyData(dbh, uid):
@@ -17,6 +20,8 @@ def getMyData(dbh, uid):
     """
     res = dbh.execute(sql)
     row = res.fetchone()
+
+    username = uid2username(uid)
     
     if row:
         row = dict(row)
@@ -25,7 +30,7 @@ def getMyData(dbh, uid):
         row['rank'] = int(row['rank'])
         row['userclass'] = userClass(row['total_files'])
         row['missingfiles'] = missingFilesForNextClass(row['total_files'], row['userclass'])
-        row['username'] = getUsername()
+        row['username'] = username
         return row
     else:
         return False
@@ -41,9 +46,19 @@ def getMyOtherProblems(dbh, uid):
     return [row[0] for row in res.fetchall()]
 
 # Main function
-def main():
+def main(username):
+    """ Get user data.
+
+    Parameters
+    ----------
+    username : the username
+
+    Returns
+    -------
+    result : the result
+    """
     dbh = getDBHandle()
-    uid = getUIDFromSID(dbh)
+    uid = username2uid(username)
     if uid:
         result = getMyData(dbh, uid)
         if result:
@@ -56,5 +71,5 @@ def main():
 
 
 if __name__ == "__main__":
-    res = main()
+    res = main(username='testuser')
     print(json.dumps(res))

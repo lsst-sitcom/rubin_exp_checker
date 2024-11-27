@@ -7,9 +7,9 @@ from typing import Annotated, Dict
 from typing import AsyncGenerator
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Query, APIRouter
-from fastapi import Request, Response
-from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
+from fastapi import FastAPI, APIRouter, HTTPException, status
+from fastapi import Request, Response, Header, Depends, Query
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment
@@ -18,7 +18,7 @@ from pydantic import BaseModel
 #from sqlmodel import Field, Session, SQLModel, create_engine
 
 from . import api, gallery, image, mydata, problems, ranking, stats, submit
-from .common import exp_checker_logger
+from .common import exp_checker_logger, username2uid
 from .config import config
 
 BASE_DIR = config['base_dir']
@@ -28,8 +28,74 @@ ASSETS_DIR = BASE_DIR / "assets"
 
 logger = exp_checker_logger()
 
+async def get_user(
+        x_auth_request_user: Annotated[str | None, Header()] = None
+) -> Dict:
+    """ Get the authenticated username from header. 
+
+    Parameters
+    ----------
+    x_auth_request_user : the authenticated username
+
+    Returns
+    -------
+    response : Dict containing username and uid
+    """
+
+    # For testing
+    if not x_auth_request_user:
+        x_auth_request_user = "testuser"
+        
+    if not x_auth_request_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing authentication header 'X-Auth-Request-User'"
+        )
+
+    if not x_auth_request_user.isalnum():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication username is not alphanumeric"
+        )
+    
+    username = x_auth_request_user
+    uid = username2uid(username)
+    response = {'username': username, 'uid': uid}
+    return response
+
+def set_release(release: str | None = None):
+    """ Set the release. This updates the value of the global config['release'].
+
+    Parameters
+    ----------
+    release : the release to be set
+
+    Returns
+    -------
+    release : the release that was set
+    """
+    global config
+
+    config['release'] = release
+    if (config['release'] is None) or (config['release'] not in config['releases']):
+        config['release'] = config['releases'][-1]
+
+    logger.debug(f"Release set to: {config['release']}")
+    
+    return config['release']
+
 def create_butler(repo, collection):
-    """ Create the LSST Butler. """
+    """ Create the LSST Butler. 
+
+    Parameters
+    ----------
+    repo : butler repository
+    collection : butler collection
+
+    Returns
+    -------
+    butler : the instantiated butler
+    """
     logger.debug(f"Creating LSST Butler...")
     try:
         from lsst.daf.butler import Butler
@@ -53,6 +119,8 @@ def create_client(profile_name, endpoint_url):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
+    set_release()
+    
     butler = create_butler(config['butler_repo'],config['butler_collection'])
     app.state.butler = butler
 
@@ -62,8 +130,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     yield
 
 # Create the app
-app = FastAPI(lifespan=lifespan,
-              redirect_slashes=True)
+app = FastAPI(lifespan=lifespan)
 
 # Redirect to index 
 @app.get("/")
@@ -71,24 +138,25 @@ async def redirect_to_index():
     return RedirectResponse(url="./index.html")
 
 @app.get("/api")
-async def get_problems(release: str,
-                 problem: str,
-                 short: bool | str = None,
+async def get_api_problems(
+        problem: str,
+        release: str = Depends(set_release),
+        short: bool | str = False,
 ) -> Response:
     # bool | str allows query parameter to be used with no value
     params = {"release": release,
               "problem": problem,
               "short": short != False}
     response = api.main(params)
-    return Response(json.dumps(response))
+    return JSONResponse(response)
 
 @app.get("/auth")
-async def get_auth() -> str:
+async def get_auth(user: str = Depends(get_user)):
     """ Get the authentication and username. """
     # This should be replaced by project authorization routine
-    response = {"auth": True, "username": "kadrlica"}
-    #response = {"auth": False}
-    return json.dumps(response)
+    response = {"auth": True}
+    response.update(user)
+    return JSONResponse(content=response)
 
 @app.get("/contact")
 async def get_contact() -> str:
@@ -99,52 +167,61 @@ async def get_contact() -> str:
 
 @app.get("/download_file")
 async def download_file(filename: str) -> StreamingResponse:
+    """ Deprecated file download access point. """
     path = config['fitspath'][config['release']]
     filepath = os.path.join(path,filename)
     return getImage.download_file(filepath, True)
 
 @app.get("/gallery")
-async def get_gallery() -> Response:
+async def get_gallery(
+        release: str = Depends(set_release),
+) -> Response:
     """Query database for gallery of problems."""
     response = gallery.main()
     return Response(json.dumps(response))
+
+@app.get("/get_image")
+async def get_image(
+        request: Request,
+        release: str = Depends(set_release),
+        name: str | None = None,
+        expname: str | None = None,
+        ccd: str | None = None,
+        type: str | None = None,
+) -> Response:
+    params = {'release': release, 'name': name,
+              'expname': expname, 'ccd': ccd,
+              'type': type}
+
+    if params['type'] is None:
+        params['type'] = config.get('transfer_type')
+        logger.debug(f"Set image access type: {params['type']}")
+
+    response = image.main(params, request)
+    return response
 
 @app.get("/headers")
 async def read_headers(request: Request) -> Dict:
     """Return the json-formatted dict of headers"""
     return request.headers
 
-@app.get("/get_image")
-async def get_image(request: Request,
-                    release: str,
-                    name: str | None = None,
-                    expname: str | None = None,
-                    ccd: str | None = None,
-                    type: str | None = None,
-) -> Response:
-    params = {'release': release, 'name': name,
-              'expname': expname, 'ccd': ccd,
-              'type': type}
-
-    #logger.warn(f'Hack to get image from butler')
-    #if type is None: params['type'] = 'butler'
-
-    response = image.main(params, request)
-    return response
-
 @app.get("/mydata")
-async def get_mydata(release: str) -> Response:
+async def get_mydata(
+        release: str = Depends(set_release),
+        user: Dict = Depends(get_user),
+) -> Response:
     """Query database for user data."""
-    data = mydata.main()
+    data = mydata.main(user["username"])
     return Response(json.dumps(data))
 
-
 @app.get("/problems")
-async def get_problems(release: str,
-                 fileid: int | None = None,
-                 output: str | None = None,
-                 problem: str | None = None,
-                 my_problems: bool | str = False
+async def get_problems(
+        release: str = Depends(set_release),
+        fileid: int | None = None,
+        output: str | None = None,
+        problem: str | None = None,
+        my_problems: bool | str = False,
+        user: Dict = Depends(get_user),
 ) -> Response:
     """Query database for problems associated with an image."""
     # bool | str allows query parameter to be used with no value
@@ -152,23 +229,29 @@ async def get_problems(release: str,
               "fileid" : fileid,
               "output": output,
               "problem": problem,
-              "my_problems": my_problems != False}
+              "my_problems": my_problems != False,
+    }
+    params.update(user)
 
     response = problems.main(params)
     return Response(json.dumps(response))
 
 @app.get("/ranking")
-async def get_ranking(limit: int = 15) -> Response:
+async def get_ranking(
+        release: str = Depends(set_release),
+        limit: int = 15
+) -> Response:
     """Query database for ranking information."""
     rank = ranking.main(limit)
     return Response(json.dumps(rank))
 
 @app.get("/stats")
-async def get_stats(release: str,
-              total: bool | str = False,
-              today: bool | str = False,
-              breakup: bool | str = False,
-              throughput: bool | str = False
+async def get_stats(
+        release: str = Depends(set_release),
+        total: bool | str = False,
+        today: bool | str = False,
+        breakup: bool | str = False,
+        throughput: bool | str = False
 ) -> Response:
     """Query database for user stats."""
     # bool | str allows query parameter to be used with no value
@@ -190,13 +273,18 @@ class Item(BaseModel):
     detail: str | None = None
     show_marks: bool | str = False
     qa_id: int | None = None
-    release: str | None = None
+    release: str | None = Depends(set_release)
 
 @app.post("/submit")
-async def post_submit(item: Item) -> Response:
+async def post_submit(
+        item: Item,
+        user: Dict = Depends(get_user),
+) -> Response:
     if item.show_marks == '': item.show_marks = True
     params = item.model_dump(exclude_none=True)
+    params.update(user)
     logger.debug(f'submit: {params}')
+    set_release(params['release'])
     response = submit.main(params)
     return Response(response)
 
