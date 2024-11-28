@@ -1,5 +1,5 @@
 import json
-from sqlalchemy import text
+
 from .common import userClass, missingFilesForNextClass
 from .common import username2uid, uid2username, getDBHandle
 from .common import exp_checker_logger
