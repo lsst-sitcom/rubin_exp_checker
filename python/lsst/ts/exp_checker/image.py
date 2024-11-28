@@ -89,6 +89,7 @@ def get_content_from_file(file_path: str):
     -------
     stream : FileIO stream
     """
+    logger.debug("Getting image content from file...")
     stream = FileIO(file_path, mode="r")
     return stream
     
@@ -104,6 +105,7 @@ def get_content_from_butler(butler, dataId: Dict):
     -------
     stream : BytesIO stream
     """
+    logger.debug("Getting image content from butler...")
     # Create the memory object
     from lsst.afw.fits import MemFileManager
     manager = MemFileManager()
@@ -113,17 +115,18 @@ def get_content_from_butler(butler, dataId: Dict):
     exposure = butler.get(datasetType, dataId=dataId)
 
     # Compress the file
-    if config.get('compress_images'): 
+    opts = dict()
+    if config.get('compress_images', True): 
         from lsst.afw.fits import ImageCompressionOptions, ImageWriteOptions, ImageScalingOptions
+        logger.debug("Compressing image")
         quantize = 10.0
         compression = ImageCompressionOptions(ImageCompressionOptions.RICE, True, 0.0)
         scaling = ImageScalingOptions(ImageScalingOptions.STDEV_BOTH, 32, quantizeLevel=quantize)
-        imageOptions = ImageWriteOptions(compression, scaling)
-        maskOptions = ImageWriteOptions(compression)
-        exposure.writeFits(manager, imageOptions, maskOptions, imageOptions)
+        opts['imageOptions'] = ImageWriteOptions(compression, scaling)
+        opts['maskOptions'] = ImageWriteOptions(compression)
+        opts['varianceOptions'] = opts['imageOptions']
 
-    else:
-        exposure.writeFits(manager)
+    exposure.writeFits(manager, **opts)
 
     # Convert to IO stream
     stream = BytesIO(manager.getData())
@@ -140,6 +143,7 @@ def get_content_from_websocket(dataId: Dict):
     -------
     stream : BytesIO stream
     """
+    logger.debug("Getting image content from websocket...")
     import websocket
     import base64
     
@@ -152,7 +156,8 @@ def get_content_from_websocket(dataId: Dict):
             "repo": config['butler_repo'],
             "collection": config['butler_collection'],
             "image_name": datasetType,
-            "data_id": dataId, 
+            "data_id": dataId,
+            "compress": config.get('compress_images', True),
         }
     }
 
