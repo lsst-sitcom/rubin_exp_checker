@@ -11,7 +11,6 @@ from typing import Dict, List, Optional, Tuple
 from fastapi import Request
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.exceptions import HTTPException
-from sqlalchemy import text
 
 from botocore.exceptions import ClientError
 from botocore.response import StreamingBody
@@ -112,7 +111,19 @@ def get_content_from_butler(butler, dataId: Dict):
     # Get the file and write to memory
     datasetType = 'calexpBinned'
     exposure = butler.get(datasetType, dataId=dataId)
-    exposure.writeFits(manager)
+
+    # Compress the file
+    if config.get('compress_images'): 
+        from lsst.afw.fits import ImageCompressionOptions, ImageWriteOptions, ImageScalingOptions
+        quantize = 10.0
+        compression = ImageCompressionOptions(ImageCompressionOptions.RICE, True, 0.0)
+        scaling = ImageScalingOptions(ImageScalingOptions.STDEV_BOTH, 32, quantizeLevel=quantize)
+        imageOptions = ImageWriteOptions(compression, scaling)
+        maskOptions = ImageWriteOptions(compression)
+        exposure.writeFits(manager, imageOptions, maskOptions, imageOptions)
+
+    else:
+        exposure.writeFits(manager)
 
     # Convert to IO stream
     stream = BytesIO(manager.getData())
@@ -152,12 +163,12 @@ def get_content_from_websocket(dataId: Dict):
     # Send and receive a message
     ws.send(json.dumps(command))
     response = ws.recv()
-    response = json.loads(response)
 
     # Close the socket
     ws.close()
     
     # Convert the response to IO stream
+    response = json.loads(response)
     stream = BytesIO(base64.b64decode(response['content']['fits']))
     return stream
 
