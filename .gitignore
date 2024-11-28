@@ -4,5 +4,5 @@ bin/
 bck/
 
 php/config.php.inc
-config.py
+#config.py
 setup.sh
