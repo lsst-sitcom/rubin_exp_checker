@@ -6,3 +6,4 @@ bck/
 php/config.php.inc
 #config.py
 setup.sh
+version.py

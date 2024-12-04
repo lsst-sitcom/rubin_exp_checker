@@ -27,7 +27,7 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
         sql += ", detail"
     sql += " FROM qa JOIN files ON (files.fileid=qa.fileid)"
     sql += f" WHERE problem={code} OR problem=-{code}"
-    sql += " ORDER BY expname, ccd ASC"
+    sql += " ORDER BY visit, detector ASC"
 
     res = dbh.execute(sql)
 

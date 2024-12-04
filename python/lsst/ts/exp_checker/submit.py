@@ -138,6 +138,7 @@ def get_next_image(params: Dict, uid: int) -> Dict:
     return row
 
 def main(params: Dict) -> None:
+    logger.debug(f"submit.main: {params}")
     dbh = getDBHandle()
     uid = params['uid']
 

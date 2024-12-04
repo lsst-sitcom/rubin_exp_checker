@@ -3,12 +3,13 @@ from typing import Dict
 
 config: Dict[str, any] = {
     "base_dir": Path(__file__).resolve().parent,
-    "butler_repo": "embargo", #"s3://embargo@rubin-summit-users/butler.yaml"
+    "butler_repo": "embargo", #"s3://embargo@rubin-summit-users/butler.yaml", 
     "butler_collection": "u/kadrlica/binCalexp4",
     "s3_profile_name": "rubin-rubintv-data-summit",
     "s3_endpoint_url": "https://s3dfrgw.slac.stanford.edu",
-    "websocket_uri": "ws://localhost:9999/ws/client",
-    "transfer_type": "butler",
+    #"websocket_uri": "ws://localhost:9999/ws/client",
+    "websocket_uri": "ws://usdf-rsp-dev.slac.stanford.edu/rubintv/ddv/ws/client",
+    "transfer_type": "ws",
     "compress_images": True,
     "repo": "https://github.com/lsst-sitcom/rubin_exp_checker",
     "slack_channel" : "#sciunit-image-inspection",
@@ -16,21 +17,21 @@ config: Dict[str, any] = {
     "contact": "<URL>",
     "domain": "8000/rubintv/exp_checker/",
     "filedb": {
-        #"r2.1i": ".db/files.2.1i-20241105.db",
-        "r2.1i": ".db/files.comcam-20241109.db",
+        #"ComCam": ".db/files.comcam-20241117.db",
+        #"dev": ".db/LSSTComCam-dev.db",
+        #"ComCam": ".db/LSSTComCam-20241128.db",
+        "dev": ".db/files.comcam-20241109.db",
         "ComCam": ".db/files.comcam-20241117.db",
     },
     "fitspath": {
-        #"r2.1i": "exclusive/output-2.1i-20190119/binned_sensor/",
-        "r2.1i": "exclusive/comcam/calexp_binned/",
+        "dev": "exclusive/comcam/calexp_binned/",
         "ComCam": "exclusive/comcam/calexp_binned/",
     },
     "fovpath": {
-        #"r2.1i": "exclusive/output-2.1i-20190119/focal_plane/{expname}.png",
-        "r2.1i": "exclusive/comcam/calexp_mosaic/{expname:.8s}/comcam_calexp_mosaic_{expname}.jpg",
+        "dev": "exclusive/comcam/calexp_mosaic/{expname:.8s}/comcam_calexp_mosaic_{expname}.jpg",
         "ComCam": "exclusive/comcam/calexp_mosaic/{expname:.8s}/comcam_calexp_mosaic_{expname}.jpg",
     },
-    "releases": ["r2.1i", "ComCam"],
+    "releases": ["dev", "ComCam"],
     "release": None,
     "images_per_fp": 378,
     "problem_code": {
