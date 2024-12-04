@@ -16,7 +16,7 @@ from botocore.exceptions import ClientError
 from botocore.response import StreamingBody
 
 from .config import config
-from .common import getDBHandle
+from .common import getDBHandle, filenameToDataId
 from .common import exp_checker_logger
 
 logger = exp_checker_logger()
@@ -132,7 +132,7 @@ def get_content_from_butler(butler, dataId: Dict):
     stream = BytesIO(manager.getData())
     return stream
 
-def get_content_from_websocket(dataId: Dict):
+def get_content_from_socket(dataId: Dict):
     """ Access a file from a worker pod using a websocket.
 
     Parameters
@@ -143,7 +143,7 @@ def get_content_from_websocket(dataId: Dict):
     -------
     stream : BytesIO stream
     """
-    logger.debug("Getting image content from websocket...")
+    logger.debug("Getting image content from socket...")
     import websocket
     import base64
     
@@ -213,76 +213,69 @@ def get_fov_image(params: Dict, client):
 
 def main(params: Dict, request: Request):
     logger.debug(f"image.main: {params}")
+
+    filename = params.get('filename', params.get('name'))
+    if filename:
+        dataId = filenameToDataId(filename)
+    else:
+        visit = params.get('visit', params.get('expname'))
+        detector = params.get('detector', params.get('ccd'))
+        dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(detector))
+
+    image_not_found = f"{config['base_dir']}/assets/fov_not_available.png"
     
     if (params.get('type') == "fov_old"):
         # Download the FoV image
-        #path = config['fovpath'][config['release']].replace("%e", params['expname'])
-        path = config['fovpath'][config['release']].format(**params)
+        path = config['fovpath'][config['release']].format(**dataId)
         file_path = os.path.join(config['base_dir'], path)
         logger.debug(f"file_path (type={params['type']}): {file_path}")
         if not os.path.exists(file_path):
             logger.warn("FoV file not found.")
-            file_path = f"{config['base_dir']}/assets/fov_not_available.png"
-        return download_file(file_path)
+        return download_file(image_not_found)
 
     if (params.get('type') == "fov"):
         # Download the FoV image
-        logger.debug(f"fov (type={params['type']}): {params}")
-        if params.get('expname') in (None, 'null'):
+        logger.debug(f"type={params['type']}: {params}")
+        try:
+            s3_client = request.app.state.s3_client
+            return get_fov_image(dataId, s3_client)
+        except:
             logger.warn("FoV file not found.")
             file_path = f"{config['base_dir']}/assets/fov_not_available.png"
-            return download_file(file_path)
-
-        s3_client = request.app.state.s3_client
-        return get_fov_image(params, s3_client)
+            return download_file(image_not_found)
 
     elif (params.get('type') == "dm"):
         # Provide path/code to access file
-        dbh = getDBHandle()
-        expname = params['expname']
-        ccd = params['ccd']
-        sql = f"SELECT name FROM files WHERE expname = '{expname}' and ccd = '{ccd}'"
-        res = dbh.execute(sql)
-        row = res.fetchone()
-        dbh.close()
-        
-        # This builds the URL to automatically download the file
-        #file_path = 'https://'+config['domain']+'/get_image?release='+config['release']+'name='+row['name'];
-        # This provides the url to the file
-        file_path = 'https://'+config['domain']+config['fitspath'][config['release']]+row['name']
-        logger.debug(f"file_path (type={params['type']}): {file_path}")
-        return file_path
+        logger.debug(f"type={params['type']}: {params}")
+        response  = f"repo: {config['butler_repo']}\n"
+        response += f"collection: {config['butler_collection']}\n"
+        response += f"dataId: {dataId}"
+        return Response(response)
 
     elif (params.get('type') == "old_file"):
         # Old interface to download the image file from disk
         path = config['fitspath'][config['release']]
-        file_path = os.path.join(config['base_dir'], path, params['name'])
+        file_path = os.path.join(config['base_dir'], path, filename)
         logger.debug(f"file_path (type={params['type']}): {file_path}")
         return download_file(file_path, True)
 
     elif (params.get('type') == "file"):
         # Get image file from disk
         path = config['fitspath'][config['release']]
-        file_path = os.path.join(config['base_dir'], path, params['name'])
-        logger.debug(f"file_path (type={params['type']}): {file_path}")
+        file_path = os.path.join(config['base_dir'], path, filename)
+        logger.debug(f"type={params['type']}: {file_path}")
         stream = get_content_from_file(file_path)
         return stream_response(stream, 1024, True)
     
     elif (params.get('type') == "ws"):
         # Get image file from worker through websocket
-        filename = os.path.basename(params['name'])
-        junk, visit, band, det = os.path.splitext(filename)[0].rsplit('_',3)
-        dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
-        logger.debug(f"dataId: {dataId}")
-        stream = get_content_from_websocket(dataId)
+        logger.debug(f"type={params['type']}: dataId: {dataId}")
+        stream = get_content_from_socket(dataId)
         return stream_response(stream, 1024, True)
     
-    else:
+    elif params.get('type') in ('butler', None):
         # Get image file from the butler
-        filename = os.path.basename(params['name'])
-        junk, visit, band, det = os.path.splitext(filename)[0].rsplit('_',3)
-        dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
-        logger.debug(f"dataId: {dataId}")
+        logger.debug(f"type={params.get('type')}: dataId: {dataId}")
         butler = request.app.state.butler
         if butler is None:
             logger.warn("Butler not found.")
@@ -291,6 +284,10 @@ def main(params: Dict, request: Request):
             stream = get_content_from_butler(butler, dataId)
             return stream_response(stream, 1024, True)
 
+    else:
+        msg = f"Unrecognized file access type: {params.get('type')}"
+        raise HTTPException(status_code=404, detail=msg)
+    
 if __name__ == '__main__':
     ## Testing...
     ## This downloads the file

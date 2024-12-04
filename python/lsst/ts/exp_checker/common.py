@@ -50,9 +50,11 @@ def getDBHandle() -> Connection:
     dbh.row_factory = sqlite3.Row
     return check_or_abort(dbh)
 
-def getNextImage(dbh: Connection,
-                 params: Dict,
-                 uid: Optional[int]) -> Optional[Dict[str, any]]:
+def getNextImage(
+        dbh: Connection,
+        params: Dict,
+        uid: Optional[int]
+) -> Optional[Dict[str, any]]:
     """Get the next image to display based on the request parameters."""
     global config
     sql = f'SELECT "{config["release"]}" as release, files.fileid, expname, ccd, band, name FROM files'
@@ -60,6 +62,12 @@ def getNextImage(dbh: Connection,
     if params.get('expname') and params.get('ccd'):
         sql += ' WHERE ccd = ? AND files.expname = ? LIMIT 1'
         res = dbh.execute(sql, (params['ccd'], params['expname']))
+    elif params.get('expname'):
+        sql += ' WHERE files.expname = ? ORDER BY RANDOM() LIMIT 1'
+        res = dbh.execute(sql, (params['expname'],))
+    elif params.get('ccd'):
+        sql += ' WHERE ccd = ? ORDER BY RANDOM() LIMIT 1'
+        res = dbh.execute(sql, (params['ccd'],))
     elif params.get('problem'):
         problem = config['problem_code'][params['problem']]
         sql += f' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = {problem}'
@@ -204,6 +212,16 @@ def giveBonusPoints(dbh: Connection, uid: int, points: int) -> None:
     stmt.execute("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?", (points, uid))
     check_or_abort(stmt)
 
+def filenameToDataId(filename: str):
+    basename = os.path.basename(filename)
+    junk, visit, band, det = os.path.splitext(basename)[0].rsplit('_',3)
+    dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
+    return dataId
+
+def dataIdToFilename(dataId: Dict):
+    filename = f"{dataId['instrument'].lower()}_{dataId['visit']}_{dataId['band']}_{dataId['detector']:03d}.fits"
+    return filename
+    
 def exp_checker_logger() -> Any:
     logger = get_logger()
     return logger

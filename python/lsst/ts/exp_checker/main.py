@@ -3,7 +3,7 @@
 import asyncio
 import os, json, enum
 from contextlib import asynccontextmanager
-from typing import Annotated, Dict
+from typing import Annotated, Dict, Optional
 from typing import AsyncGenerator
 from pathlib import Path
 
@@ -13,7 +13,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Stre
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, model_validator
 
 #from sqlmodel import Field, Session, SQLModel, create_engine
 
@@ -84,6 +84,37 @@ def set_release(release: str | None = None):
     
     return config['release']
 
+
+class ImageParams(BaseModel):
+    """Parameters for specifying an image."""
+    fileid: int | None = None
+    expname: str | None = Field(alias='visit', default=None)
+    ccd: str | None = Field(alias='detector', default=None)
+    name: str | None = Field(alias='filename', default=None)
+
+    class Config:
+        # This allows both field and alias to be valid
+        populate_by_name = True
+
+        
+class SubmitBody(BaseModel):
+    """Allowed exposure checker submission parameters."""
+    fileid: int | None = None
+    expname: str | None = Field(alias='visit', default=None)
+    ccd: str | None = Field(alias='detector', default=None)
+    problem: str | None = None
+    problems: list | None = None
+    detail: str | None = None
+    show_marks: bool | str = False
+    qa_id: int | None = None
+    release: str | None = Depends(set_release)
+
+    class Config:
+        # This setting prevents extra fields
+        extra = 'forbid'
+        # This allows both field and alias to be valid
+        populate_by_name = True
+
 def create_butler(repo, collection):
     """ Create the LSST Butler. 
 
@@ -96,7 +127,8 @@ def create_butler(repo, collection):
     -------
     butler : the instantiated butler
     """
-    logger.debug(f"Creating LSST Butler...")
+    logger.info(f"Creating LSST Butler...")
+    logger.debug(f"  repo: {repo}, collection: {collection}")
     try:
         from lsst.daf.butler import Butler
         return Butler(repo, collections=collection)
@@ -120,9 +152,12 @@ def create_client(profile_name, endpoint_url):
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
     set_release()
-    
-    butler = create_butler(config['butler_repo'],config['butler_collection'])
-    app.state.butler = butler
+
+    if config["transfer_type"] == 'butler':
+        butler = create_butler(config['butler_repo'],config['butler_collection'])
+        app.state.butler = butler
+    else:
+        app.state.butler = None
 
     client = create_client(config['s3_profile_name'], config['s3_endpoint_url'])
     app.state.s3_client = client
@@ -264,24 +299,14 @@ async def get_stats(
     response = stats.main(params)
     return Response(json.dumps(response))
 
-class Item(BaseModel):
-    fileid: int | None = None
-    expname: str | None = None
-    ccd: str | None = None
-    problem: str | None = None
-    problems: list | None = None
-    detail: str | None = None
-    show_marks: bool | str = False
-    qa_id: int | None = None
-    release: str | None = Depends(set_release)
-
 @app.post("/submit")
 async def post_submit(
-        item: Item,
+        body: SubmitBody,
         user: Dict = Depends(get_user),
 ) -> Response:
-    if item.show_marks == '': item.show_marks = True
-    params = item.model_dump(exclude_none=True)
+    #if item.show_marks == '': item.show_marks = True
+    body.show_marks = body.show_marks != False
+    params = body.model_dump(exclude_none=True)
     params.update(user)
     logger.debug(f'submit: {params}')
     set_release(params['release'])
