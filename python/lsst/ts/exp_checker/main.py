@@ -16,7 +16,7 @@ from jinja2 import Environment
 from pydantic import BaseModel, Field, model_validator
 
 #from sqlmodel import Field, Session, SQLModel, create_engine
-
+from . import __version__
 from . import api, gallery, image, mydata, problems, ranking, stats, submit
 from .common import exp_checker_logger, username2uid
 from .config import config
@@ -165,7 +165,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     yield
 
 # Create the app
-app = FastAPI(lifespan=lifespan)
+logger.debug(f"exp_checker: v{__version__}")
+app = FastAPI(
+    version=__version__,
+    debug=True,
+    lifespan=lifespan,
+)
 
 # Redirect to index 
 @app.get("/")
@@ -330,6 +335,7 @@ async def render_page(request: Request, page_name: str):
                                           context = {
                                               "request": request,
                                               "repo": config['repo'],
+                                              "version": __version__,
                                           })
     else:
         # If not allowed, raise a 404 Not Found error
