@@ -3,7 +3,7 @@ from typing import Dict
 
 config: Dict[str, any] = {
     "base_dir": Path(__file__).resolve().parent,
-    "butler_repo": "s3://embargo@rubin-summit-users/butler.yaml", #embargo
+    "butler_repo": "embargo", #"s3://embargo@rubin-summit-users/butler.yaml", 
     "butler_collection": "u/kadrlica/binCalexp4",
     "s3_profile_name": "rubin-rubintv-data-summit",
     "s3_endpoint_url": "https://s3dfrgw.slac.stanford.edu",
