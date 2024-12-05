@@ -237,7 +237,7 @@ async def get_image(
         params['type'] = config.get('transfer_type')
         logger.debug(f"Set image access type: {params['type']}")
 
-    response = image.main(params, request)
+    response = await image.main(params, request)
     return response
 
 @app.get("/headers")

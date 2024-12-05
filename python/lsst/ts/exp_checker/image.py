@@ -6,6 +6,7 @@ import os
 from os.path import basename
 from io import BytesIO, StringIO, FileIO
 import json
+import asyncio
 
 from typing import Dict, List, Optional, Tuple
 from fastapi import Request
@@ -132,24 +133,69 @@ def get_content_from_butler(butler, dataId: Dict):
     stream = BytesIO(manager.getData())
     return stream
 
-def get_content_from_socket(dataId: Dict):
-    """ Access a file from a worker pod using a websocket.
+#def get_content_from_socket(dataId: Dict):
+#    """ Access a file from a worker pod using a websocket.
+# 
+#    Parameters
+#    ----------
+#    dataId (dict) : value pairs that label the DatasetRef within a Collection.
+# 
+#    Returns
+#    -------
+#    stream : BytesIO stream
+#    """
+#    logger.debug("Getting image content from socket...")
+#    import base64
+#    import websocket
+#    
+#    datasetType = 'calexpBinned'
+#    #dataId = {"instrument": "LSSTComCam", "detector": 3, "visit": 2024110900185}
+#    
+#    command = {
+#        "name": "get fits image",
+#        "parameters": {
+#            "repo": config['butler_repo'],
+#            "collection": config['butler_collection'],
+#            "image_name": datasetType,
+#            "data_id": dataId,
+#            "compress": config.get('compress_images', True),
+#        }
+#    }
+# 
+#    # Create the websocket
+#    ws = websocket.WebSocket()
+#    ws.connect(config['websocket_uri'])
+# 
+#    # Send and receive a message
+#    ws.send(json.dumps(command))
+#    response = ws.recv()
+# 
+#    # Close the socket
+#    ws.close()
+#    
+#    # Convert the response to IO stream
+#    response = json.loads(response)
+#    stream = BytesIO(base64.b64decode(response['content']['fits']))
+#    return stream
 
+async def get_content_from_socket(dataId: Dict, timeout: float = 30):
+    """ 
+    Asynchronously access a file from a worker pod using a WebSocket.
+    
     Parameters
     ----------
     dataId (dict) : value pairs that label the DatasetRef within a Collection.
+    timeout (float) : websocket timeout (seconds)
 
     Returns
     -------
     stream : BytesIO stream
     """
-    logger.debug("Getting image content from socket...")
-    import websocket
     import base64
+    import websockets
     
+    logger.debug("Getting image content from async socket...")
     datasetType = 'calexpBinned'
-    #dataId = {"instrument": "LSSTComCam", "detector": 3, "visit": 2024110900185}
-    
     command = {
         "name": "get fits image",
         "parameters": {
@@ -161,21 +207,38 @@ def get_content_from_socket(dataId: Dict):
         }
     }
 
-    # Create the websocket
-    ws = websocket.WebSocket()
-    ws.connect(config['websocket_uri'])
+    try:
+        # Use websockets library for async WebSocket connection
+        async with websockets.connect(
+                config['websocket_uri'],
+                max_size=100 * 1024 * 1024,  # 100 MB in bytes
+        ) as websocket:
 
-    # Send and receive a message
-    ws.send(json.dumps(command))
-    response = ws.recv()
+            await asyncio.wait_for(
+                websocket.send(json.dumps(command)),
+                timeout=timeout
+            )
+            
+            # Receive the response with timeout
+            response = await asyncio.wait_for(
+                websocket.recv(),
+                timeout=timeout
+            )
+            # Parse the response
+            parsed_response = json.loads(response)
+            
+            # Convert the response to IO stream
+            stream = BytesIO(base64.b64decode(parsed_response['content']['fits']))
+            
+            return stream
 
-    # Close the socket
-    ws.close()
-    
-    # Convert the response to IO stream
-    response = json.loads(response)
-    stream = BytesIO(base64.b64decode(response['content']['fits']))
-    return stream
+    except websockets.exceptions.WebSocketException as e:
+        logger.error(f"WebSocket error: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in get_content_from_socket: {e}")
+        raise
+
 
 def get_fov_image(params: Dict, client):
     """ Get FoV mosaic from RubinTV S3 bucket.
@@ -211,7 +274,7 @@ def get_fov_image(params: Dict, client):
 
     return StreamingResponse(content=data_stream.iter_chunks())
 
-def main(params: Dict, request: Request):
+async def main(params: Dict, request: Request):
     logger.debug(f"image.main: {params}")
 
     filename = params.get('filename', params.get('name'))
@@ -264,13 +327,13 @@ def main(params: Dict, request: Request):
         path = config['fitspath'][config['release']]
         file_path = os.path.join(config['base_dir'], path, filename)
         logger.debug(f"type={params['type']}: {file_path}")
-        stream = get_content_from_file(file_path)
+        stream = await get_content_from_file(file_path)
         return stream_response(stream, 1024, True)
     
     elif (params.get('type') == "ws"):
         # Get image file from worker through websocket
         logger.debug(f"type={params['type']}: dataId: {dataId}")
-        stream = get_content_from_socket(dataId)
+        stream = await get_content_from_socket(dataId)
         return stream_response(stream, 1024, True)
     
     elif params.get('type') in ('butler', None):
@@ -281,7 +344,7 @@ def main(params: Dict, request: Request):
             logger.warn("Butler not found.")
             return None
         else:
-            stream = get_content_from_butler(butler, dataId)
+            stream = await get_content_from_butler(butler, dataId)
             return stream_response(stream, 1024, True)
 
     else:
