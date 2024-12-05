@@ -8,7 +8,7 @@ config: Dict[str, any] = {
     "s3_profile_name": "rubin-rubintv-data-summit",
     "s3_endpoint_url": "https://s3dfrgw.slac.stanford.edu",
     #"websocket_uri": "ws://localhost:9999/ws/client",
-    "websocket_uri": "ws://usdf-rsp-dev.slac.stanford.edu/rubintv/ws/ddv/client",
+    "websocket_uri": "wss://usdf-rsp-dev.slac.stanford.edu/rubintv%2Fws%2Fddv/client",
     "transfer_type": "ws",
     "compress_images": True,
     "repo": "https://github.com/lsst-sitcom/rubin_exp_checker",
