@@ -9,7 +9,7 @@ import json
 import asyncio
 
 from typing import Dict, List, Optional, Tuple
-from fastapi import Request
+from fastapi import Request, Response
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.exceptions import HTTPException
 
@@ -240,12 +240,12 @@ async def get_content_from_socket(dataId: Dict, timeout: float = 30):
         raise
 
 
-def get_fov_image(params: Dict, client):
+def get_fov_image(dataId: Dict, client):
     """ Get FoV mosaic from RubinTV S3 bucket.
 
     Parameters
     ----------
-    params: parameter dict
+    dataId (dict) : value pairs that label the DatasetRef within a Collection.
 
     Returns
     -------
@@ -256,11 +256,10 @@ def get_fov_image(params: Dict, client):
     #comcam/2024-11-19/calexp_mosaic/000040/comcam_calexp_mosaic_2024-11-19_000040.jpg
     camera_name = 'comcam'
     channel_name = 'calexp_mosaic'
-    visit = str(params['expname'])
-    day_obs = int(visit[0:8])
-    seq_num = int(visit[8:])
-    date_str = f"{visit[0:4]}-{visit[4:6]}-{visit[6:8]}"
+    visit_str = str(dataId['visit'])
+    seq_num = int(visit_str[8:])
     seq_str = f"{seq_num:06d}"
+    date_str = f"{visit_str[0:4]}-{visit_str[4:6]}-{visit_str[6:8]}"
     filename = f"{camera_name}_{channel_name}_{date_str}_{seq_str}.jpg"
     key = f"{camera_name}/{date_str}/{channel_name}/{seq_str}/{filename}"
 
@@ -302,7 +301,8 @@ async def main(params: Dict, request: Request):
         try:
             s3_client = request.app.state.s3_client
             return get_fov_image(dataId, s3_client)
-        except:
+        except ClientError as e:
+            logger.warn(e)
             logger.warn("FoV file not found.")
             file_path = f"{config['base_dir']}/assets/fov_not_available.png"
             return download_file(image_not_found)

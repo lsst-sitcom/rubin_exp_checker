@@ -1,3 +1,4 @@
+.db
 .db/
 exclusive/
 bin/
@@ -7,3 +8,9 @@ php/config.php.inc
 #config.py
 setup.sh
 version.py
+
+python/lsst/ts/exp_checker/.db/
+
+# https://stackoverflow.com/a/73720550/4075339
+# git update-index --skip-worktree python/lsst/ts/exp_checker/.db/files.comcam-20241117.db
+# git update-index --no-skip-worktree python/lsst/ts/exp_checker/.db/files.comcam-20241117.db

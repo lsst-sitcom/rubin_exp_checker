@@ -50,15 +50,15 @@
       </div>
     </div>
 
-    <!-- Announcement
+    <!-- Announcement -->
     <div>
       <p align="center"> 
         <span class="text-error" style="font-weight: bold; font-size: large;">
-        The DC2 Eyeball Challenge has ended, but please feel free to keep checking images.
+        This is a demo. User data will be cleared periodically.
         </span>
       </p>
     </div>
-    -->
+
     
     <!-- BUTTONS -->
     <div style="margin-top:20px; position:relative;">
@@ -77,7 +77,7 @@
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
-            <li><a tabindex="-1" href="#" id="dm-button"><u>D</u>ownload FITS file</a></li>
+            <li><a tabindex="-1" href="#" id="dm-button"><u>D</u>ata access info</a></li>
             <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
             <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
           </ul>
@@ -153,23 +153,24 @@
       </div>
     </div>
 
+    <!-- ADW: Probably isn't necessary, since URL is updated in browser-->
     <div class="modal hide" id="share-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>URL for sharing</h3>
+        <h3>Link to this image</h3>
       </div>
       <div class="modal-body">
         <textarea style="width:516px;" type="text" id="share-url" disabled></textarea>
       </div>
     </div>
-
+    
     <div class="modal hide" id="dm-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Image location</h3>
+        <h3>Image access info</h3>
       </div>
       <div class="modal-body">
-        <textarea style="width:516px;" type="text" id="dm-url" disabled></textarea>
+        <textarea style="width:516px; height:128px" type="text" id="dm-url" disabled></textarea>
       </div>
     </div>
 
@@ -314,7 +315,7 @@
   });
   $('#dm-button').on('click', function() {
     $('#dm-modal').modal('show');
-    var dm_url="get_image?type=dm&release="+release+"&expname="+expname+"&ccd="+ccd;
+    var dm_url="get_image?type=dm&release="+release+"&visit="+expname+"&detector="+ccd;
     var textBox = $('#dm-url');
     textBox.load(dm_url).select();
     // Work around Chrome's little problem
@@ -332,7 +333,7 @@
     }
     // load FoV image from DM
     $('#fov-body').find('.fov-image').remove();
-    var fov_url = "get_image?type=fov&release="+release+"&expname="+expname;
+    var fov_url = "get_image?type=fov&release="+release+"&visit="+expname+"&detector="+ccd;
     $('<img class="fov-image" src="' + fov_url +'" border="0" />').load(function() {
       $(this).width(530).appendTo('#fov-body');
     });

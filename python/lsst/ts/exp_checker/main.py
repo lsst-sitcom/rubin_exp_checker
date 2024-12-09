@@ -95,6 +95,8 @@ class ImageParams(BaseModel):
     class Config:
         # This allows both field and alias to be valid
         populate_by_name = True
+        # This setting prevents extra fields
+        extra = 'forbid'
 
         
 class SubmitBody(BaseModel):
@@ -128,7 +130,8 @@ def create_butler(repo, collection):
     butler : the instantiated butler
     """
     logger.info(f"Creating LSST Butler...")
-    logger.debug(f"  repo: {repo}, collection: {collection}")
+    logger.debug(f"  repo: {repo}")
+    logger.debug(f"  collection: {collection}")
     try:
         from lsst.daf.butler import Butler
         return Butler(repo, collections=collection)
@@ -224,14 +227,16 @@ async def get_gallery(
 async def get_image(
         request: Request,
         release: str = Depends(set_release),
-        name: str | None = None,
-        expname: str | None = None,
-        ccd: str | None = None,
+        visit: str | None = None,
+        detector: str | None = None,
+        name: str | None = None, 
         type: str | None = None,
 ) -> Response:
     params = {'release': release, 'name': name,
-              'expname': expname, 'ccd': ccd,
+              'expname': visit, 'ccd': detector,
+              'visit': visit, 'detector': detector,
               'type': type}
+    logger.debug(f"get_image.params: {params}")
 
     if params['type'] is None:
         params['type'] = config.get('transfer_type')
