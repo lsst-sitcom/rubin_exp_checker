@@ -165,7 +165,8 @@ function completeVisualization(response) {
     $('#image_name').html(release + ", " + expname + ', CCD ' + ccd + ", " + response.band + "-band");
 
   // update browser url field
-  var newurl=window.location.pathname + '?release=' + release + '&expname=' + expname + '&ccd=' + ccd;
+  var newurl=window.location.pathname + '?release=' + release + '&visit=' + expname + '&detector=' + ccd;
+  console.log('newurl: '+newurl);
   window.history.replaceState(null, "Title", newurl);
   $('#share-url').val('http://' + window.location.host + newurl);
 
