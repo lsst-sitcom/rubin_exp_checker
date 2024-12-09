@@ -228,8 +228,11 @@ async def get_content_from_socket(dataId: Dict, timeout: float = 30):
             parsed_response = json.loads(response)
             
             # Convert the response to IO stream
-            stream = BytesIO(base64.b64decode(parsed_response['content']['fits']))
-            
+            try: 
+                stream = BytesIO(base64.b64decode(parsed_response['content']['fits']))
+            except:
+                raise Exception(parsed_response)
+                
             return stream
 
     except websockets.exceptions.WebSocketException as e:
