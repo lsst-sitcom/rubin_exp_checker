@@ -3,76 +3,60 @@
         <span class="caret"></span>
         </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <!-- Not in real data 
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="#">Simulation</a>
-            <ul class="dropdown-menu">
-              <li><a class="problem" tabindex="-1" href="#">Speckling</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Cosmic</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Star</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Galaxy</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Sky background</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Instrument</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Knots</a></li>
-            </ul>
-          </li>
-          -->
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Tracks</a>
             <ul class="dropdown-menu">
               <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Tumbler</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Meteor</a></li>
               <li><a class="problem" tabindex="-1" href="#">Airplane</a></li>
             </ul>
           </li>
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Masking</a>
             <ul class="dropdown-menu">
-              <li><a class="problem" tabindex="-1" href="#">Column mask</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Bad pixels</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Bad column</a></li>
               <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Edge-bleed</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Crosstalk</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Bleed trail</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Dark trail</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Edge bleed</a></li>
               <li><a class="problem" tabindex="-1" href="#">Excessive mask</a></li>
             </ul>
           </li>
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Sky estimation</a>
             <ul class="dropdown-menu">
-              <li><a class="problem" tabindex="-1" href="#">Dark rim</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Dark edge</a></li>
               <li><a class="problem" tabindex="-1" href="#">Dark halo</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Quilted sky</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Wavy sky</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Anti-bleed</a></li>
             </ul>
           </li>
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Flat field</a>
             <ul class="dropdown-menu">
-              <li><a class="problem" tabindex="-1" href="#">Amp jump</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Amplifier jump</a></li>
               <li><a class="problem" tabindex="-1" href="#">Fringing</a></li>
-              <!-- Not in DC2
-              <li><a class="problem" tabindex="-1" href="#">Tape bump</a></li>
-              -->
               <li><a class="problem" tabindex="-1" href="#">Tree rings</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Vertical jump</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Hardware imprint</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Coffee stains</a></li>
             </ul>
           </li>
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Reflections</a>
             <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Stray light</a></li>
               <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Bright spray</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Brush strokes</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Bright arc</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Ghoul</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Glint</a></li>
             </ul>
-          <!-- Not in DC2 -->
           </li><li class="dropdown-submenu">
             <a tabindex="-1" href="#">Instrument/Site</a>
             <ul class="dropdown-menu">
               <li><a class="problem" tabindex="-1" href="#">Guiding</a></li>
               <li><a class="problem" tabindex="-1" href="#">Shutter</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Haze</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Vertical stripes</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Focus</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Readout noise</a></li>
             </ul>
           </li>
           <li class="divider"></li>

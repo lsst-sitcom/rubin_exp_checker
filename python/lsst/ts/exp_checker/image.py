@@ -133,51 +133,6 @@ def get_content_from_butler(butler, dataId: Dict):
     stream = BytesIO(manager.getData())
     return stream
 
-#def get_content_from_socket(dataId: Dict):
-#    """ Access a file from a worker pod using a websocket.
-# 
-#    Parameters
-#    ----------
-#    dataId (dict) : value pairs that label the DatasetRef within a Collection.
-# 
-#    Returns
-#    -------
-#    stream : BytesIO stream
-#    """
-#    logger.debug("Getting image content from socket...")
-#    import base64
-#    import websocket
-#    
-#    datasetType = 'calexpBinned'
-#    #dataId = {"instrument": "LSSTComCam", "detector": 3, "visit": 2024110900185}
-#    
-#    command = {
-#        "name": "get fits image",
-#        "parameters": {
-#            "repo": config['butler_repo'],
-#            "collection": config['butler_collection'],
-#            "image_name": datasetType,
-#            "data_id": dataId,
-#            "compress": config.get('compress_images', True),
-#        }
-#    }
-# 
-#    # Create the websocket
-#    ws = websocket.WebSocket()
-#    ws.connect(config['websocket_uri'])
-# 
-#    # Send and receive a message
-#    ws.send(json.dumps(command))
-#    response = ws.recv()
-# 
-#    # Close the socket
-#    ws.close()
-#    
-#    # Convert the response to IO stream
-#    response = json.loads(response)
-#    stream = BytesIO(base64.b64decode(response['content']['fits']))
-#    return stream
-
 async def get_content_from_socket(dataId: Dict, timeout: float = 30):
     """ 
     Asynchronously access a file from a worker pod using a WebSocket.
@@ -214,6 +169,7 @@ async def get_content_from_socket(dataId: Dict, timeout: float = 30):
                 max_size=100 * 1024 * 1024,  # 100 MB in bytes
         ) as websocket:
 
+            # Send the command
             await asyncio.wait_for(
                 websocket.send(json.dumps(command)),
                 timeout=timeout
@@ -224,15 +180,16 @@ async def get_content_from_socket(dataId: Dict, timeout: float = 30):
                 websocket.recv(),
                 timeout=timeout
             )
-            # Parse the response
+
+            # Parse the json response
             parsed_response = json.loads(response)
+
+            # Not the expected return type; raise exception
+            if parsed_response['type'] != 'fits':
+                raise Exception(parsed_response)
             
             # Convert the response to IO stream
-            try: 
-                stream = BytesIO(base64.b64decode(parsed_response['content']['fits']))
-            except:
-                raise Exception(parsed_response)
-                
+            stream = BytesIO(base64.b64decode(parsed_response['content']['fits']))
             return stream
 
     except websockets.exceptions.WebSocketException as e:

@@ -1,7 +1,7 @@
 # this directory will be overwritten by the actual exp-checker app:
 # https://github.com/lsst-sitcom/rubin_exp_checker
 import asyncio
-import os, json, enum
+import os, json, enum, copy
 from contextlib import asynccontextmanager
 from typing import Annotated, Dict, Optional
 from typing import AsyncGenerator
@@ -336,12 +336,9 @@ async def render_page(request: Request, page_name: str):
     if page_name in ALLOWED_PAGES:
         # Render the template with the request context
         env = Environment(autoescape=True, auto_reload=True)
-        return templates.TemplateResponse(f"{page_name}.html",
-                                          context = {
-                                              "request": request,
-                                              "repo": config['repo'],
-                                              "version": __version__,
-                                          })
+        context = {"request": request, "version": __version__}
+        context.update(copy.deepcopy(config))
+        return templates.TemplateResponse(f"{page_name}.html", context=context)
     else:
         # If not allowed, raise a 404 Not Found error
         raise HTTPException(status_code=404, detail="Page not found")
