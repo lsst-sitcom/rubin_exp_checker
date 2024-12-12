@@ -37,7 +37,7 @@
       <a id="tutorial-anchor"></a>
     </div>
     <div class="span12">
-      <p>The primary interface for the Exposure Checker is the <a href="viewer.html">Viewer</a>, which displays half of an LSST CCD.
+      <p>The primary interface for the Exposure Checker is the <a href="viewer.html">Viewer</a>, which displays the image of a single LSST detector.
       Initally three buttons are shown:</p>
       <button id="skip-button" class="btn btn-primary skip">Skip</button>
       <button id="fine-button" class="btn btn-success">Submit</button>
@@ -48,16 +48,16 @@
       Otherwise, click the <span class="text-error" style="font-weight: bold;">Problem</span> button and select one of the predefined problem categories.
       Click on the location(s) of the problematic features to mark them on the image.</p>
 
-      <p>In the course of marking problems, two new buttons will appear:</p>
+      <p>When you marking a problem two new buttons will appear:</p>
       <div id="mark-buttons">
         <button class="btn btn-primary" data-toggle="button">False</button>
         <button class="btn btn-primary">Clear Last</button>
       </div>
       <p style="margin-top:10px">
-      With the <span class="text-info" style="font-weight: bold;">False</span> button, you can report a non-existent problem that has been falsely flagged by data management (DM),
-      e.g., a mask that covers an area that appears totally fine.
-      Because DM interpolates over some features (cosmic rays, bleed trails, etc.) it can be very difficult to assess whether DM is performing properly.
-      If you do determine that a mask was added in error, choose the appropriate mask category click on this button to report it.
+      With the <span class="text-info" style="font-weight: bold;">False</span> button, you can report a non-existent problem that has been falsely flagged in data processing,
+      e.g., a mask that covers an area that appears fine.
+      Because the data processing interpolates over some features (cosmic rays, bleed trails, etc.) it can sometimes be difficult to assess whether the algorithms are performing properly.
+      If you determine that a mask was added in error, choose the appropriate mask category click on this button to report it.
       When you click on the image, a mark will appear to indicate that you are reporting a false positive.
       After you've marked the first problem, another button <span class="text-info" style="font-weight: bold;">Clear Last</span> will appear to let you undo your mark(s).
         Once you are done marking all problems, click <span class="text-success" style="font-weight:bold;">Submit</span> to log the problems and advance to the next image.
@@ -68,18 +68,18 @@
       <div class="btn-group">
       <button id="info-button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Info</span><span class="caret"></span></button>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <li><a tabindex="-1" href="#tutorial-anchor" id="share-button">Share <u>l</u>ink</a></li>
-        <li><a tabindex="-1" href="#tutorial-anchor" id="desdm-button"><u>D</u>ownload original image</a></li>
-        <li><a tabindex="-1" href="#tutorial-anchor" id="fov-button">Show entire <u>F</u>oV</a></li>
-        <li><a tabindex="-1" href="#tutorial-anchor" id="reported-button">Show reported <u>p</u>roblems</a></li>
+        <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
+        <li><a tabindex="-1" href="#" id="dm-button"><u>D</u>ata access info</a></li>
+        <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
+        <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
       </ul>
       </div>
       <button class="btn btn-primary">Toggle <u>m</u>ask</button>
-      <button class="btn btn-primary">Toggle s<u>c</u>aling</button>
+      <button class="btn btn-primary">Toggle <u>s</u>caling</button>
       </p>
       <p>
-        The <span class="text-info" style="font-weight: bold;">Info</span> button opens a menu with a link to the image you are currently viewing, the path to the binned FITS file, and a PNG showing the entire focal plane field of view (FoV). You can also overlay problems previously reported for this image by other users.
-        The <span class="text-info" style="font-weight: bold;">Toggle Mask</span> button allows you to display or hide the image mask plane, while the <span class="text-info" style="font-weight: bold;">Toggle Scaling</span> button lets you change the image scaling.
+        The <span class="text-info" style="font-weight: bold;">Info</span> button opens a menu with a link to the image you are currently viewing, the data access info, and an image showing the entire focal plane field of view (FoV). You can also overlay problems previously reported for this image by other users.
+        The <span class="text-info" style="font-weight: bold;">Toggle mask</span> button allows you to display or hide the image mask plane, while the <span class="text-info" style="font-weight: bold;">Toggle scaling</span> button lets you change the image scaling.
       </p>
     </div>
 
@@ -90,7 +90,7 @@
       </p>
       <ul>
         <li><b>Toggle the Scaling:</b> By toggling the scaling you can examine both bright and faint features in the image. The large stretch (darker background) images are good for identifying features like cosmic rays, while the small stretch (lighter background) is better for seeing background issues.</li>
-        <li><b>Toggle the Mask:</b> The mask will display features that have already have been identified and corrected by DM. It will also allow you to identify over-agressive masking.</li>
+        <li><b>Toggle the Mask:</b> The mask will display features that have already have been identified and corrected by data processing. It will also allow you to identify over-agressive masking.</li>
         <li><b>Check Previously Marked Problems:</b> Checking problems marked by other users can be useful, especially if you are new to the exposure checker. That said, every cosmologist should recognize the power of blinding...</li>
         <li><b>Investigate the Focal Plane Image:</b> Take a look at the full focal plane FoV image. Often background mis-estimation can be more easly seen in the more heavily binned images. You can also use the FoV image to navigate to another CCD of interest, but be careful that this navigation will not submit your input for the current CCD.</li>
         <li><b>Mark Problems:</b> Mark issues that you find in the image. If you find something that doesn't seem to fit with known problem classes, add it as <span class="text-error" style="font-weight:bold;">"Other..."</span>. Remember to click on the image after entering text to mark <span class="text-error" style="font-weight:bold;">"Other..."</span> or <span class="text-error" style="font-weight:bold;">"Awesome!"</span> features. You can mark multiple problems per image, but problems are not logged until you press <span class="text-success" style="font-weight:bold;">Submit</span>.</li>
@@ -103,10 +103,10 @@
       You should now have everything you need to start looking at images.
       If you still have questions, check out the <a href="faq.html">FAQ</a> page or post a message to <a href="{{ slack_link }}">{{ slack_channel }}</a>.
       The remainder of this tutorial goes into more detail about several common imaging artifacts. 
-      The <b>Simulations</b> section is geared towards issues in LSST simulated images, while the other sections document common problems in real DES data.
+      Some of the examples of artifacts are common problems from the Dark Energy Survey, and may not appear (or appear differently) in LSST.
       </p>
     </div>
-
+    <!--
     <div class="span12">
       <a id="simulation-anchor"></a>
       <h3>Simulations</h3>
@@ -161,18 +161,32 @@
       <p> Issues with how the instrument is simulated. May include (but is not limited to): incorrect camera/ccd geometry, incorrect reflections/scattered light, saturation effects (i.e., edge bleeds), electronic noise, etc. If you start to see consistent artifacts please add a new description in the "Other" classification.
       </p>
     </div>
-
+    -->
 
     <div class="span12">
       <a id="masking-anchor"></a>
       <h3>Masking</h3>
     </div>
+
+    <div class="span7" >
+      <a id="column-mask-anchor"></a>
+      <h4>Bad pixels</h4>
+      <p> Bad pixels can occur for many different reasons. They may be dark or bright, and they should be masked in ISR.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href=""><img src="" /></a>
+        <small></small>
+      </p>
+    </div>
+
     <div class="span7" >
       <a id="column-mask-anchor"></a>
       <h4>Column Mask</h4>
       <p> There are a number of columns that behave differently than their neighbors.
         Often this occurs when a hot pixel in the column bleeds over during readout.
-        We attempt to mask these columns with a "bad pixel mask" and it is useful to know when we are missing bad columns.
+        We attempt to mask these columns, and it is useful to know when we are missing bad columns.
       </p>
     </div>
     <div class="span5">
@@ -186,11 +200,11 @@
       <a id="cosmic-ray-anchor"></a>
       <h4>Cosmic rays</h4>
       <p> Unmasked cosmic rays should become apparent when you use 
-      <button class="btn btn-small btn-primary">Toggle s<u>c</u>aling</button>
+      <button class="btn btn-small btn-primary">Toggle <u>s</u>caling</button>
       to switch to a scaling that emphasizes the bright aspects of the image and
       <button class="btn btn-small
       btn-primary">Toggle <u>m</u>ask</button> to blink the existing
-      mask.  LSST DM interpolates masked cosmic ray pixels, which
+      mask.  LSST interpolates masked cosmic ray pixels, which
       makes it difficult to identify over-agressive masking.
       </p>
     </div>
@@ -202,29 +216,58 @@
     </div>
 
     <div class="span7">
-      <a id="cross-talk-anchor"></a>
-      <h4>Cross-talk</h4>
-      <p>Cross-talk is a leakage of charge between electronic readout
-      channels.  Cross-talk can usually be identified as long,
+      <a id="crosstalk-anchor"></a>
+      <h4>Crosstalk</h4>
+      <p>Crosstalk is a leakage of charge between electronic readout
+      channels.  Crosstalk can usually be identified as long,
       vertical features, typically several pixels wide and
-      often widest in the middle section.  Cross-talk is generally
+      often widest in the middle section.  Crosstalk is generally
       strongest between amplifiers on the same chip, and you should be
       able to find a bright object that is the source of the charge.
-      Mark the widest region of the cross-talk feature (usually near the middle).
+      Mark the widest region of the crosstalk feature (usually near the middle).
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/cross_talk.gif"><img src="material/cross_talk.gif" /></a>
-        <small>Cross-talk from several bright stars (DES)</small>
+        <small>Crosstalk from several bright stars (DES)</small>
       </p>
     </div>
 
     <div class="span7">
       <a id="edge-bleed-anchor"></a>
-      <h4>Edge-bleed</h4>
+      <h4>Bleed trails</h4>
+      <p> Bright stars may exceed the pixel full well capacity and charge may overflow the pixel potential barrier and start extending ("bleeding") along the vertical (column) direction.
+        These bleed trails may extend hundereds or thousands of pixels.
+        Some of the LSST detectors have a channel stop that will prevent some bleed trails from crossing between the top and bottom halfs of the CCD.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href=""><img src="" /></a>
+        <small></small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="edge-bleed-anchor"></a>
+      <h4>Dark trails</h4>
+      <p> Very bright stars are also found to produce dark trails that extend beyond the bleed trails.
+        The precise electrostatic explanation for these features is still under investigation.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href=""><img src="" /></a>
+        <small></small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="edge-bleed-anchor"></a>
+      <h4>Edge bleed</h4>
       <p> Very bright stars saturate the readout electronics leading
-        to bright bleeds on the readout side of the CCD.  Edge-bleeds
+        to bright bleeds on the readout side of the CCD.  Edge bleeds
         should be automatically identified and masked with a
         rectangular strip.  If this mask is too big, too small, or not
         present at all, please tag the location of the error.
@@ -241,9 +284,8 @@
       <a id="excessive-mask-anchor"></a>
       <h4>Excessive mask</h4>
       <p> Occasionally large regions of a CCD get masked for no
-        apparent reason. In LSST images, this is most commonly seen
-        from over-agressive cosmic ray masking.  Toggle the mask and
-        flag excessive masks when you see them.
+        apparent reason. In LSST images, this can happen from over-agressive cosmic ray masking.
+        Toggle the mask and flag excessive masks when you see them.
       </p>
     </div>
     <div class="span5">
@@ -285,6 +327,7 @@
       </p>
     </div>
 
+    <!--
     <div class="span7">
       <a id="Quilted-sky-anchor"></a>
       <h4>Quilted sky</h4>
@@ -329,16 +372,18 @@
         <small>Dark anti-bleed around bright stars (DES)</small>
       </p>
     </div>
-
+    -->
+    
     <div class="span12">
       <h3>Flat Field</h3>
     </div>
     <div class="span7">
       <a id="ab-jump-anchor"></a>
-      <h4>Amp jump</h4>
-      <p>The LSST CCDs are read out by 16 different amplifiers (8 per exposure checker image).
-        The gains on these amplifiers are different leading to a different background level in different sections of each CCD.
-        Differences between amplifiers should be corrected in processing; however, a failure can lead to a strong change in the background level at the amplifier boundaries.
+      <h4>Amplifier jump</h4>
+      <p>The LSST CCDs are read out by 16 amplifiers.
+        In the Exposure Checker orientation, there are 8 amplifiers segments on the top half of the image and 8 amplifier segments on the bottom half.
+        The electronic gains of these amplifiers are different, which can lead to differences in the background level in different sections of each CCD.
+        Differences between amplifiers should be corrected in processing; however, a failure can lead to a sharp change in the background level at the amplifier boundaries.
       </p>
     </div>
     <div class="span5">
@@ -397,6 +442,23 @@
       </p>
     </div>
 
+
+    <div class="span7">
+      <a id="vertical-jump-anchor"></a>
+      <h4>Coffee stains</h4>
+      <p>
+        The backside processing procedure for the ITL CCDs can result in structured quantum efficiency variations that are seen most prominently in the bluer bands.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href=""><img src="" /></a>
+        <small></small>
+      </p>
+    </div>
+
+    
+    <!--
     <div class="span7">
       <a id="vertical-jump-anchor"></a>
       <h4>Vertical jump</h4>
@@ -412,16 +474,34 @@
         <small>Vertical jump from bad flats (DES)</small>
       </p>
     </div>
-
+    -->
+    
     <div class="span12">
       <h3>Reflections</h3>
     </div>
+    <!--
     <div class="span7">
       <a id="bright-spray-anchor"></a>
       <h4>Bright spray</h4>
       <p> Light from bright off-axis stars can scatter at grazing incidence off of various surfaces in the optical train..
         This leads to broad bright sprays fanning out from the edge of the focal plane.
         These features can be most easily identified on the full focal plane images via the <button class="btn btn-small btn-primary">Info</button> button.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="material/bright_spray.gif"><img src="material/bright_spray.gif" /></a>
+        <small>Example of strong spray of scattered light (DES)</small>
+      </p>
+    </div>
+    -->
+
+    <div class="span7">
+      <a id="stray-light-anchor"></a>
+      <h4>Stray light</h4>
+      <p> Stray light coming from off-axis sources (i.e., stars, the moon, or terrestrial light sources) can scatter at grazing incidence off of various surfaces in the optical train.
+        This leads to broad bright stray light features fanning out from the edge of the focal plane.
+        These features can be identified on the full focal plane images via the <button class="btn btn-small btn-primary">Info</button> button.
       </p>
     </div>
     <div class="span5">
@@ -446,10 +526,10 @@
     </div>
 
     <div class="span7">
-      <a id="brush-strokes-anchor"></a>
-      <h4>Brush strokes</h4>
-      <p> In addition to "Bright Sprays", less intense scattered light features appear on smaller scales.
-        These have been termed "Brush Strokes" due to their diffuse, sweeping appearance.
+      <a id="ghoul-anchor"></a>
+      <h4>Ghouls</h4>
+      <p> In addition to brighter "Stray light" and "Ghost" features, less intense diffuse scattered light features can appear on smaller scales.
+        These have been termed "Ghouls" due to their diffuse, and sometimes transient, appearance.
       </p>
     </div>
     <div class="span5">
@@ -458,11 +538,11 @@
         <small>Brush strokes of scattered light (DES)</small>
       </p>
     </div>
-
+    
     <div class="span7">
-      <a id="bright-arc-anchor"></a>
-      <h4>Bright arc</h4>
-      <p> Bright arcs are another type of scattered light found in DES. They are believed to have arisen from reflections off the uncoated edge of the filters (a "Type II" spray) and scattering off of the filter cage.
+      <a id="glint-anchor"></a>
+      <h4>Glints</h4>
+      <p> Glints are another type of scattered light. They are pseudo-specular and can arise from reflections off the uncoated edge of the filters or other elements in the optical path.
       </p>
     </div>
     <div class="span5">
@@ -472,7 +552,6 @@
       </p>
     </div>
 
-    <!-- Not included in DC2
     <div class="span12">
       <h3>Tracks</h3>
     </div>
@@ -491,15 +570,40 @@
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/satellite.gif"><img src="material/satellite.gif" /></a>
-        <small>Satellite streak</small>
+        <small>Earth-orbiting satellite streak</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="tumbler-anchor"></a>
+      <h4>Tumblers</h4>
+      <p> Earth-orbiting satellites that are varying in brightness across an images. This is commonly a geometric affect from the tumbling of rocket bodies, space debris, etc.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href=""><img src="" /></a>
+        <small></small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="meteor-anchor"></a>
+      <h4>Meteors</h4>
+      <p> Meteors and meteor showers can cause tracks in the images that sometimes curve or break up.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href=""><img src="" /></a>
+        <small></small>
       </p>
     </div>
 
     <div class="span7">
       <a id="airplane-anchor"></a>
       <h4>Airplane</h4>
-      <p> Unfortunately, CTIO lies along a regional Chilean airline flight path.
-        We expect that roughly 15 planes will cross the DECam focal plane per season.
+      <p> Chilean airline flight paths have been adjusted to not cross directly over the observatories; however, airplane crossings still occur.
         Planes have a much larger impact that satellites, often destroying the sky background estimation.
         When lights on a airplane blink, they appear as out-of-focus donuts (and can be used to determine the height of the plane...).
       </p>
@@ -507,12 +611,10 @@
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/airplane.gif"><img src="material/airplane.gif" /></a>
-        <small>An airplane trail (factor 2 downsampled)</small>
+        <small>An airplane trail (DES)</small>
       </p>
     </div>
-    -->
 
-    <!-- Not included in DC2 (or probably any simulations)
     <div class="span12">
       <h3>Instrument/Telescope</h3>
     </div>
@@ -520,45 +622,44 @@
       <a id="guiding-anchor"></a>
       <h4>Guiding Failure</h4>
       <p> Failures in the telescope guiding can lead to extended and elongated sources.
-        These issues will hopefully be solved in Year 1.
+        This can also occur if the telescope is slewing when the shutter is open.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/guiding.gif"><img src="material/guiding.gif" /></a>
-        <small>A guiding error leading to blurred sources.</small>
+        <small>A guiding error leading to blurred sources (DES)</small>
       </p>
     </div>
 
     <div class="span7">
       <a id="shutter-anchor"></a>
       <h4>Shutter Failure</h4>
-      <p> Star bleeds are often symptomatic of the camera being readout with the shutter still open.
-        Star bleeds caused by shutter errors can be identified by looking at the full focal plane image, where the direction of the star bleeds will change between the top and bottom of the focal plane (due to a switch in the readout direction).
-        Shutter errors should be solved by Year 2.
+      <p> If the shutter fails to close before readout starts, stars will appear to have vertical tails aligned with the readout direction.
+        Shutter errors can be identified by a switch in the tail direction from the top and bottom of an image, and will be consistent across the focal plane.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/shutter.gif"><img src="material/shutter.gif" /></a>
-        <small>A shutter failure leading to star trails</small>
+        <small>A shutter failure leading to star trails (DES)</small>
       </p>
     </div>
 
     <div class="span7">
       <a id="readout-anchor"></a>
-      <h4>Readout</h4>
-      <p>There are additional readout glitches, which are usually manifest as nearly vertical hatched lines near the edges of the CCDs.
-        These issues should be fixed early in SV.
+      <h4>Readout noise</h4>
+      <p> Correlated noise in the readout electronics can manifest as patterned noise in the images. One manifestation in DES was a nearly vertical hatched lines near the edges of the CCDs.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/readout.gif"><img src="material/readout.gif" /></a>
-        <small>Image with a readout glitch on the left side</small>
+        <small>Image with a readout glitch on the left side (DES)</small>
       </p>
     </div>
 
+    <!--
     <div class="span7">
       <a id="haze-anchor"></a>
       <h4>Haze</h4>
@@ -590,23 +691,24 @@
         <small>Vertical stripes, resulting in excessive masking</small>
       </p>
     </div>
-
+    -->
+    
     <div class="span7">
       <a id="other-anchor"></a>
       <h3>Other...</h3>
       <p>Sometimes none of the existing categories fit.
         In this case, you can describe the problem in your own words.
-        Please do so in a way that is as comprehensible and consistent as possible. To help you do that, we remember the descriptions you've used before and show them to you.
+        Please do so in a way that is as comprehensible and consistent as possible.
+        To help you do that, we remember the descriptions you've used before and show them to you.
         To get a sense of what other people have found, check out our <a href="hodgepodge.html">Hodge-podge</a> page that show you a list of free-word categories from all users.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
         <a href="material/other.gif"><img src="material/other.gif" /></a>
-        <small>Image with "bizarre PSF" (possibly a guider fault)</small>
+        <small>Image with "bizarre PSF" from a guider fault (DES)</small>
       </p>
     </div>
-    -->
 
     <div class="span7">
       <a id="awesome-anchor"></a>

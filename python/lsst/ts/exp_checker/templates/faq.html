@@ -51,7 +51,7 @@
     <div class="span12">
       <a id="mask-anchor"></a>
       <h3>What do the mask colors mean?</h3>
-      <p>LSST DM stores information about why a pixel is masked in a "bit mask plane", and we color the mask based on the highest bit in this plane. We try to follow the DM convention for mapping colors to mask bits, which can be found <a href="https://pipelines.lsst.io/getting-started/display.html#interpreting-displayed-mask-colors">here</a>.
+      <p>The LSST Science Pipelines store information about why a pixel is masked in a "bit mask plane", and we color the mask based on the highest bit in this plane. We try to follow the Science Pipelines convention for mapping colors to mask bits, which can be found <a href="https://pipelines.lsst.io/getting-started/display.html#interpreting-displayed-mask-colors">here</a>.
       </p>
     </div>
 
@@ -72,7 +72,7 @@
     <div class="span12">
       <a id="submissions-anchor"></a>
       <h3>What happens with my submissions?</h3>
-      <p>If your are logged in, then your submissions are recorded each time you click the <button class="btn btn-small btn-success">Submit</button> button.
+      <p>Your submissions are recorded each time you click the <button class="btn btn-small btn-success">Submit</button> button.
         It's not a problem if you missed something on the image or you hit the button accidentially, since we don't have to be complete in finding problems. 
         We do seek to be reliable when we state that something is problematic.
       </p>
@@ -83,8 +83,8 @@
       <h3>False positives vs false negatives?</h3>
       <p>We would like to know about any kind of flaw in the data. Therefore, please
       mark both false negative and false positive instances of artifacts
-      (e.g., use "Edge-Bleed" to mark both an edge-bleed without an edge-bleed
-      mask and a edge-bleed mask without an edge-bleed).
+      (e.g., use "Edge Bleed" to mark both an edge bleed without an edge bleed
+      mask and a edge bleed mask without an edge bleed).
       We provide a <button class="btn btn-primary btn-small" data-toggle="button">False</button> button,
       that allows you to report a false-positive treatment of such a problem.
       </p>
@@ -93,14 +93,13 @@
     <div class="span12">
       <a id="underlined-letters-anchor"></a>
       <h3>What's up with the underlined letters on buttons?</h3>
-      <p>Any underlined letter on a button, for example
+      <p>Any underlined letter on a button indicates that you can use a keyboard shortcut. In the two cases below, you can use <strong>Alt+m</strong>
+        to toggle the mask and  <strong>Alt+s</strong> to toggle the scaling.
+        <span class="muted">Hint for Mac users: Alt = Option</span>
+      </p>
       <p>
         <button class="btn btn-primary btn-small">Toggle <u>m</u>ask</button>
         <button class="btn btn-primary btn-small">Toggle <u>s</u>caling</button>
-      </p>
-      <p>indicates that you can use a keyboard shortcut, namely <strong>Alt+m</strong>
-      or <strong>Alt+s</strong> in these two cases.
-      <span class="muted">Hint for Mac users: Alt = Option</span>
       </p>
     </div>
 
@@ -121,9 +120,9 @@
         <h3>Why are some of the bleed trails one-sided?</h3>
         <p> Bleed trails result when a bright object saturates one or
             more pixels and charge overflows along the readout
-            direction. There is a channel stop in the middle of the
-            LSST sensors that blocks charge flow and separates the
-            pixels readout by amplifiers on opposite sides of the CCD.
+            direction. There is a barrier between the top and bottom of
+            the e2v sensors that stops charge from flowing between the
+            two halves of the CCD.
             This causes some of the bleed trails to appear asymmetric
             depending on their position in the channel and the amount
             of charge overflow.
