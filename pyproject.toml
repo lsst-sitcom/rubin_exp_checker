@@ -17,9 +17,11 @@ dependencies = [
   "jinja2",
   "websockets",
   "moto",
+  "structlog>=24.4.0",
 ]
 readme = "README.md"
 dynamic = ["version"]
+requires-python = ">=3.11"
 
 [project.urls]
 Homepage = "https://des-exp-checker.pmelchior.net/"

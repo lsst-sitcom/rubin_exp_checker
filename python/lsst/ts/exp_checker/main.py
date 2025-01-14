@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment
 from pydantic import BaseModel, Field, model_validator
+import uvicorn
 
 #from sqlmodel import Field, Session, SQLModel, create_engine
 from . import __version__
@@ -358,3 +359,7 @@ app.mount("/material", StaticFiles(directory=BASE_DIR / 'material'), name="mater
 
 # For testing, mount everything in main directory
 #app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+if __name__ == "__main__":
+    uvicorn.run("lsst.ts.exp_checker.main:app")
