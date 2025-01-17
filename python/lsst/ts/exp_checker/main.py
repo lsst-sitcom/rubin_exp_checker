@@ -362,4 +362,4 @@ app.mount("/material", StaticFiles(directory=BASE_DIR / 'material'), name="mater
 
 
 if __name__ == "__main__":
-    uvicorn.run("lsst.ts.exp_checker.main:app")
+    uvicorn.run("lsst.ts.exp_checker.main:app", host="0.0.0.0")

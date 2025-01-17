@@ -68,3 +68,8 @@ dev = [
   "beautifulsoup4",
   "types-python-dateutil",
   ]
+
+[tool.setuptools.package-data]
+"lsst.ts.exp_checker.assets" = ["*.css", "*.js", "*.png"]
+"lsst.ts.exp_checker.assets.bootstrap" = ["*.css", "*.js", "*.png"]
+"lsst.ts.exp_checker.material" = ["*.gif"]
