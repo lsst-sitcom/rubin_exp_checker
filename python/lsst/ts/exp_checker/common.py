@@ -6,13 +6,14 @@ from pathlib import Path
 
 from structlog import get_logger
 
-import sqlite3
-from sqlite3 import Connection, Cursor
+import sqlalchemy
+from sqlalchemy import text
+from sqlalchemy.engine import Engine
 
 # Load configuration from config.py
 from .config import config
 
-__all__ = ['debug_to_console', 'check_or_abort',
+__all__ = ['debug_to_console',
            'getDBHandle',
            'getNextImage', 'getProblems',
            'username2uid', 'uid2username',
@@ -21,6 +22,8 @@ __all__ = ['debug_to_console', 'check_or_abort',
            'getActivity','giveBonusPoints',
            'exp_checker_logger',
 ]
+
+logger = get_logger()
 
 # Set default timezone if not already set
 if not os.getenv('TZ'):
@@ -33,79 +36,96 @@ def debug_to_console(data: any) -> None:
         output = ','.join(str(x) for x in output)
     print(f"<script>console.log('Debug Objects: {output}')</script>")
 
-def check_or_abort(dbh: Optional[Connection]) -> Connection:
-    """Check if the database handle is valid, otherwise abort the request."""
-    if not dbh:
-        raise Exception(500, "Internal Server Error")
-    return dbh
-
-def getDBHandle() -> Connection:
+def getDBHandle() -> Engine:
     """Get a database handle for the current release."""
     global config
-    BASE_DIR = Path(__file__).resolve().parent
-    db_file = BASE_DIR / config['filedb'][config['release']]
-    if not os.path.exists(db_file):
-        check_or_abort(None)
-    dbh = sqlite3.connect(f'{db_file}')
-    dbh.row_factory = sqlite3.Row
-    return check_or_abort(dbh)
+
+    db_url = sqlalchemy.URL.create(config["db_engine"],
+                                   username=config["db_username"],
+                                   password=config["db_password"],
+                                   host=config["db_host"],
+                                   database=config["db_dbname"])
+    db_engine = sqlalchemy.create_engine(db_url)
+    if not db_engine:
+        raise Exception(500, "Internal Server Error")
+    return db_engine
 
 def getNextImage(
-        dbh: Connection,
+        engine: Engine,
         params: Dict,
         uid: Optional[int]
 ) -> Optional[Dict[str, any]]:
     """Get the next image to display based on the request parameters."""
     global config
-    sql = f'SELECT "{config["release"]}" as release, files.fileid, expname, ccd, band, name FROM files'
+    sql = f"SELECT :release as release, files.fileid, expname, ccd, band, name FROM files"
+
+    params_dict = {"release": config["release"]}
 
     if params.get('expname') and params.get('ccd'):
-        sql += ' WHERE ccd = ? AND files.expname = ? LIMIT 1'
-        res = dbh.execute(sql, (params['ccd'], params['expname']))
+        sql += ' WHERE ccd = :ccd AND files.expname = :expname LIMIT 1'
+        params_dict.update({"ccd": params['ccd'], "expname": params['expname']})
+        # res = dbh.execute(text(sql), {"ccd": params['ccd'], "expname": params['expname']})
+
     elif params.get('expname'):
-        sql += ' WHERE files.expname = ? ORDER BY RANDOM() LIMIT 1'
-        res = dbh.execute(sql, (params['expname'],))
+        sql += ' WHERE files.expname = :expname ORDER BY RANDOM() LIMIT 1'
+        params_dict.update({"expname": params['expname']})
+        #res = dbh.execute(text(sql), {"expname": params['expname']})
+
     elif params.get('ccd'):
         sql += ' WHERE ccd = ? ORDER BY RANDOM() LIMIT 1'
-        res = dbh.execute(sql, (params['ccd'],))
+        # res = dbh.execute(text(sql), {"ccd": params['ccd']})
+        params_dict.update({"ccd": params['ccd']})
+
     elif params.get('problem'):
         problem = config['problem_code'][params['problem']]
-        sql += f' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = {problem}'
+        sql += ' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = :problem'
+        params_dict.update({"problem": problem})
+
         if params.get('detail'):
-            sql += f""" AND detail = '{params["detail"]}'"""
+            sql += " AND detail = :detail"
+            params_dict.update({"detail": params["detail"]})
+
         sql += ' ORDER BY RANDOM() LIMIT 1'
-        res = dbh.execute(sql)
+
     else:
-        priority = "1" # ADW: not sure what this does
+
+        logger.warn("In confusing block of getNextImage()")
+        #priority = "1" # ADW: not sure what this does
         # to create redundancy: draw every n-th image from list with existing qa
-        nth = 2
-        if random.randint(0, nth) < 1:
-            fallback = sql
-            sql += ' JOIN qa ON (files.fileid = qa.fileid)'
-            if uid:
-                sql += f' WHERE {priority} AND qa.userid != {uid}'
-                sql += ' GROUP BY qa.fileid ORDER BY RANDOM() LIMIT 1'
-                res = dbh.execute(sql)
-                row = res.fetchone()
-                if row:
-                    return dict(row)
-            sql = fallback
-        sql += f" WHERE {priority} ORDER BY RANDOM() LIMIT 1"
-        res = dbh.execute(sql)
+        #nth = 2
+        #if random.randint(0, nth) < 1:
+        #    fallback = sql
+        #    sql += ' JOIN qa ON (files.fileid = qa.fileid)'
+        #    if uid:
+        #        sql += f' WHERE {priority} AND qa.userid != {uid}'
+        #        sql += ' GROUP BY qa.fileid ORDER BY RANDOM() LIMIT 1'
+        #        res = dbh.execute(sql)
+        #        row = res.fetchone()
+        #        if row:
+        #            return dict(row)
+        #    sql = fallback
+        #sql += f" WHERE {priority} ORDER BY RANDOM() LIMIT 1"
+
+    with engine.connect() as connection:
+        res = connection.execute(text(sql), params_dict)
 
     row = res.fetchone()
 
     return dict(row) if row else None
 
-def getProblems(dbh: Connection, fileid: int, qa_id: Optional[int] = None) -> List[Dict[str, any]]:
+def getProblems(engine: Engine, fileid: int, qa_id: Optional[int] = None) -> List[Dict[str, any]]:
     """Get the problems associated with the given file ID."""
     global config
-    sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid = ?'
+    sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid = :fileid'
     if qa_id is not None:
-        sql += ' AND qaid = ?'
+        sql += ' AND qaid = :qaid'
     else:
         sql += ' AND problem != 0 AND problem <= 1000'
-    res = dbh.execute(sql, (fileid, qa_id) if qa_id else (fileid,))
+
+    with engine.connect() as connection:
+        res = connection.execute(text(sql), {"fileid": fileid, "qaid": qa_id} if qa_id else {"fileid": fileid})
+
+
     problem_code = {v: k for k, v in config['problem_code'].items()}
     problems = []
     for row in res:
@@ -191,26 +211,31 @@ def missingFilesForNextClass(total_files: int, userclass: int) -> int:
         return 10000 * config['images_per_fp'] - total_files
     return 0
 
-def getActivity(dbh: Connection, uid: int, date: Optional[str] = None) -> Dict[str, int]:
+def getActivity(engine: Engine, uid: int, date: Optional[str] = None) -> Dict[str, int]:
     """Get the user's activity based on the number of files reviewed."""
     activity = {}
     if not date:
         date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')
     sql = f"SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid={uid} AND timestamp > '{date}'"
-    res = dbh.cursor().execute(sql)
-    row = res.fetchone()
-    activity['today'] = row[0] if row else 0
-    sql = f"SELECT total_files FROM submissions WHERE userid={uid}"
-    res = dbh.cursor().execute(sql)
-    row = res.fetchone()
+
+    with engine.connect() as connection:
+        res = connection.execute(text(sql))
+
+        row = res.fetchone()
+        activity['today'] = row[0] if row else 0
+        sql = f"SELECT total_files FROM submissions WHERE userid={uid}"
+
+        res = connection.execute(text(sql))
+        row = res.fetchone()
+
     activity['alltime'] = row[0] if row else 0
     return activity
 
-def giveBonusPoints(dbh: Connection, uid: int, points: int) -> None:
+def giveBonusPoints(engine: Engine, uid: int, points: int) -> None:
     """Give bonus points to the user."""
-    stmt = dbh.cursor()
-    stmt.execute("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?", (points, uid))
-    check_or_abort(stmt)
+    with engine.connect() as connection:
+        connection.execute(text("UPDATE submissions SET total_files = total_files + :points "
+                                "WHERE userid = :userid"), {"points": points, "uid": uid})
 
 def filenameToDataId(filename: str):
     basename = os.path.basename(filename)

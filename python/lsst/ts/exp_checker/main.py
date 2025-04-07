@@ -163,8 +163,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     else:
         app.state.butler = None
 
-    client = create_client(config['s3_profile_name'], config['s3_endpoint_url'])
-    app.state.s3_client = client
+    if config["s3_profile_name"]:
+        client = create_client(config['s3_profile_name'], config['s3_endpoint_url'])
+        app.state.s3_client = client
+    else:
+        app.state.s3_client = None
 
     yield
 

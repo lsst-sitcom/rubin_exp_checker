@@ -6,8 +6,10 @@ from .common import exp_checker_logger
 
 logger = exp_checker_logger()
 
+from sqlalchemy import text
+
 # Function to get user data
-def getMyData(dbh, uid):
+def getMyData(engine, uid):
     sql = f"""
         SELECT
             COALESCE(SUM(total_files), 0) AS total_files,
@@ -18,11 +20,12 @@ def getMyData(dbh, uid):
         FROM submissions
         WHERE userid = {uid}
     """
-    res = dbh.execute(sql)
-    row = res.fetchone()
+    with engine.connect() as connection:
+        res = connection.execute(text(sql))
+        row = res.fetchone()
 
     username = uid2username(uid)
-    
+
     if row:
         row = dict(row)
         row['total_files'] = int(row['total_files'])
@@ -36,13 +39,15 @@ def getMyData(dbh, uid):
         return False
 
 # Function to get other problems
-def getMyOtherProblems(dbh, uid):
+def getMyOtherProblems(engine, uid):
     sql = f"""
         SELECT DISTINCT detail
         FROM qa
         WHERE userid = {uid} AND (problem = 255 OR problem = 1006) AND detail IS NOT NULL
     """
-    res = dbh.execute(sql)
+    with engine.connect() as connection:
+        res = connection.execute(text(sql))
+
     return [row[0] for row in res.fetchall()]
 
 # Main function
@@ -57,12 +62,12 @@ def main(username):
     -------
     result : the result
     """
-    dbh = getDBHandle()
+    engine = getDBHandle()
     uid = username2uid(username)
     if uid:
-        result = getMyData(dbh, uid)
+        result = getMyData(engine, uid)
         if result:
-            result['problems'] = getMyOtherProblems(dbh, uid)
+            result['problems'] = getMyOtherProblems(engine, uid)
             return result
         else:
              return "Error: Failed to retrieve user data"

@@ -1,7 +1,9 @@
 import json
-import sqlite3
-from sqlite3 import Connection
 from typing import Dict, List, Optional, Tuple
+
+import sqlalchemy
+from sqlalchemy.engine import Engine
+
 
 from .common import getDBHandle, getProblems, exp_checker_logger
 from .config import config
@@ -9,7 +11,7 @@ from .config import config
 logger = exp_checker_logger()
 
 def getCountOfProblem(
-        dbh: Connection,
+        engine: Engine,
         problem: str,
         uid: Optional[int] = None
 ) -> List[Dict]:
@@ -32,21 +34,22 @@ def getCountOfProblem(
         if code == 255:
             sql += " AND detail IS NOT NULL GROUP BY detail ORDER BY `count` DESC, detail"
 
-        res = dbh.execute(sql, (code,))
-        for row in res.fetchall():
-            problems.append({"problem": problem, "detail": row[1], "count": row[2]})
+        with engine.connect() as connection:
+            res = connection.execute(sql, (code,))
+            for row in res.fetchall():
+                problems.append({"problem": problem, "detail": row[1], "count": row[2]})
 
     return problems
 
 
 def main(params: Dict) -> Dict:
     logger.info(f'problems.main: {params}')
-    dbh = getDBHandle()
+    engine = getDBHandle()
     if params.get("fileid"):
-        problems = getProblems(dbh, params["fileid"])
+        problems = getProblems(engine, params["fileid"])
     elif params.get("problem"):
         uid = params["uid"] if params.get("my_problems") else None
-        problems = getCountOfProblem(dbh, params["problem"], uid)
+        problems = getCountOfProblem(engine, params["problem"], uid)
     return problems
 
 if __name__ == "__main__":
