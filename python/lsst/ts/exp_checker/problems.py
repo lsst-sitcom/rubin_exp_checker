@@ -1,9 +1,8 @@
 import json
 from typing import Dict, List, Optional, Tuple
 
-import sqlalchemy
 from sqlalchemy.engine import Engine
-
+from sqlalchemy import text
 
 from .common import getDBHandle, getProblems, exp_checker_logger
 from .config import config
@@ -28,21 +27,21 @@ def getCountOfProblem(
     problems: List[Dict] = []
     if problem in config['problem_code']:
         code = config['problem_code'][problem]
-        sql = "SELECT problem, detail, COUNT(DISTINCT(qa.fileid)) AS count FROM qa JOIN files ON (qa.fileid = files.fileid) WHERE problem = ?"
+        sql = "SELECT problem, detail, COUNT(DISTINCT(qa.fileid)) AS count FROM qa JOIN files ON (qa.fileid = files.fileid) WHERE problem = :problem"
         if uid is not None:
             sql += f" AND userid = {uid}"
         if code == 255:
             sql += " AND detail IS NOT NULL GROUP BY detail ORDER BY `count` DESC, detail"
 
         with engine.connect() as connection:
-            res = connection.execute(sql, (code,))
+            res = connection.execute(text(sql), {"problem": code})
             for row in res.fetchall():
                 problems.append({"problem": problem, "detail": row[1], "count": row[2]})
 
     return problems
 
 
-def main(params: Dict) -> Dict:
+def main(params: Dict) -> List[Dict]:
     logger.info(f'problems.main: {params}')
     engine = getDBHandle()
     if params.get("fileid"):

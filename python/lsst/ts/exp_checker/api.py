@@ -2,8 +2,12 @@ import sys
 import json
 from typing import Dict, List, Optional
 
+from sqlalchemy import text
+
 from .config import config
-from .common import getDBHandle, uid2username
+from .common import getDBHandle, uid2username, exp_checker_logger
+
+logger = exp_checker_logger()
 
 def api_handler(problem: str, short: bool = False) -> List[Dict]:
     """Handle API requests for problem data.
@@ -16,9 +20,10 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
         Query results
     """
     if problem not in config['problem_code']:
-        return "Problem unknown!"
+        logger.warn(f"Problem code {problem} not configured")
+        return []
     
-    dbh = getDBHandle()
+    engine = getDBHandle()
     code = config['problem_code'][problem]
 
     # Build the SQL query
@@ -29,7 +34,8 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
     sql += f" WHERE problem={code} OR problem=-{code}"
     sql += " ORDER BY visit, detector ASC"
 
-    res = dbh.execute(sql)
+    with engine.connect() as connection:
+        res = connection.execute(text(sql))
 
     # Convert to list of dictionaries
     results = []
@@ -60,14 +66,9 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
             row_dict['username'] = uid2username(row_dict['uid'])
             
         results.append(row_dict)
-    # Close the connection
-    dbh.close()
+
     return results
 
 def main(params: Dict):
     return api_handler(params['problem'], params.get('short', False))
 
-if __name__ == "__main__":
-    params = {"problem": "Cosmic ray"}
-    results = main(params)
-    print(json.dumps(results))

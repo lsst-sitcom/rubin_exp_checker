@@ -74,7 +74,3 @@ def main(username):
     else:
         return "Error: Failed to get user ID"
 
-
-if __name__ == "__main__":
-    res = main(username='testuser')
-    print(json.dumps(res))

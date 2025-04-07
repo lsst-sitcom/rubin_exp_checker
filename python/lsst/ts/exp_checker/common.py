@@ -29,7 +29,7 @@ logger = get_logger()
 if not os.getenv('TZ'):
     os.environ['TZ'] = 'GMT'
 
-def debug_to_console(data: any) -> None:
+def debug_to_console(data: Any) -> None:
     """Print the given data to the JavaScript console."""
     output = data
     if isinstance(output, list):
@@ -54,7 +54,7 @@ def getNextImage(
         engine: Engine,
         params: Dict,
         uid: Optional[int]
-) -> Optional[Dict[str, any]]:
+) -> Optional[Dict[str, Any]]:
     """Get the next image to display based on the request parameters."""
     global config
     sql = f"SELECT :release as release, files.fileid, expname, ccd, band, name FROM files"
@@ -113,7 +113,7 @@ def getNextImage(
 
     return dict(row) if row else None
 
-def getProblems(engine: Engine, fileid: int, qa_id: Optional[int] = None) -> List[Dict[str, any]]:
+def getProblems(engine: Engine, fileid: int, qa_id: Optional[int] = None) -> List[Dict[str, Any]]:
     """Get the problems associated with the given file ID."""
     global config
     sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid = :fileid'

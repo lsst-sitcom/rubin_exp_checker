@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Any
 
-config: Dict[str, any] = {
+config: Dict[str, Any] = {
     "base_dir": Path(__file__).resolve().parent,
     "butler_repo": "embargo", #"s3://embargo@rubin-summit-users/butler.yaml", 
     "butler_collection": "u/kadrlica/binCalexp4",

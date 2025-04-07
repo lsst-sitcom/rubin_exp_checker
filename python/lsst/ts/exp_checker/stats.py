@@ -9,9 +9,9 @@ from sqlalchemy import text
 from .config import config
 from .common import getDBHandle
 
-def main(params: dict) -> None:
+def main(params: dict) -> Dict:
     engine = getDBHandle()
-    stats = {}
+    stats: Dict[str, Any] = {}
 
     with engine.connect() as connection:
         # Basic stats: how many files done
@@ -90,7 +90,3 @@ def main(params: dict) -> None:
             stats['throughput'] = throughput
 
     return stats
-
-if __name__ == "__main__":
-    params = {"release": "r2.1i", "total": True, "today": True}
-    print(json.dumps(main(params)))

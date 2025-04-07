@@ -3,7 +3,7 @@
 import asyncio
 import os, json, enum, copy
 from contextlib import asynccontextmanager
-from typing import Annotated, Dict, Optional
+from typing import Annotated, Dict, Optional, Any
 from typing import AsyncGenerator
 from pathlib import Path
 
@@ -201,8 +201,7 @@ async def get_api_problems(
 async def get_auth(user: str = Depends(get_user)):
     """ Get the authentication and username. """
     # This should be replaced by project authorization routine
-    response = {"auth": True}
-    response.update(user)
+    response: Dict[str, Any] = {"auth": True, "user": user}
     return JSONResponse(content=response)
 
 @app.get("/contact")
@@ -211,13 +210,6 @@ async def get_contact() -> str:
     #response = 'mailto:' + config['adminemail']
     response = config['contact']
     return response
-
-@app.get("/download_file")
-async def download_file(filename: str) -> StreamingResponse:
-    """ Deprecated file download access point. """
-    path = config['fitspath'][config['release']]
-    filepath = os.path.join(path,filename)
-    return getImage.download_file(filepath, True)
 
 @app.get("/gallery")
 async def get_gallery(
@@ -252,7 +244,7 @@ async def get_image(
 @app.get("/headers")
 async def read_headers(request: Request) -> Dict:
     """Return the json-formatted dict of headers"""
-    return request.headers
+    return dict(request.headers)
 
 @app.get("/mydata")
 async def get_mydata(

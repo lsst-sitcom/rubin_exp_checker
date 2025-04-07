@@ -87,9 +87,9 @@ def get_congrats(uid: int) -> Dict:
     activity = getActivity(engine, uid)
     old_user_class = userClass(activity['alltime'] - 1)
     user_class = userClass(activity['alltime'])
-    congrats = None
+    congrats: Dict[str, Any] = {}
     if user_class > old_user_class:
-        congrats: Dict[str, Any] = {
+        congrats = {
             'text': "You have just finished your ",
             'detail': "To reflect your achievements, we've upgraded you to <span id='status_class' class='badge'></span> status.",
             'userclass': user_class
@@ -136,7 +136,7 @@ def get_next_image(params: Dict, uid: int) -> Dict:
         }
     return row
 
-def main(params: Dict) -> None:
+def main(params: Dict) -> str:
     logger.debug(f"submit.main: {params}")
     engine = getDBHandle()
     uid = params['uid']
@@ -152,8 +152,3 @@ def main(params: Dict) -> None:
         row['congrats'] = congrats
 
     return json.dumps(row)
-
-if __name__ == "__main__":
-    params = {}
-    res = main(params)
-    print(res)
