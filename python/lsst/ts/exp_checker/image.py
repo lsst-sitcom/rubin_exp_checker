@@ -154,8 +154,8 @@ async def get_content_from_socket(dataId: Dict, timeout: float = 30):
     command = {
         "name": "get fits image",
         "parameters": {
-            "repo": config['butler_repo'],
-            "collection": config['butler_collection'],
+            "repo": config.butler_repo,
+            "collection": config.butler_collection,
             "image_name": datasetType,
             "data_id": dataId,
             "compress": config.get('compress_images', True),
@@ -270,8 +270,8 @@ async def main(params: Dict, request: Request):
     elif (params.get('type') == "dm"):
         # Provide path/code to access file
         logger.debug(f"type={params['type']}: {params}")
-        response  = f"repo: {config['butler_repo']}\n"
-        response += f"collection: {config['butler_collection']}\n"
+        response  = f"repo: {config.butler_repo}\n"
+        response += f"collection: {config.butler_collection}\n"
         response += f"dataId: {dataId}"
         return Response(response)
 

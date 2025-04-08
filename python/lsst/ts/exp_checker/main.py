@@ -152,13 +152,13 @@ def create_client(profile_name, endpoint_url):
 async def lifespan(app: FastAPI) -> AsyncGenerator:
 
     if config["transfer_type"] == 'butler':
-        butler = create_butler(config['butler_repo'],config['butler_collection'])
+        butler = create_butler(config.butler_repo, config.butler_collection)
         app.state.butler = butler
     else:
         app.state.butler = None
 
-    if config["s3_profile_name"]:
-        client = create_client(config['s3_profile_name'], config['s3_endpoint_url'])
+    if len(config.s3_profile_name) > 0:
+        client = create_client(config.s3_profile_name, config.s3_endpoint_url)
         app.state.s3_client = client
     else:
         app.state.s3_client = None

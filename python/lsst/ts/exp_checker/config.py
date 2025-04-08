@@ -6,10 +6,6 @@ from pydantic_settings import BaseSettings
 
 config_dictionary: Dict[str, Any] = {
     "base_dir": Path(__file__).resolve().parent,
-    "butler_repo": "embargo", #"s3://embargo@rubin-summit-users/butler.yaml", 
-    "butler_collection": "u/kadrlica/binCalexp4",
-    "s3_profile_name": "",
-    "s3_endpoint_url": "https://s3dfrgw.slac.stanford.edu",
     #"websocket_uri": "ws://localhost:9999/ws/client",
     "websocket_uri": "ws://rubintv:8080/rubintv/ws/ddv/client",
     "transfer_type": "ws",
@@ -79,6 +75,27 @@ config_dictionary: Dict[str, Any] = {
 }
 
 class Configuration(BaseSettings):
+
+    butler_repo: str = Field(
+            default="embargo",
+            description="Butler repository path or alias"
+            )
+
+    butler_collection: str = Field(
+            default="u/kadrlica/binCalexp4",
+            description="Butler collection to display"
+            )
+
+    s3_profile_name: str = Field(
+            default="",
+            description="S3 Profile"
+            )
+
+    s3_endpoint_url: str = Field(
+            default="https://s3dfrgw.slac.stanford.edu",
+            description="S3 URL"
+            )
+
 
     db_engine: str = Field(
             default="postgresql+psycopg2",
