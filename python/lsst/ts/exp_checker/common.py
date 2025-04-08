@@ -38,13 +38,12 @@ def debug_to_console(data: Any) -> None:
 
 def getDBHandle() -> Engine:
     """Get a database handle for the current release."""
-    global config
 
-    db_url = sqlalchemy.URL.create(config["db_engine"],
-                                   username=config["db_username"],
-                                   password=config["db_password"],
-                                   host=config["db_host"],
-                                   database=config["db_dbname"])
+    db_url = sqlalchemy.URL.create(config.db_engine,
+                                   username=config.db_username,
+                                   password=config.db_password,
+                                   host=config.db_host,
+                                   database=config.db_dbname)
     db_engine = sqlalchemy.create_engine(db_url)
     if not db_engine:
         raise Exception(500, "Internal Server Error")
@@ -56,7 +55,6 @@ def getNextImage(
         uid: Optional[int]
 ) -> Optional[Dict[str, Any]]:
     """Get the next image to display based on the request parameters."""
-    global config
     sql = f"SELECT :release as release, files.fileid, expname, ccd, band, name FROM files"
 
     params_dict = {"release": config["release"]}
@@ -115,7 +113,6 @@ def getNextImage(
 
 def getProblems(engine: Engine, fileid: int, qa_id: Optional[int] = None) -> List[Dict[str, Any]]:
     """Get the problems associated with the given file ID."""
-    global config
     sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid = :fileid'
     if qa_id is not None:
         sql += ' AND qaid = :qaid'
@@ -171,7 +168,6 @@ def numberSuffix(num: int) -> str:
 
 def userClass(total_files: int) -> int:
     """Determine the user class based on the total number of files."""
-    global config
     if total_files / config['images_per_fp'] >= 1000:
         return 8
     if total_files / config['images_per_fp'] >= 100:
@@ -192,7 +188,6 @@ def userClass(total_files: int) -> int:
 
 def missingFilesForNextClass(total_files: int, userclass: int) -> int:
     """Calculate the number of missing files to reach the next user class."""
-    global config
     if userclass == 0:
         return 10 - total_files
     if userclass == 1:

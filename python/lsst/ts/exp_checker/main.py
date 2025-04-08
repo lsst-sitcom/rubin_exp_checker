@@ -75,14 +75,9 @@ def set_release(release: str | None = None):
     -------
     release : the release that was set
     """
-    global config
 
-    config['release'] = release
-    if (config['release'] is None) or (config['release'] not in config['releases']):
-        config['release'] = config['releases'][-1]
-
-    logger.debug(f"Release set to: {config['release']}")
-    
+    # TODO: Why would one want to change the config object? Disabled for now,
+    # remove if unnecessary
     return config['release']
 
 
@@ -155,7 +150,6 @@ def create_client(profile_name, endpoint_url):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
-    set_release()
 
     if config["transfer_type"] == 'butler':
         butler = create_butler(config['butler_repo'],config['butler_collection'])

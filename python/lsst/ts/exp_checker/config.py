@@ -1,7 +1,10 @@
 from pathlib import Path
 from typing import Dict, Any
 
-config: Dict[str, Any] = {
+from pydantic import Field
+from pydantic_settings import BaseSettings
+
+config_dictionary: Dict[str, Any] = {
     "base_dir": Path(__file__).resolve().parent,
     "butler_repo": "embargo", #"s3://embargo@rubin-summit-users/butler.yaml", 
     "butler_collection": "u/kadrlica/binCalexp4",
@@ -16,12 +19,6 @@ config: Dict[str, Any] = {
     "slack_link" : "https://rubin-obs.slack.com/archives/C07Q45NN0CX",
     "contact": "<URL>",
     "domain": "8000/rubintv/exp_checker/",
-    "db_engine": "postgresql+psycopg2",
-    "db_host": "db",
-    "db_port": "5432",
-    "db_username": "exp-checker",
-    "db_password": "debug",
-    "db_dbname": "exp-checker",
     "filedb": {
         #"ComCam": ".db/files.comcam-20241117.db",
         #"dev": ".db/LSSTComCam-dev.db",
@@ -80,3 +77,43 @@ config: Dict[str, Any] = {
         "Awesome!": 1000
     }
 }
+
+class Configuration(BaseSettings):
+
+    db_engine: str = Field(
+            default="postgresql+psycopg2",
+            description="Sqlalchemy database engine"
+            )
+
+    db_host: str = Field(
+            default="",
+            description="Database hostname"
+            )
+
+    db_port: str = Field(
+            default="5432",
+            description="Database port"
+            )
+
+    db_username: str = Field(
+            default="exp-checker",
+            description="Username to connect to database"
+            )
+
+    db_password: str = Field(
+            default="",
+            description="Password for connecting to the database"
+            )
+
+    db_dbname: str = Field(
+            default="exp-checker",
+            description="Name of the database to connect to"
+            )
+
+    # This is a temporary way to add some configuration as pydantic fields without
+    # having to migrate all config usage away from the brackets syntax. All the
+    # config_dict entries SHOULD get migrated and then this should be dropped.
+    def __getitem__(cls, key: str) -> Dict[str, Any]:
+        return config_dictionary.get(key)
+
+config = Configuration()
