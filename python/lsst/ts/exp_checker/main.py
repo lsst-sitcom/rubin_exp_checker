@@ -12,6 +12,7 @@ from fastapi import Request, Response, Header, Depends, Query
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.routing import APIRouter
 from jinja2 import Environment
 from pydantic import BaseModel, Field, model_validator
 import uvicorn
@@ -165,20 +166,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
 
     yield
 
-# Create the app
-logger.debug(f"exp_checker: v{__version__}")
-app = FastAPI(
-    version=__version__,
-    debug=True,
-    lifespan=lifespan,
-)
+
+router = APIRouter()
 
 # Redirect to index 
-@app.get("/")
+@router.get("/")
 async def redirect_to_index():
     return RedirectResponse(url="./index.html")
 
-@app.get("/api")
+@router.get("/api")
 async def get_api_problems(
         problem: str,
         release: str = Depends(set_release),
@@ -191,21 +187,21 @@ async def get_api_problems(
     response = api.main(params)
     return JSONResponse(response)
 
-@app.get("/auth")
+@router.get("/auth")
 async def get_auth(user: str = Depends(get_user)):
     """ Get the authentication and username. """
     # This should be replaced by project authorization routine
     response: Dict[str, Any] = {"auth": True, "user": user}
     return JSONResponse(content=response)
 
-@app.get("/contact")
+@router.get("/contact")
 async def get_contact() -> str:
     # Provide contact information
     #response = 'mailto:' + config['adminemail']
     response = config['contact']
     return response
 
-@app.get("/gallery")
+@router.get("/gallery")
 async def get_gallery(
         release: str = Depends(set_release),
 ) -> Response:
@@ -213,7 +209,7 @@ async def get_gallery(
     response = gallery.main()
     return Response(json.dumps(response))
 
-@app.get("/get_image")
+@router.get("/get_image")
 async def get_image(
         request: Request,
         release: str = Depends(set_release),
@@ -235,12 +231,12 @@ async def get_image(
     response = await image.main(params, request)
     return response
 
-@app.get("/headers")
+@router.get("/headers")
 async def read_headers(request: Request) -> Dict:
     """Return the json-formatted dict of headers"""
     return dict(request.headers)
 
-@app.get("/mydata")
+@router.get("/mydata")
 async def get_mydata(
         release: str = Depends(set_release),
         user: Dict = Depends(get_user),
@@ -249,7 +245,7 @@ async def get_mydata(
     data = mydata.main(user["username"])
     return Response(json.dumps(data))
 
-@app.get("/problems")
+@router.get("/problems")
 async def get_problems(
         release: str = Depends(set_release),
         fileid: int | None = None,
@@ -271,7 +267,7 @@ async def get_problems(
     response = problems.main(params)
     return Response(json.dumps(response))
 
-@app.get("/ranking")
+@router.get("/ranking")
 async def get_ranking(
         release: str = Depends(set_release),
         limit: int = 15
@@ -280,7 +276,7 @@ async def get_ranking(
     rank = ranking.main(limit)
     return Response(json.dumps(rank))
 
-@app.get("/stats")
+@router.get("/stats")
 async def get_stats(
         release: str = Depends(set_release),
         total: bool | str = False,
@@ -299,7 +295,7 @@ async def get_stats(
     response = stats.main(params)
     return Response(json.dumps(response))
 
-@app.post("/submit")
+@router.post("/submit")
 async def post_submit(
         body: SubmitBody,
         user: Dict = Depends(get_user),
@@ -320,7 +316,7 @@ ALLOWED_PAGES = {"index", "viewer", "tutorial", "faq", "statistics", "api",
                  "gallery", "hodgepodge", "heat_map"}
 
 # Define a dynamic route that captures the page name from the URL
-@app.get("/{page_name}.html", response_class=HTMLResponse)
+@router.get("/{page_name}.html", response_class=HTMLResponse)
 async def render_page(request: Request, page_name: str):
     # Check if the requested page is in the list of allowed pages
     if page_name in ALLOWED_PAGES:
@@ -333,18 +329,28 @@ async def render_page(request: Request, page_name: str):
         # If not allowed, raise a 404 Not Found error
         raise HTTPException(status_code=404, detail="Page not found")
 
-@app.get("/collections")
+@router.get("/collections")
 async def get_collections(request: Request) -> Response:
     """Return the json-formatted dict of headers"""
     butler = request.app.state.butler
     collections = [_ for _ in butler.registry.queryCollections('LSSTComCam/*')]
     return Response(json.dumps(collections))
 
-    
+# Create the app
+logger.debug(f"exp_checker: v{__version__}")
+app = FastAPI(
+    version=__version__,
+    debug=True,
+    lifespan=lifespan,
+)
+
 # Mount static files and assets
 # https://stackoverflow.com/questions/65916537/a-minimal-fastapi-example-loading-index-html
-app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
-app.mount("/material", StaticFiles(directory=BASE_DIR / 'material'), name="material")
+app.mount("/exposure-checker/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+app.mount("/exposure-checker/material", StaticFiles(directory=BASE_DIR / 'material'), name="material")
+
+
+app.include_router(router, prefix="/exposure-checker")
 
 # For testing, mount everything in main directory
 #app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
