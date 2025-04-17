@@ -225,7 +225,7 @@ async def get_image(
     logger.debug(f"get_image.params: {params}")
 
     if params['type'] is None:
-        params['type'] = config.get('transfer_type')
+        params['type'] = config['transfer_type']
         logger.debug(f"Set image access type: {params['type']}")
 
     response = await image.main(params, request)

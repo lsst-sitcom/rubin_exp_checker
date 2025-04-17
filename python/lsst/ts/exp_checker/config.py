@@ -8,7 +8,7 @@ config_dictionary: Dict[str, Any] = {
     "base_dir": Path(__file__).resolve().parent,
     #"websocket_uri": "ws://localhost:9999/ws/client",
     "websocket_uri": "ws://rubintv:8080/rubintv/ws/ddv/client",
-    "transfer_type": "ws",
+    "transfer_type": "butler",
     "compress_images": True,
     "repo": "https://github.com/lsst-sitcom/rubin_exp_checker",
     "slack_channel" : "#sciunit-image-inspection",
