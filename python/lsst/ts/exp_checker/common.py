@@ -104,6 +104,7 @@ def getNextImage(
         #    sql = fallback
         #sql += f" WHERE {priority} ORDER BY RANDOM() LIMIT 1"
 
+    logger.info(f"getNextImage sending SQL: {sql}; with params {params_dict}")
     with engine.connect() as connection:
         res = connection.execute(text(sql), params_dict)
 
