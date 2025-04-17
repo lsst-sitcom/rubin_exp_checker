@@ -40,7 +40,7 @@ def api_handler(problem: str, short: bool = False) -> List[Dict]:
     # Convert to list of dictionaries
     results = []
     for row in res.fetchall():
-        row_dict = dict(row)
+        row_dict = row._asdict()
 
         # Convert specific fields
         row_dict['uid'] = int(row_dict['uid'])

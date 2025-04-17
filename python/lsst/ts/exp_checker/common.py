@@ -109,7 +109,7 @@ def getNextImage(
 
     row = res.fetchone()
 
-    return dict(row) if row else None
+    return row._asdict() if row else None
 
 def getProblems(engine: Engine, fileid: int, qa_id: Optional[int] = None) -> List[Dict[str, Any]]:
     """Get the problems associated with the given file ID."""

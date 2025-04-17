@@ -19,5 +19,5 @@ def main(limit: int | None = None) -> List[Dict[str, int]]:
 
     with engine.connect() as connection:
         res = connection.execute(sqlalchemy.text(query))
-    return [dict(row) for row in res.fetchall()]
+    return [row._asdict() for row in res.fetchall()]
 

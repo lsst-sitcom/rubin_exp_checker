@@ -27,7 +27,7 @@ def getMyData(engine, uid):
     username = uid2username(uid)
 
     if row:
-        row = dict(row)
+        row = row._asdict()
         row['total_files'] = int(row['total_files'])
         row['flagged_files'] = int(row['flagged_files'])
         row['rank'] = int(row['rank'])
