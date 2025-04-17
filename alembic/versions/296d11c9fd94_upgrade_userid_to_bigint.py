@@ -20,13 +20,13 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.alter_column("qa", "userid", type=sa.BigInteger)
-    op.alter_column("submissions", "userid", type=sa.BigInteger)
-    pass
+    op.alter_column("qa", "userid", type_=sa.BigInteger)
+    op.alter_column("submissions", "userid", type_=sa.BigInteger)
+    return
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.alter_column("qa", "userid", type=sa.Integer)
-    op.alter_column("submissions", "userid", type=sa.Integer)
-    pass
+    op.alter_column("qa", "userid", type_=sa.Integer)
+    op.alter_column("submissions", "userid", type_=sa.Integer)
+    return
