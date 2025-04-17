@@ -20,6 +20,8 @@ from .config import config
 from .common import getDBHandle, filenameToDataId
 from .common import exp_checker_logger
 
+from lsst.afw.fits import MemFileManager
+
 logger = exp_checker_logger()
 
 def create_headers(revalidate: bool = False):
@@ -106,9 +108,8 @@ def get_content_from_butler(butler, dataId: Dict):
     -------
     stream : BytesIO stream
     """
-    logger.debug("Getting image content from butler...")
+    logger.debug("Getting image content from butler for dataId {dataId}")
     # Create the memory object
-    from lsst.afw.fits import MemFileManager
     manager = MemFileManager()
 
     # Get the file and write to memory
@@ -117,7 +118,7 @@ def get_content_from_butler(butler, dataId: Dict):
 
     # Compress the file
     opts = dict()
-    if config.get('compress_images', True): 
+    if config['compress_images']:
         from lsst.afw.fits import ImageCompressionOptions, ImageWriteOptions, ImageScalingOptions
         logger.debug("Compressing image")
         quantize = 10.0
@@ -287,7 +288,7 @@ async def main(params: Dict, request: Request):
         path = config['fitspath'][config['release']]
         file_path = os.path.join(config['base_dir'], path, filename)
         logger.debug(f"type={params['type']}: {file_path}")
-        stream = await get_content_from_file(file_path)
+        stream = get_content_from_file(file_path)
         return stream_response(stream, 1024, True)
     
     elif (params.get('type') == "ws"):
@@ -304,7 +305,7 @@ async def main(params: Dict, request: Request):
             logger.warn("Butler not found.")
             return None
         else:
-            stream = await get_content_from_butler(butler, dataId)
+            stream = get_content_from_butler(butler, dataId)
             return stream_response(stream, 1024, True)
 
     else:

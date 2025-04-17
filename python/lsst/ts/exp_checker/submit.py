@@ -48,7 +48,7 @@ def submit_image(params: Dict, uid: int) -> None:
                     problem['detail'] = None
 
                 conn.execute(text("INSERT INTO qa (fileid, userid, problem, x, y, detail) "
-                                    "VALUES (:fileid, :userid, :problem, :x, :y, :detail))"),
+                                    "VALUES (:fileid, :userid, :problem, :x, :y, :detail)"),
                                {"fileid": params['fileid'],
                                 "userid": uid, "problem": code, "x": problem['x'], "y": problem['y'],
                                 "detail": problem['detail']})

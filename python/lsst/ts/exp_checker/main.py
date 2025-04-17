@@ -127,8 +127,8 @@ def create_butler(repo, collection):
     butler : the instantiated butler
     """
     logger.info(f"Creating LSST Butler...")
-    logger.debug(f"  repo: {repo}")
-    logger.debug(f"  collection: {collection}")
+    logger.info(f"  repo: {repo}")
+    logger.info(f"  collection: {collection}")
     try:
         from lsst.daf.butler import Butler
         return Butler(repo, collections=collection)

@@ -30,8 +30,8 @@ config_dictionary: Dict[str, Any] = {
         "dev": "exclusive/comcam/calexp_mosaic/{expname:.8s}/comcam_calexp_mosaic_{expname}.jpg",
         "ComCam": "exclusive/comcam/calexp_mosaic/{expname:.8s}/comcam_calexp_mosaic_{expname}.jpg",
     },
-    "releases": ["dev", "ComCam"],
-    "release": None,
+    "releases": ["dev", "ComCam", "LSSTCam"],
+    "release": "LSSTCam",
     "images_per_fp": 378,
     "problem_code": {
         "OK": 0,
