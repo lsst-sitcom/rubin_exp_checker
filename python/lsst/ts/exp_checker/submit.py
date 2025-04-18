@@ -125,7 +125,7 @@ def get_next_image(params: Dict, uid: int) -> Dict:
     row = getNextImage(engine, params, uid)
     if row:
         row['uid'] = uid
-        row['name'] = f"get_image?release={config['release']}&name={row['name']}"
+        row['name'] = f"get_image?release={config['release']}&visit={row['expname']}&detector={row['ccd']}"
         if params.get('show_marks') or params.get('qa_id'):
             row['marks'] = getProblems(engine, row['fileid'], params.get('qa_id'))
     else:

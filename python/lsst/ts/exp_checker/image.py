@@ -108,7 +108,7 @@ def get_content_from_butler(butler, dataId: Dict):
     -------
     stream : BytesIO stream
     """
-    logger.debug("Getting image content from butler for dataId {dataId}")
+    logger.debug(f"Getting image content from butler for dataId {dataId}")
     # Create the memory object
     manager = MemFileManager()
 
@@ -237,13 +237,9 @@ def get_fov_image(dataId: Dict, client):
 async def main(params: Dict, request: Request):
     logger.debug(f"image.main: {params}")
 
-    filename = params.get('filename', params.get('name'))
-    if filename:
-        dataId = filenameToDataId(filename)
-    else:
-        visit = params.get('visit', params.get('expname'))
-        detector = params.get('detector', params.get('ccd'))
-        dataId = dict(instrument=config.butler_instrument, visit=int(visit), detector=int(detector))
+    visit = params.get('visit', params.get('expname'))
+    detector = params.get('detector', params.get('ccd'))
+    dataId = dict(instrument=config.butler_instrument, visit=int(visit), detector=int(detector))
 
     image_not_found = f"{config['base_dir']}/assets/fov_not_available.png"
     
