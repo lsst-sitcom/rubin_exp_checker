@@ -30,7 +30,7 @@ config_dictionary: Dict[str, Any] = {
         "dev": "exclusive/comcam/calexp_mosaic/{expname:.8s}/comcam_calexp_mosaic_{expname}.jpg",
         "ComCam": "exclusive/comcam/calexp_mosaic/{expname:.8s}/comcam_calexp_mosaic_{expname}.jpg",
     },
-    "releases": ["dev", "ComCam", "LSSTCam"],
+    "releases": ["LSSTCam"],
     "release": "LSSTCam",
     "images_per_fp": 378,
     "problem_code": {
@@ -86,6 +86,11 @@ class Configuration(BaseSettings):
             description="Butler collection to display"
             )
 
+    butler_instrument: str = Field(
+            default="LSSTCam",
+            description="Name of the instrument to use in butler queries."
+            )
+
     s3_profile_name: str = Field(
             default="",
             description="S3 Profile"
@@ -126,6 +131,7 @@ class Configuration(BaseSettings):
             default="exp-checker",
             description="Name of the database to connect to"
             )
+
 
     # This is a temporary way to add some configuration as pydantic fields without
     # having to migrate all config usage away from the brackets syntax. All the

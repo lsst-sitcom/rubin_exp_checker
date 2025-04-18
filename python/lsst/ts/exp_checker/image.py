@@ -243,7 +243,7 @@ async def main(params: Dict, request: Request):
     else:
         visit = params.get('visit', params.get('expname'))
         detector = params.get('detector', params.get('ccd'))
-        dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(detector))
+        dataId = dict(instrument=config.butler_instrument, visit=int(visit), detector=int(detector))
 
     image_not_found = f"{config['base_dir']}/assets/fov_not_available.png"
     
