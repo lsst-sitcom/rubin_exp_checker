@@ -87,7 +87,7 @@ class Configuration(BaseSettings):
             )
 
     butler_instrument: str = Field(
-            default="LSSTCam",
+            default="LSSTCam", # ADW: Inconsistent with default collection
             description="Name of the instrument to use in butler queries."
             )
 

@@ -55,9 +55,10 @@ def getNextImage(
         uid: Optional[int]
 ) -> Optional[Dict[str, Any]]:
     """Get the next image to display based on the request parameters."""
-    sql = f"SELECT :release as release, files.fileid, expname, ccd, band, name FROM files"
-
     params_dict = {"release": config["release"]}
+
+    # Initial image column selection
+    sql = f"SELECT :release as release, files.fileid, expname, ccd, band, name FROM files"
 
     if params.get('expname') and params.get('ccd'):
         sql += ' WHERE ccd = :ccd AND files.expname = :expname LIMIT 1'
@@ -86,9 +87,13 @@ def getNextImage(
         sql += ' ORDER BY RANDOM() LIMIT 1'
 
     else:
-
         logger.warn("In confusing block of getNextImage()")
-        #priority = "1" # ADW: not sure what this does
+        # ADW: I think this block is randomizing with a higher weight
+        # given to images that have been viewed before.
+        
+        # ADW: This allows an empty where statement
+        priority = "1" 
+
         # to create redundancy: draw every n-th image from list with existing qa
         #nth = 2
         #if random.randint(0, nth) < 1:
@@ -102,7 +107,8 @@ def getNextImage(
         #        if row:
         #            return dict(row)
         #    sql = fallback
-        #sql += f" WHERE {priority} ORDER BY RANDOM() LIMIT 1"
+
+        sql += f" WHERE {priority} ORDER BY RANDOM() LIMIT 1"
 
     logger.info(f"getNextImage sending SQL: {sql}; with params {params_dict}")
     with engine.connect() as connection:

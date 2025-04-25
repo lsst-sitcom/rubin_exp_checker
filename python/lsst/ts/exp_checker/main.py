@@ -79,6 +79,18 @@ def set_release(release: str | None = None):
 
     # TODO: Why would one want to change the config object? Disabled for now,
     # remove if unnecessary
+
+    # ADW: We need a state object to track the release. In PHP days
+    # this was being done in the config. I agree that is not the right
+    # way to do it, but we need to replace it with something.
+    
+    #config['release'] = release
+    #if (config['release'] is None) or (config['release'] not in config['releases']):
+    #    config['release'] = config['releases'][-1]
+    #    logger.debug(f"Release set to: {config['release']}")
+
+    logger.warn("Changing release not implemented.")
+    logger.warn(f"Release set to: {config['release']}")
     return config['release']
 
 
@@ -151,7 +163,8 @@ def create_client(profile_name, endpoint_url):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
-
+    set_release()
+    
     if config["transfer_type"] == 'butler':
         butler = create_butler(config.butler_repo, config.butler_collection)
         app.state.butler = butler
@@ -190,7 +203,7 @@ async def get_api_problems(
 @router.get("/auth")
 async def get_auth(user: str = Depends(get_user)):
     """ Get the authentication and username. """
-    # This should be replaced by project authorization routine
+    # Authentication has already been done before access was granted.
     response: Dict[str, Any] = {"auth": True, "user": user}
     return JSONResponse(content=response)
 
