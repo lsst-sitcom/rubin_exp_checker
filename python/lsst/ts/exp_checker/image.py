@@ -212,10 +212,15 @@ def get_fov_image(dataId: Dict, client):
     -------
     response : streaming response for the file
     """
+    logger.debug("Getting FoV image from S3 bucket...")
+
     # Build the S3 key
-    # Example:
+    # Examples:
     #comcam/2024-11-19/calexp_mosaic/000040/comcam_calexp_mosaic_2024-11-19_000040.jpg
-    camera_name = 'comcam'
+    #lsstcam/2025-04-17/calexp_mosaic/000624/lsstcam_calexp_mosaic_2025-04-17_000624.jpg
+
+    camera_name_mapping = {'LSSTComCam': 'comcam', 'LSSTCam': 'lsstcam'}
+    camera_name = camera_name_mapping[config.butler_instrument]
     channel_name = 'calexp_mosaic'
     visit_str = str(dataId['visit'])
     seq_num = int(visit_str[8:])
@@ -224,25 +229,43 @@ def get_fov_image(dataId: Dict, client):
     filename = f"{camera_name}_{channel_name}_{date_str}_{seq_str}.jpg"
     key = f"{camera_name}/{date_str}/{channel_name}/{seq_str}/{filename}"
 
+    # bucket_name = config.bucket_name
+    bucket_name = 'rubin-rubintv-data-usdf'
+
+    logger.info("S3 access info:")
+    logger.info(f"  client: {client}")
+    logger.info(f"  bucket: {bucket_name}")
+    logger.info(f"  key: {key}")
+    
     # Get the file from S3
     try:
-        obj = client.get_object(Bucket=client._bucket_name, Key=key)
+        obj = client.get_object(Bucket=bucket_name, Key=key)
         data_stream = obj["Body"]
         assert isinstance(data_stream, StreamingBody)
     except ClientError:
-        raise HTTPException(status_code=404, detail=f"No such file for: {key}")
+        msg = f"File not found: {key}"
+        logger.warn(msg)
+        raise HTTPException(status_code=404, detail=msg)
 
     return StreamingResponse(content=data_stream.iter_chunks())
 
 async def main(params: Dict, request: Request):
     logger.debug(f"image.main: {params}")
 
-    visit = params.get('visit', params.get('expname'))
-    detector = params.get('detector', params.get('ccd'))
-    dataId = dict(instrument=config.butler_instrument, visit=int(visit), detector=int(detector))
-    ### Horrible Hack!
-    #dataId = dict(instrument='LSSTComCam', visit=int('2024111700328'), detector=int('6'))
+    # ADW: Still need filename interface until we fix call buried in html
+    filename = params.get('filename', params.get('name'))
+    if filename:
+        logger.warn(f"Getting dataId from filename")
+        dataId = filenameToDataId(filename)
+    else:        
+        visit = params.get('visit', params.get('expname'))
+        detector = params.get('detector', params.get('ccd'))
+        dataId = dict(instrument=config.butler_instrument, visit=int(visit), detector=int(detector))
 
+    ### Horrible Hack!
+    #logger.warn("Horrible Hack to dataId!")
+    #dataId = dict(instrument='LSSTComCam', visit=int('2024111700328'), detector=int('6'))
+    
     image_not_found = f"{config['base_dir']}/assets/fov_not_available.png"
     
     if (params.get('type') == "fov_old"):

@@ -52,25 +52,29 @@ def submit_image(params: Dict, uid: int) -> None:
                                {"fileid": params['fileid'],
                                 "userid": uid, "problem": code, "x": problem['x'], "y": problem['y'],
                                 "detail": problem['detail']})
-
+                
         if nflag > 0:
             # Increment the summary table
             cursor = conn.execute(text(
-                'UPDATE submissions SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE userid = :userid'),
-                                 {"userid": uid} )
+                "UPDATE submissions SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE userid = :userid"),
+                                  {"userid": uid} )
             if cursor.rowcount == 0:
-                conn.execute(text('INSERT INTO submissions VALUES (:userid, 1, 1)'), {"userid": uid})
+                conn.execute(text("INSERT INTO submissions VALUES (:userid, 1, 1)"), {"userid": uid})
         else:
             # Insert qa for exposures with no flagged problems (i.e., "OK")
-            conn.execute(text( 'INSERT INTO qa (fileid, userid) VALUES (:fileid, :userid)'),
-                           {"fileid": params['fileid'], "userid": uid})
+            conn.execute(text(
+                "INSERT INTO qa (fileid, userid, problem) VALUES (:fileid, :userid, :problem)"),
+                         {"fileid": params['fileid'], "userid": uid, "problem": 0})
             # Increment the summary table
             cursor = conn.execute(text(
-                'UPDATE submissions SET total_files = total_files + 1 WHERE userid = :userid'),
-                                    {"userid": uid})
+                "UPDATE submissions SET total_files = total_files + 1 WHERE userid = :userid"),
+                                  {"userid": uid})
             if cursor.rowcount == 0:
-                conn.execute(text('INSERT INTO submissions VALUES (:userid, 1, 0)'), {"userid": uid})
+                conn.execute(text("INSERT INTO submissions VALUES (:userid, 1, 0)"), {"userid": uid})
 
+        # Commit the changes
+        conn.commit()
+            
 
 def get_congrats(uid: int) -> Dict:
     """Get congratulations message for completion.

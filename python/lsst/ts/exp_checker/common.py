@@ -87,12 +87,11 @@ def getNextImage(
         sql += ' ORDER BY RANDOM() LIMIT 1'
 
     else:
-        logger.warn("In confusing block of getNextImage()")
-        # ADW: I think this block is randomizing with a higher weight
-        # given to images that have been viewed before.
+        # ADW: I think this block allows the random assignment with higher weight
+        # assigned to images meeting different criteria.
         
-        # ADW: This allows an empty where statement
-        priority = "1" 
+        # ADW: This allows you to restrict to images matching a specific condition
+        priority = "True"
 
         # to create redundancy: draw every n-th image from list with existing qa
         #nth = 2
@@ -110,7 +109,6 @@ def getNextImage(
 
         sql += f" WHERE {priority} ORDER BY RANDOM() LIMIT 1"
 
-    logger.info(f"getNextImage sending SQL: {sql}; with params {params_dict}")
     with engine.connect() as connection:
         res = connection.execute(text(sql), params_dict)
 
@@ -128,7 +126,6 @@ def getProblems(engine: Engine, fileid: int, qa_id: Optional[int] = None) -> Lis
 
     with engine.connect() as connection:
         res = connection.execute(text(sql), {"fileid": fileid, "qaid": qa_id} if qa_id else {"fileid": fileid})
-
 
     problem_code = {v: k for k, v in config['problem_code'].items()}
     problems = []
@@ -242,7 +239,7 @@ def giveBonusPoints(engine: Engine, uid: int, points: int) -> None:
 def filenameToDataId(filename: str):
     basename = os.path.basename(filename)
     junk, visit, band, det = os.path.splitext(basename)[0].rsplit('_',3)
-    dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(det))
+    dataId = dict(instrument=config.butler_instrument, visit=int(visit), detector=int(det))
     return dataId
 
 def dataIdToFilename(dataId: Dict):
