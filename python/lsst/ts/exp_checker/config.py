@@ -82,23 +82,28 @@ class Configuration(BaseSettings):
             )
 
     butler_collection: str = Field(
-            default="u/kadrlica/binCalexp4",
+            default="u/kadrlica/LSSTCam/binCalexp4",
             description="Butler collection to display"
             )
 
     butler_instrument: str = Field(
-            default="LSSTCam", # ADW: Inconsistent with default collection
+            default="LSSTCam", 
             description="Name of the instrument to use in butler queries."
             )
 
     s3_profile_name: str = Field(
-            default="",
-            description="S3 Profile"
+            default="rubin-rubintv-data-usdf-embargo",
+            description="S3 Profile Name"
             )
 
     s3_endpoint_url: str = Field(
-            default="https://s3dfrgw.slac.stanford.edu",
-            description="S3 URL"
+            default="https://sdfembs3.sdf.slac.stanford.edu",
+            description="S3 Endpoint URL"
+            )
+
+    s3_bucket_name: str = Field(
+            default="rubin-rubintv-data-usdf",
+            description="S3 Bucket Name"
             )
 
 

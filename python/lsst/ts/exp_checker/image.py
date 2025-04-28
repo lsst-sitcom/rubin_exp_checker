@@ -20,7 +20,6 @@ from .config import config
 from .common import getDBHandle, filenameToDataId
 from .common import exp_checker_logger
 
-from lsst.afw.fits import MemFileManager
 
 logger = exp_checker_logger()
 
@@ -108,6 +107,8 @@ def get_content_from_butler(butler, dataId: Dict):
     -------
     stream : BytesIO stream
     """
+    from lsst.afw.fits import MemFileManager
+
     logger.debug(f"Getting image content from butler for dataId {dataId}")
     # Create the memory object
     manager = MemFileManager()

@@ -153,13 +153,15 @@ def create_client(profile_name, endpoint_url):
     logger.info(f"Creating S3 client...")
     logger.info(f"  endpoint: {endpoint_url}")
     logger.info(f"  profile: {profile_name}")
-    import boto3
-    session = boto3.Session(region_name="us-east-1", profile_name=profile_name)
     try:
+        import boto3
+        session = boto3.Session(region_name="us-east-1", profile_name=profile_name)
         client = session.client("s3", endpoint_url=endpoint_url)
         client._bucket_name = profile_name
-    except KeyError:
-        raise HTTPException(404, "Location not found")
+    except Exception as e:
+        logger.warn(str(e))
+        client = None
+        #raise HTTPException(404, "Location not found")
 
     return client
 
