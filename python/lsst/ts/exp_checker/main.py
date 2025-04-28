@@ -3,7 +3,7 @@
 import asyncio
 import os, json, enum, copy
 from contextlib import asynccontextmanager
-from typing import Annotated, Dict, Optional
+from typing import Annotated, Dict, Optional, Any
 from typing import AsyncGenerator
 from pathlib import Path
 
@@ -12,8 +12,10 @@ from fastapi import Request, Response, Header, Depends, Query
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.routing import APIRouter
 from jinja2 import Environment
 from pydantic import BaseModel, Field, model_validator
+import uvicorn
 
 #from sqlmodel import Field, Session, SQLModel, create_engine
 from . import __version__
@@ -74,14 +76,21 @@ def set_release(release: str | None = None):
     -------
     release : the release that was set
     """
-    global config
 
-    config['release'] = release
-    if (config['release'] is None) or (config['release'] not in config['releases']):
-        config['release'] = config['releases'][-1]
+    # TODO: Why would one want to change the config object? Disabled for now,
+    # remove if unnecessary
 
-    logger.debug(f"Release set to: {config['release']}")
+    # ADW: We need a state object to track the release. In PHP days
+    # this was being done in the config. I agree that is not the right
+    # way to do it, but we need to replace it with something.
     
+    #config['release'] = release
+    #if (config['release'] is None) or (config['release'] not in config['releases']):
+    #    config['release'] = config['releases'][-1]
+    #    logger.debug(f"Release set to: {config['release']}")
+
+    logger.warn("Changing release not implemented.")
+    logger.warn(f"Release set to: {config['release']}")
     return config['release']
 
 
@@ -130,8 +139,8 @@ def create_butler(repo, collection):
     butler : the instantiated butler
     """
     logger.info(f"Creating LSST Butler...")
-    logger.debug(f"  repo: {repo}")
-    logger.debug(f"  collection: {collection}")
+    logger.info(f"  repo: {repo}")
+    logger.info(f"  collection: {collection}")
     try:
         from lsst.daf.butler import Butler
         return Butler(repo, collections=collection)
@@ -141,46 +150,48 @@ def create_butler(repo, collection):
 
 def create_client(profile_name, endpoint_url):
     """ Create the S3 client. """
-    logger.debug(f"Creating S3 client...")
-    import boto3
-    session = boto3.Session(region_name="us-east-1", profile_name=profile_name)
+    logger.info(f"Creating S3 client...")
+    logger.info(f"  endpoint: {endpoint_url}")
+    logger.info(f"  profile: {profile_name}")
     try:
+        import boto3
+        session = boto3.Session(region_name="us-east-1", profile_name=profile_name)
         client = session.client("s3", endpoint_url=endpoint_url)
         client._bucket_name = profile_name
-    except KeyError:
-        raise HTTPException(404, "Location not found")
+    except Exception as e:
+        logger.warn(str(e))
+        client = None
+        #raise HTTPException(404, "Location not found")
 
     return client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
     set_release()
-
+    
     if config["transfer_type"] == 'butler':
-        butler = create_butler(config['butler_repo'],config['butler_collection'])
+        butler = create_butler(config.butler_repo, config.butler_collection)
         app.state.butler = butler
     else:
         app.state.butler = None
 
-    client = create_client(config['s3_profile_name'], config['s3_endpoint_url'])
-    app.state.s3_client = client
+    if len(config.s3_profile_name) > 0:
+        client = create_client(config.s3_profile_name, config.s3_endpoint_url)
+        app.state.s3_client = client
+    else:
+        app.state.s3_client = None
 
     yield
 
-# Create the app
-logger.debug(f"exp_checker: v{__version__}")
-app = FastAPI(
-    version=__version__,
-    debug=True,
-    lifespan=lifespan,
-)
+
+router = APIRouter()
 
 # Redirect to index 
-@app.get("/")
+@router.get("/")
 async def redirect_to_index():
     return RedirectResponse(url="./index.html")
 
-@app.get("/api")
+@router.get("/api")
 async def get_api_problems(
         problem: str,
         release: str = Depends(set_release),
@@ -193,29 +204,21 @@ async def get_api_problems(
     response = api.main(params)
     return JSONResponse(response)
 
-@app.get("/auth")
+@router.get("/auth")
 async def get_auth(user: str = Depends(get_user)):
     """ Get the authentication and username. """
-    # This should be replaced by project authorization routine
-    response = {"auth": True}
-    response.update(user)
+    # Authentication has already been done before access was granted.
+    response: Dict[str, Any] = {"auth": True, "user": user}
     return JSONResponse(content=response)
 
-@app.get("/contact")
+@router.get("/contact")
 async def get_contact() -> str:
     # Provide contact information
     #response = 'mailto:' + config['adminemail']
     response = config['contact']
     return response
 
-@app.get("/download_file")
-async def download_file(filename: str) -> StreamingResponse:
-    """ Deprecated file download access point. """
-    path = config['fitspath'][config['release']]
-    filepath = os.path.join(path,filename)
-    return getImage.download_file(filepath, True)
-
-@app.get("/gallery")
+@router.get("/gallery")
 async def get_gallery(
         release: str = Depends(set_release),
 ) -> Response:
@@ -223,7 +226,7 @@ async def get_gallery(
     response = gallery.main()
     return Response(json.dumps(response))
 
-@app.get("/get_image")
+@router.get("/get_image")
 async def get_image(
         request: Request,
         release: str = Depends(set_release),
@@ -239,18 +242,18 @@ async def get_image(
     logger.debug(f"get_image.params: {params}")
 
     if params['type'] is None:
-        params['type'] = config.get('transfer_type')
+        params['type'] = config['transfer_type']
         logger.debug(f"Set image access type: {params['type']}")
 
     response = await image.main(params, request)
     return response
 
-@app.get("/headers")
+@router.get("/headers")
 async def read_headers(request: Request) -> Dict:
     """Return the json-formatted dict of headers"""
-    return request.headers
+    return dict(request.headers)
 
-@app.get("/mydata")
+@router.get("/mydata")
 async def get_mydata(
         release: str = Depends(set_release),
         user: Dict = Depends(get_user),
@@ -259,7 +262,7 @@ async def get_mydata(
     data = mydata.main(user["username"])
     return Response(json.dumps(data))
 
-@app.get("/problems")
+@router.get("/problems")
 async def get_problems(
         release: str = Depends(set_release),
         fileid: int | None = None,
@@ -281,7 +284,7 @@ async def get_problems(
     response = problems.main(params)
     return Response(json.dumps(response))
 
-@app.get("/ranking")
+@router.get("/ranking")
 async def get_ranking(
         release: str = Depends(set_release),
         limit: int = 15
@@ -290,7 +293,7 @@ async def get_ranking(
     rank = ranking.main(limit)
     return Response(json.dumps(rank))
 
-@app.get("/stats")
+@router.get("/stats")
 async def get_stats(
         release: str = Depends(set_release),
         total: bool | str = False,
@@ -309,7 +312,7 @@ async def get_stats(
     response = stats.main(params)
     return Response(json.dumps(response))
 
-@app.post("/submit")
+@router.post("/submit")
 async def post_submit(
         body: SubmitBody,
         user: Dict = Depends(get_user),
@@ -330,7 +333,7 @@ ALLOWED_PAGES = {"index", "viewer", "tutorial", "faq", "statistics", "api",
                  "gallery", "hodgepodge", "heat_map"}
 
 # Define a dynamic route that captures the page name from the URL
-@app.get("/{page_name}.html", response_class=HTMLResponse)
+@router.get("/{page_name}.html", response_class=HTMLResponse)
 async def render_page(request: Request, page_name: str):
     # Check if the requested page is in the list of allowed pages
     if page_name in ALLOWED_PAGES:
@@ -343,18 +346,32 @@ async def render_page(request: Request, page_name: str):
         # If not allowed, raise a 404 Not Found error
         raise HTTPException(status_code=404, detail="Page not found")
 
-@app.get("/collections")
+@router.get("/collections")
 async def get_collections(request: Request) -> Response:
     """Return the json-formatted dict of headers"""
     butler = request.app.state.butler
     collections = [_ for _ in butler.registry.queryCollections('LSSTComCam/*')]
     return Response(json.dumps(collections))
 
-    
+# Create the app
+logger.debug(f"exp_checker: v{__version__}")
+app = FastAPI(
+    version=__version__,
+    debug=True,
+    lifespan=lifespan,
+)
+
 # Mount static files and assets
 # https://stackoverflow.com/questions/65916537/a-minimal-fastapi-example-loading-index-html
-app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
-app.mount("/material", StaticFiles(directory=BASE_DIR / 'material'), name="material")
+app.mount("/exposure-checker/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+app.mount("/exposure-checker/material", StaticFiles(directory=BASE_DIR / 'material'), name="material")
+
+
+app.include_router(router, prefix="/exposure-checker")
 
 # For testing, mount everything in main directory
 #app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+if __name__ == "__main__":
+    uvicorn.run("lsst.ts.exp_checker.main:app", host="0.0.0.0")

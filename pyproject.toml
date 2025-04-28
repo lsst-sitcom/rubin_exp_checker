@@ -17,9 +17,11 @@ dependencies = [
   "jinja2",
   "websockets",
   "moto",
+  "structlog>=24.4.0",
 ]
 readme = "README.md"
 dynamic = ["version"]
+requires-python = ">=3.11"
 
 [project.urls]
 Homepage = "https://des-exp-checker.pmelchior.net/"
@@ -66,3 +68,8 @@ dev = [
   "beautifulsoup4",
   "types-python-dateutil",
   ]
+
+[tool.setuptools.package-data]
+"lsst.ts.exp_checker.assets" = ["*.css", "*.js", "*.png"]
+"lsst.ts.exp_checker.assets.bootstrap" = ["*.css", "*.js", "*.png"]
+"lsst.ts.exp_checker.material" = ["*.gif"]

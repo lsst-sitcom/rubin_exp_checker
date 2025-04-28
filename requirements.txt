@@ -15,3 +15,7 @@ beautifulsoup4
 py-spy
 locust
 locust_plugins
+sqlalchemy
+psycopg2
+pydantic
+pydantic_settings

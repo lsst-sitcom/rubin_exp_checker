@@ -569,7 +569,69 @@ function setComCamChipLayout() {
   });
 }
 
+function setLSSTCamChipLayout() {
+  console.log('viewer.setLSSTCamChipLayout');
+  //var WIDTH = 494., HEIGHT = 372.; // Dimensions of the pallet
+  var WIDTH = 488., HEIGHT = 364.; // Dimensions of the pallet
+  var GAP = [0., 0.]; // Gaps between CCDs
+  var PAD = [72., 10.]; // Gaps at the edge of the FoV (top left corner)
+
+  /*
+  // LSSTCam layout from here:
+  // https://nbviewer.org/github/LSSTScienceCollaborations/StackClub/blob/rendered/Visualization/LsstCameraGeometry.nbconvert.ipynb
+  */
+  var ROWS = [// chips per row
+      // 4th row of rafts
+      [168, 169, 170, 177, 178, 179, 186, 187, 188],
+      [165, 166, 167, 174, 175, 176, 183, 184, 185],
+      [162, 163, 164, 171, 172, 173, 180, 181, 182],
+      // 3rd row of rafts
+      [123, 124, 125, 132, 133, 134, 141, 142, 143, 150, 151, 152, 159, 160, 161],
+      [120, 121, 122, 129, 130, 131, 138, 139, 140, 147, 148, 149, 156, 157, 158],
+      [117, 118, 119, 126, 127, 128, 135, 136, 137, 144, 145, 146, 153, 154, 155],
+      // 2nd row of rafts
+      [78,  79,  80,  87,  88,  89,  96,  97,  98, 105, 106, 107, 114, 115, 116],
+      [75,  76,  77,  84,  85,  86,  93,  94,  95, 102, 103, 104, 111, 112, 113],
+      [72,  73,  74,  81,  82,  83,  90,  91,  92,  99, 100, 101, 108, 109, 110],
+      // 1st row of rafts
+      [33, 34, 35, 42, 43, 44, 51, 52, 53, 60, 61, 62, 69, 70, 71],
+      [30, 31, 32, 39, 40, 41, 48, 49, 50, 57, 58, 59, 66, 67, 68],
+      [27, 28, 29, 36, 37, 38, 45, 46, 47, 54, 55, 56, 63, 64, 65],
+      // 0th row of rafts
+      [6, 7, 8, 15, 16, 17,  24, 25, 26], 
+      [3, 4, 5, 12, 13, 14,  21, 22, 23], 
+      [0, 1, 2,  9, 10, 11,  18, 19, 20], 
+  ];
+  var NROWS = ROWS.length;
+  var MAXCCDS = 15; // Maximum number of CCDs in any row
+  var i, j, xpad, ypad;
+  var CCD_SIZE = [(WIDTH-MAXCCDS*GAP[0]-2*PAD[0])/MAXCCDS, (HEIGHT-NROWS*GAP[1]-2*PAD[1])/NROWS];
+  
+  var html = "<style> .ccdshape { width: " + Math.round(CCD_SIZE[0]-2) + "px; height: " + Math.round(CCD_SIZE[1]-2) + "px; }</style>";
+  var xmin, ymax;
+  for (i=0; i < NROWS; i++) {
+    var ccds = ROWS[i];
+    for (j=0; j < ccds.length; j++) {
+      xmin = Math.round(PAD[0] + j*(GAP[0] + CCD_SIZE[0]) + (WIDTH - 2*PAD[0] - ccds.length*(CCD_SIZE[0]+GAP[0]))/2);
+      ymax = Math.round((PAD[1] + i*(GAP[1] + CCD_SIZE[1])));
+      html += "<div class='ccdshape' style='left:" + xmin + "px; top:" + ymax + "px' title='CCD " + ccds[j] + "'></div>";
+    }
+  }
+  $('#ccdmap').html(html);
+  // Connect the ccd outline in FoV image to image loading
+  $('#ccdmap').children('.ccdshape').on('click', function(evt) {
+    var ccdnum = evt.target.title.split(" ").pop();
+    var new_image = {'release': release, 'expname': expname, 'ccd': ccdnum};
+    if (marks.length)
+      sendResponse(new_image);
+    else
+      getNextImage(new_image);
+    $('#fov-modal').modal('hide');
+  });
+}
+
 function setChipLayout() {
     // setLSSTChipLayout();
-    setComCamChipLayout();
+    //setComCamChipLayout();
+    setLSSTCamChipLayout();
 }

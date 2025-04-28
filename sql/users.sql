@@ -12,7 +12,7 @@ CREATE TABLE sessions (
 );
 
 CREATE TABLE submissions (
- userid INTEGER NO NULL,
+ userid INTEGER NOT NULL,
  release TEXT NOT NULL,
  total_files INT NOT NULL DEFAULT 0,
  flagged_files INT NOT NULL DEFAULT 0
@@ -21,7 +21,7 @@ CREATE INDEX submission_release_idx ON submissions(release);
 CREATE INDEX submission_userid_idx ON submissions(userid);
 
 CREATE TABLE users (
- userid INTEGER PRIMARY KEY ASC,
+ userid INTEGER PRIMARY KEY,
  username TEXT NOT NULL,
  email TEXT NOT NULL,
  password TEXT NOT NULL,

@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: exp-checker
+      POSTGRES_PASSWORD: debug
+    volumes:
+      - pgdata:/var/lib/postgresql/data 
+    ports:
+      - 5432:5432
+ 
+  exp-checker:
+    image: ctslater/rubin_exp_checker
+    restart: always
+    ports:
+      - 8000:8000
+    environment:
+      DB_HOST: "db"
+      DB_PASSWORD: "debug"
+ 
+volumes:
+  pgdata:

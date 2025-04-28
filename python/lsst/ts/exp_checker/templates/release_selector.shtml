@@ -4,7 +4,6 @@
     <b class="text-info caret"></b>
   </a>
   <ul class="dropdown-menu">
-    <li><a class="release-button" id="release-button-dev" href="#">dev</a></li>
-    <li><a class="release-button" id="release-button-ComCam" href="#">ComCam</a></li>
+    <li><a class="release-button" id="release-button-LSSTCam" href="#">LSSTCam</a></li>
   </ul>
 </li>

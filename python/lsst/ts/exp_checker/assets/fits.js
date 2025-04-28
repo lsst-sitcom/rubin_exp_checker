@@ -2086,6 +2086,8 @@
       if (header.isPrimary()) {
         DU = Image;
       } else if (header.isExtension()) {
+        console.log("Reading " + header.get("EXTNAME") + "...");
+        console.log(header.extensionType);
         if (header.extensionType === "BINTABLE") {
           if (header.contains("ZIMAGE")) {
             DU = CompressedImage;
@@ -2097,6 +2099,9 @@
         } else if (header.extensionType === "IMAGE") {
           DU = Image;
         }
+      } else {
+          console.warn("Unrecognized extension; skipping...");
+          return; 
       }
       data = new DU(header, this.view, this.offset);
       excess = this.excessBytes(data.length);

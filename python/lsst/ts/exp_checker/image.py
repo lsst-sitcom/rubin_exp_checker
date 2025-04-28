@@ -20,6 +20,7 @@ from .config import config
 from .common import getDBHandle, filenameToDataId
 from .common import exp_checker_logger
 
+
 logger = exp_checker_logger()
 
 def create_headers(revalidate: bool = False):
@@ -106,9 +107,10 @@ def get_content_from_butler(butler, dataId: Dict):
     -------
     stream : BytesIO stream
     """
-    logger.debug("Getting image content from butler...")
-    # Create the memory object
     from lsst.afw.fits import MemFileManager
+
+    logger.debug(f"Getting image content from butler for dataId {dataId}")
+    # Create the memory object
     manager = MemFileManager()
 
     # Get the file and write to memory
@@ -117,7 +119,7 @@ def get_content_from_butler(butler, dataId: Dict):
 
     # Compress the file
     opts = dict()
-    if config.get('compress_images', True): 
+    if config['compress_images']:
         from lsst.afw.fits import ImageCompressionOptions, ImageWriteOptions, ImageScalingOptions
         logger.debug("Compressing image")
         quantize = 10.0
@@ -154,8 +156,8 @@ async def get_content_from_socket(dataId: Dict, timeout: float = 30):
     command = {
         "name": "get fits image",
         "parameters": {
-            "repo": config['butler_repo'],
-            "collection": config['butler_collection'],
+            "repo": config.butler_repo,
+            "collection": config.butler_collection,
             "image_name": datasetType,
             "data_id": dataId,
             "compress": config.get('compress_images', True),
@@ -211,10 +213,15 @@ def get_fov_image(dataId: Dict, client):
     -------
     response : streaming response for the file
     """
+    logger.debug("Getting FoV image from S3 bucket...")
+
     # Build the S3 key
-    # Example:
+    # Examples:
     #comcam/2024-11-19/calexp_mosaic/000040/comcam_calexp_mosaic_2024-11-19_000040.jpg
-    camera_name = 'comcam'
+    #lsstcam/2025-04-17/calexp_mosaic/000624/lsstcam_calexp_mosaic_2025-04-17_000624.jpg
+
+    camera_name_mapping = {'LSSTComCam': 'comcam', 'LSSTCam': 'lsstcam'}
+    camera_name = camera_name_mapping[config.butler_instrument]
     channel_name = 'calexp_mosaic'
     visit_str = str(dataId['visit'])
     seq_num = int(visit_str[8:])
@@ -223,27 +230,43 @@ def get_fov_image(dataId: Dict, client):
     filename = f"{camera_name}_{channel_name}_{date_str}_{seq_str}.jpg"
     key = f"{camera_name}/{date_str}/{channel_name}/{seq_str}/{filename}"
 
+    # bucket_name = config.bucket_name
+    bucket_name = 'rubin-rubintv-data-usdf'
+
+    logger.info("S3 access info:")
+    logger.info(f"  client: {client}")
+    logger.info(f"  bucket: {bucket_name}")
+    logger.info(f"  key: {key}")
+    
     # Get the file from S3
     try:
-        obj = client.get_object(Bucket=client._bucket_name, Key=key)
+        obj = client.get_object(Bucket=bucket_name, Key=key)
         data_stream = obj["Body"]
         assert isinstance(data_stream, StreamingBody)
     except ClientError:
-        raise HTTPException(status_code=404, detail=f"No such file for: {key}")
+        msg = f"File not found: {key}"
+        logger.warn(msg)
+        raise HTTPException(status_code=404, detail=msg)
 
     return StreamingResponse(content=data_stream.iter_chunks())
 
 async def main(params: Dict, request: Request):
     logger.debug(f"image.main: {params}")
 
+    # ADW: Still need filename interface until we fix call buried in html
     filename = params.get('filename', params.get('name'))
     if filename:
+        logger.warn(f"Getting dataId from filename")
         dataId = filenameToDataId(filename)
-    else:
+    else:        
         visit = params.get('visit', params.get('expname'))
         detector = params.get('detector', params.get('ccd'))
-        dataId = dict(instrument='LSSTComCam', visit=int(visit), detector=int(detector))
+        dataId = dict(instrument=config.butler_instrument, visit=int(visit), detector=int(detector))
 
+    ### Horrible Hack!
+    #logger.warn("Horrible Hack to dataId!")
+    #dataId = dict(instrument='LSSTComCam', visit=int('2024111700328'), detector=int('6'))
+    
     image_not_found = f"{config['base_dir']}/assets/fov_not_available.png"
     
     if (params.get('type') == "fov_old"):
@@ -270,8 +293,8 @@ async def main(params: Dict, request: Request):
     elif (params.get('type') == "dm"):
         # Provide path/code to access file
         logger.debug(f"type={params['type']}: {params}")
-        response  = f"repo: {config['butler_repo']}\n"
-        response += f"collection: {config['butler_collection']}\n"
+        response  = f"repo: {config.butler_repo}\n"
+        response += f"collection: {config.butler_collection}\n"
         response += f"dataId: {dataId}"
         return Response(response)
 
@@ -287,7 +310,7 @@ async def main(params: Dict, request: Request):
         path = config['fitspath'][config['release']]
         file_path = os.path.join(config['base_dir'], path, filename)
         logger.debug(f"type={params['type']}: {file_path}")
-        stream = await get_content_from_file(file_path)
+        stream = get_content_from_file(file_path)
         return stream_response(stream, 1024, True)
     
     elif (params.get('type') == "ws"):
@@ -304,7 +327,7 @@ async def main(params: Dict, request: Request):
             logger.warn("Butler not found.")
             return None
         else:
-            stream = await get_content_from_butler(butler, dataId)
+            stream = get_content_from_butler(butler, dataId)
             return stream_response(stream, 1024, True)
 
     else:
