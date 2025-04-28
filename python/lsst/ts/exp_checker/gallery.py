@@ -4,6 +4,7 @@ Populate the gallery information.
 """
 __author__ = "Alex Drlica-Wagner"
 import json
+from sqlalchemy import text
 
 from .common import getDBHandle
 
