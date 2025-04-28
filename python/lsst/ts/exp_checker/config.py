@@ -32,7 +32,7 @@ config_dictionary: Dict[str, Any] = {
     },
     "releases": ["LSSTCam"],
     "release": "LSSTCam",
-    "images_per_fp": 378,
+    "images_per_fp": 189
     "problem_code": {
         "OK": 0,
         # Instrument & Telescope
@@ -43,7 +43,7 @@ config_dictionary: Dict[str, Any] = {
         # Flat fielding
         "Amplifier jump": 21,
         "Fringing": 22,
-        "Hardware Imprint": 23,
+        "Hardware imprint": 23,
         "Tree rings": 24,
         "Coffee stains": 25,
         # Reflections
@@ -65,6 +65,7 @@ config_dictionary: Dict[str, Any] = {
         "Edge bleed": 56,
         "Bleed trail": 57,
         "Dark trail": 58,
+        "Vampire": 59,
         # Sky estimation
         "Dark edge": 61,
         "Dark halo": 62,

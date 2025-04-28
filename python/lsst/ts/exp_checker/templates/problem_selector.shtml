@@ -22,6 +22,7 @@
               <li><a class="problem" tabindex="-1" href="#">Bleed trail</a></li>
               <li><a class="problem" tabindex="-1" href="#">Dark trail</a></li>
               <li><a class="problem" tabindex="-1" href="#">Edge bleed</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Vampire</a></li>
               <li><a class="problem" tabindex="-1" href="#">Excessive mask</a></li>
             </ul>
           </li>
