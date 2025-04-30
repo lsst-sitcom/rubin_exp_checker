@@ -32,7 +32,7 @@ config_dictionary: Dict[str, Any] = {
     },
     "releases": ["LSSTCam"],
     "release": "LSSTCam",
-    "images_per_fp": 189
+    "images_per_fp": 189,
     "problem_code": {
         "OK": 0,
         # Instrument & Telescope
