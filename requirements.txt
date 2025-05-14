@@ -16,6 +16,7 @@ py-spy
 locust
 locust_plugins
 sqlalchemy
-psycopg2
+psycopg2-binary
 pydantic
 pydantic_settings
+alembic
