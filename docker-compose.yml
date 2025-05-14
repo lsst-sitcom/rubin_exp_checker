@@ -18,6 +18,8 @@ services:
     environment:
       DB_HOST: "db"
       DB_PASSWORD: "debug"
- 
+      DO_DB_MIGRATION: 1
+      RUN_TESTS: 1
+
 volumes:
   pgdata:
