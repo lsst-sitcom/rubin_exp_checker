@@ -9,7 +9,6 @@ boto3
 fastapi
 httpx
 moto
-pytest_asyncio
 websocket-client
 beautifulsoup4
 py-spy

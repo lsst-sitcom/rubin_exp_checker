@@ -16,9 +16,9 @@ from fastapi.routing import APIRouter
 from jinja2 import Environment
 from pydantic import BaseModel, Field, model_validator
 import uvicorn
+from importlib.metadata import version
 
 #from sqlmodel import Field, Session, SQLModel, create_engine
-from . import __version__
 from . import api, gallery, image, mydata, problems, ranking, stats, submit
 from .common import exp_checker_logger, username2uid
 from .config import config
@@ -339,7 +339,7 @@ async def render_page(request: Request, page_name: str):
     if page_name in ALLOWED_PAGES:
         # Render the template with the request context
         env = Environment(autoescape=True, auto_reload=True)
-        context = {"request": request, "version": __version__}
+        context = {"request": request, "version": version("rubin_exp_checker")}
         context.update(copy.deepcopy(config))
         return templates.TemplateResponse(f"{page_name}.html", context=context)
     else:
@@ -354,9 +354,9 @@ async def get_collections(request: Request) -> Response:
     return Response(json.dumps(collections))
 
 # Create the app
-logger.debug(f"exp_checker: v{__version__}")
+logger.debug(f"exp_checker: v{version('rubin_exp_checker')}")
 app = FastAPI(
-    version=__version__,
+    version=version("rubin_exp_checker"),
     debug=True,
     lifespan=lifespan,
 )

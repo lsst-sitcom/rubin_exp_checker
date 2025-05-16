@@ -88,7 +88,7 @@ class Configuration(BaseSettings):
             )
 
     butler_instrument: str = Field(
-            default="LSSTCam", 
+            default="LSSTCam",
             description="Name of the instrument to use in butler queries."
             )
 
