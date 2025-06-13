@@ -293,9 +293,9 @@ async def main(params: Dict, request: Request):
     elif (params.get('type') == "dm"):
         # Provide path/code to access file
         logger.debug(f"type={params['type']}: {params}")
-        response  = f"repo: {config.butler_repo}\n"
-        response += f"collection: {config.butler_collection}\n"
-        response += f"dataId: {dataId}"
+        response  = f"repo = '{config.butler_repo}'\n"
+        response += f"collection = '{config.butler_collection}'\n"
+        response += f"dataId = {dataId}"
         return Response(response)
 
     elif (params.get('type') == "old_file"):
