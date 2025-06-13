@@ -31,7 +31,7 @@ def getCountOfProblem(
         if uid is not None:
             sql += f" AND userid = {uid}"
         if code == 255:
-            sql += " AND detail IS NOT NULL GROUP BY detail ORDER BY `count` DESC, detail"
+            sql += " AND detail IS NOT NULL GROUP BY detail ORDER BY count DESC, detail"
 
         with engine.connect() as connection:
             res = connection.execute(text(sql), {"problem": code})

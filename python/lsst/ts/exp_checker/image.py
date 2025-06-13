@@ -230,8 +230,7 @@ def get_fov_image(dataId: Dict, client):
     filename = f"{camera_name}_{channel_name}_{date_str}_{seq_str}.jpg"
     key = f"{camera_name}/{date_str}/{channel_name}/{seq_str}/{filename}"
 
-    # bucket_name = config.bucket_name
-    bucket_name = 'rubin-rubintv-data-usdf'
+    bucket_name = config.s3_bucket_name
 
     logger.info("S3 access info:")
     logger.info(f"  client: {client}")
@@ -293,9 +292,9 @@ async def main(params: Dict, request: Request):
     elif (params.get('type') == "dm"):
         # Provide path/code to access file
         logger.debug(f"type={params['type']}: {params}")
-        response  = f"repo: {config.butler_repo}\n"
-        response += f"collection: {config.butler_collection}\n"
-        response += f"dataId: {dataId}"
+        response  = f"repo = '{config.butler_repo}'\n"
+        response += f"collection = '{config.butler_collection}'\n"
+        response += f"dataId = {dataId}"
         return Response(response)
 
     elif (params.get('type') == "old_file"):

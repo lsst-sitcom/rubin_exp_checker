@@ -107,7 +107,6 @@ class Configuration(BaseSettings):
             description="S3 Bucket Name"
             )
 
-
     db_engine: str = Field(
             default="postgresql+psycopg2",
             description="Sqlalchemy database engine"
