@@ -230,8 +230,7 @@ def get_fov_image(dataId: Dict, client):
     filename = f"{camera_name}_{channel_name}_{date_str}_{seq_str}.jpg"
     key = f"{camera_name}/{date_str}/{channel_name}/{seq_str}/{filename}"
 
-    # bucket_name = config.bucket_name
-    bucket_name = 'rubin-rubintv-data-usdf'
+    bucket_name = config.bucket_name
 
     logger.info("S3 access info:")
     logger.info(f"  client: {client}")

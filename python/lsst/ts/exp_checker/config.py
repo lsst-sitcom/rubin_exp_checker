@@ -93,8 +93,7 @@ class Configuration(BaseSettings):
             )
 
     s3_profile_name: str = Field(
-            #default="rubin-rubintv-data-usdf-embargo",
-            default="rubin-rubintv-data-summit-embargo",
+            default="rubin-rubintv-data-usdf-embargo",
             description="S3 Profile Name"
             )
 
@@ -104,11 +103,9 @@ class Configuration(BaseSettings):
             )
 
     s3_bucket_name: str = Field(
-            #default="rubin-rubintv-data-usdf",
-            default="rubin-rubintv-data-summit",
+            default="rubin-rubintv-data-usdf",
             description="S3 Bucket Name"
             )
-
 
     db_engine: str = Field(
             default="postgresql+psycopg2",
