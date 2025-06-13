@@ -168,7 +168,7 @@ function completeVisualization(response) {
   var newurl=window.location.pathname + '?release=' + release + '&visit=' + expname + '&detector=' + ccd;
   console.log('newurl: '+newurl);
   window.history.replaceState(null, "Title", newurl);
-  $('#share-url').val('http://' + window.location.host + newurl);
+  $('#share-url').val('https://' + window.location.host + newurl);
 
   // after both image and mask are drawn: remove loading spinner
   $('#loading').hide();
